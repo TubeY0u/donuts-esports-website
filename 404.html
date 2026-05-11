@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <title>404 — DieDonuts Esports</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#06060a">
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon.png">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton:wght@400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    .err-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .err-code {
+      font-family: var(--font-display);
+      font-size: clamp(100px, 20vw, 200px);
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 2px var(--accent);
+      filter: drop-shadow(0 0 40px rgba(225,29,72,0.3));
+      margin-bottom: 0;
+    }
+    .err-donut {
+      font-size: clamp(48px, 8vw, 80px);
+      margin: 8px 0 24px;
+      animation: spin-donut 6s linear infinite;
+      display: block;
+    }
+    @keyframes spin-donut {
+      0%   { transform: rotate(0deg) scale(1); }
+      50%  { transform: rotate(180deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    .err-title {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 4vw, 38px);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+    }
+    .err-sub {
+      color: var(--fg-3);
+      font-size: 16px;
+      max-width: 400px;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+    .err-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .err-konami {
+      margin-top: 60px;
+      font-size: 12px;
+      color: var(--fg-4);
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+<canvas id="particleCanvas"></canvas>
+
+<header class="nav" id="nav">
+  <div class="container">
+    <a href="/" class="brand" aria-label="DieDonuts Esports — zur Startseite">
+      <img class="brand-mark" src="/assets/logo_trans.png" alt="DieDonuts Esports">
+      <span><span class="bn-die">Die</span><span class="bn-don">Donuts</span> Esports</span>
+    </a>
+    <nav><ul class="nav-links" id="navLinks">
+      <li><a href="/">Home</a></li>
+      <li><a href="/roster/">Team</a></li>
+      <li><a href="/bootcamp/">Bootcamp</a></li>
+      <li><a href="/streams/">Streams</a></li>
+    </ul></nav>
+  </div>
+</header>
+<div id="liveBanner"><div id="liveBannerInner"></div></div>
+
+<main class="err-wrap">
+  <div class="err-code">404</div>
+  <span class="err-donut">🍩</span>
+  <h1 class="err-title">Seite nicht gefunden</h1>
+  <p class="err-sub">
+    Der Donut ist weg. Diese Seite existiert nicht —
+    vielleicht wurde sie verschoben, gelöscht oder du hast dich vertippt.
+  </p>
+  <div class="err-actions">
+    <a href="/" class="btn btn-primary">Zurück zur Startseite</a>
+    <a href="/roster/" class="btn btn-ghost">Unser Team</a>
+  </div>
+  <p class="err-konami">Psst: ↑↑↓↓←→←→BA</p>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-text">© 2026 DieDonuts Esports · Counter-Strike 2 · Made in Germany</div>
+    <div class="footer-legal">
+      <a href="/impressum/">Impressum</a>
+      <a href="/datenschutz/">Datenschutz</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js" defer></script>
+</body>
+</html>
