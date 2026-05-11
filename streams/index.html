@@ -156,4 +156,43 @@
   <div class="cookie-inner">
     <div class="cookie-text">
       <strong>Diese Seite nutzt Google Fonts</strong>
-      <span>Dabei wird deine IP-
+      <span>Dabei wird deine IP-Adresse kurz an Google übertragen. Mit „Akzeptieren" stimmst du dem zu.</span>
+    </div>
+    <div class="cookie-actions">
+      <button class="cookie-btn cookie-btn--decline" id="cookieDecline">Ablehnen</button>
+      <button class="cookie-btn cookie-btn--accept" id="cookieAccept">Akzeptieren</button>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  var consent = localStorage.getItem('cookie-consent');
+  var banner  = document.getElementById('cookieBanner');
+  function loadFonts() {
+    var link = document.createElement('link');
+    link.rel  = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap';
+    document.head.appendChild(link);
+  }
+  if (consent === 'accepted') { loadFonts(); if (banner) banner.style.display = 'none'; }
+  else if (consent === 'declined') { if (banner) banner.style.display = 'none'; }
+  else if (banner) {
+    banner.classList.add('is-visible');
+    document.getElementById('cookieAccept').addEventListener('click', function() {
+      localStorage.setItem('cookie-consent', 'accepted');
+      banner.classList.remove('is-visible');
+      setTimeout(function() { banner.style.display = 'none'; }, 400);
+      loadFonts();
+    });
+    document.getElementById('cookieDecline').addEventListener('click', function() {
+      localStorage.setItem('cookie-consent', 'declined');
+      banner.classList.remove('is-visible');
+      setTimeout(function() { banner.style.display = 'none'; }, 400);
+    });
+  }
+})();
+</script>
+<script src="/js/main.js" defer></script>
+<script>(function(){var p=window.location.pathname.replace(/\/$/,'').replace(/^\/$/,'/')||'/';document.querySelectorAll('.nav-links a').forEach(function(a){var h=(a.getAttribute('href')||'').replace(/\/$/,'').replace(/^\/$/,'/')||'/';if(h===p)a.classList.add('active');});})();</script>
+</body>
+</html>
