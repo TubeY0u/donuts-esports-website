@@ -345,16 +345,6 @@
   let TWITCH_CLIENT_ID = '';
   let TWITCH_TOKEN     = '';
 
-  try {
-    const cfg = await fetch('/data/twitch-token.json').then(r => r.ok ? r.json() : null);
-    if (cfg) {
-      TWITCH_CLIENT_ID = cfg.client_id || '';
-      TWITCH_TOKEN     = cfg.access_token || '';
-    }
-  } catch (e) {
-    console.info('[Donuts Streams] twitch-token.json nicht verfügbar.');
-  }
-
   async function checkTwitchLive() {
     const streamCards = document.querySelectorAll('.stream-card[data-twitch]');
     // Homepage: Banner-Kanäle immer prüfen auch wenn keine stream-cards da sind
@@ -440,9 +430,22 @@
     }
   }
 
-  // Sofort prüfen, dann alle 5 Minuten
-  checkTwitchLive();
-  setInterval(checkTwitchLive, 5 * 60 * 1000);
+  // Token laden, dann sofort prüfen und alle 5 Minuten wiederholen
+  async function initTwitch() {
+    try {
+      const cfg = await fetch('/data/twitch-token.json').then(r => r.ok ? r.json() : null);
+      if (cfg) {
+        TWITCH_CLIENT_ID = cfg.client_id || '';
+        TWITCH_TOKEN     = cfg.access_token || '';
+      }
+    } catch (e) {
+      console.info('[Donuts Streams] twitch-token.json nicht verfügbar.');
+    }
+    checkTwitchLive();
+    setInterval(checkTwitchLive, 5 * 60 * 1000);
+  }
+
+  initTwitch();
 
 })();
 
