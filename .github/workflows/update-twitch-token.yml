@@ -1,0 +1,46 @@
+# ============================================================
+#  DieDonuts Esports — Twitch Token Refresher
+#  Runs daily → fetches a fresh App Access Token → commits to data/twitch-token.json
+#  Required GitHub Secrets: TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
+# ============================================================
+name: Refresh Twitch Token
+
+on:
+  schedule:
+    # Every day at 05:30 UTC (30 min before stats update)
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch Twitch App Access Token
+        env:
+          TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
+          TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+        run: |
+          RESPONSE=$(curl -s -X POST "https://id.twitch.tv/oauth2/token" \
+            -d "client_id=${TWITCH_CLIENT_ID}" \
+            -d "client_secret=${TWITCH_CLIENT_SECRET}" \
+            -d "grant_type=client_credentials")
+
+          ACCESS_TOKEN=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
+
+          mkdir -p data
+          echo "{\"client_id\":\"${TWITCH_CLIENT_ID}\",\"access_token\":\"${ACCESS_TOKEN}\"}" > data/twitch-token.json
+
+      - name: Commit twitch-token.json
+        run: |
+          git config user.name  "Donuts Bot"
+          git config user.email "bot@diedonuts.de"
+          git add data/twitch-token.json
+          git diff --cached --quiet && echo "No changes." || \
+            git commit -m "chore: refresh twitch token [skip ci]"
+          git push
