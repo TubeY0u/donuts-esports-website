@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-29T15:10:56.909Z",
+  "lastUpdated": "2026-05-29T17:04:21.688Z",
   "teams": {
     "main": {
       "slug": "main",
@@ -160,29 +160,23 @@
         }
       ],
       "mapStats": {
+        "anubis": {
+          "label": "Anubis",
+          "played": 41,
+          "wins": 16,
+          "winRate": 39
+        },
         "inferno": {
           "label": "Inferno",
           "played": 1,
           "wins": 0,
           "winRate": 0
         },
-        "nuke": {
-          "label": "Nuke",
-          "played": 22,
-          "wins": 12,
-          "winRate": 55
-        },
         "mirage": {
           "label": "Mirage",
           "played": 5,
           "wins": 1,
           "winRate": 20
-        },
-        "cache": {
-          "label": "Cache",
-          "played": 2,
-          "wins": 1,
-          "winRate": 50
         },
         "mills": {
           "label": "Mills",
@@ -196,17 +190,23 @@
           "wins": 1,
           "winRate": 20
         },
-        "anubis": {
-          "label": "Anubis",
-          "played": 41,
-          "wins": 16,
-          "winRate": 39
-        },
         "ancient": {
           "label": "Ancient",
           "played": 71,
           "wins": 22,
           "winRate": 31
+        },
+        "nuke": {
+          "label": "Nuke",
+          "played": 22,
+          "wins": 12,
+          "winRate": 55
+        },
+        "cache": {
+          "label": "Cache",
+          "played": 2,
+          "wins": 1,
+          "winRate": 50
         },
         "overpass": {
           "label": "Overpass",
@@ -311,25 +311,6 @@
       "faceitId": "5d25c833-2677-4c52-93e7-ce5699378a9a",
       "players": [
         {
-          "faceitId": "94319a19-2886-4809-b6e8-8d52402441f1",
-          "nickname": "Tomac-",
-          "avatar": "https://distribution.faceit-cdn.net/images/2740904e-52e0-4299-aaba-55a653c75a82.jpg",
-          "country": "nl",
-          "elo": 1641,
-          "level": 8,
-          "faceitUrl": "https://www.faceit.com/de/players/Tomac-",
-          "stats": {
-            "matches": 240,
-            "wins": 118,
-            "winRate": 49,
-            "kd": 1.28,
-            "kr": null,
-            "adr": null,
-            "hs": 34,
-            "avgKills": 0
-          }
-        },
-        {
           "faceitId": "6deb3f89-9e88-4039-8845-4df07114c0ed",
           "nickname": "illiw29",
           "avatar": "https://distribution.faceit-cdn.net/images/e0a1a4fb-6d1e-467c-b14b-b898bc4c8fec.jpg",
@@ -421,6 +402,25 @@
             "kr": null,
             "adr": null,
             "hs": 43,
+            "avgKills": 0
+          }
+        },
+        {
+          "faceitId": "94319a19-2886-4809-b6e8-8d52402441f1",
+          "nickname": "Tomac-",
+          "avatar": "https://distribution.faceit-cdn.net/images/2740904e-52e0-4299-aaba-55a653c75a82.jpg",
+          "country": "nl",
+          "elo": 1641,
+          "level": 8,
+          "faceitUrl": "https://www.faceit.com/de/players/Tomac-",
+          "stats": {
+            "matches": 240,
+            "wins": 118,
+            "winRate": 49,
+            "kd": 1.28,
+            "kr": null,
+            "adr": null,
+            "hs": 34,
             "avgKills": 0
           }
         }
