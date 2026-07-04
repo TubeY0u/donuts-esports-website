@@ -1,9 +1,16 @@
 #!/usr/bin/env node
 // ============================================================
-//  DieDonuts Esports — Data Scraper  v2
+//  DieDonuts Esports — Data Scraper  v3
 //  Fetches FACEIT stats + DACHCS matches → data/stats.json
 //  Run:   node scraper.js
 //  Requires: FACEIT_API_KEY in .env or environment
+//
+//  v3 changes:
+//   - DACHCS: Gruppe wird automatisch gefunden (Saison-übergreifend),
+//     kein hardcodiertes group/260 mehr. Neues "Swiss"-Format wird geparst.
+//   - FACEIT: Match-Historie über Spieler-History (v4 /players/{id}/history),
+//     da /teams/{id}/history in der v4-API nicht existiert.
+//   - Läuft auch ohne FACEIT_API_KEY (dann nur DACHCS-Update).
 // ============================================================
 
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs';
@@ -26,17 +33,19 @@ mkdirSync(join(__dir, 'data'), { recursive: true });
 // ── Config ───────────────────────────────────────────────────
 const FACEIT_API_KEY = process.env.FACEIT_API_KEY || '';
 if (!FACEIT_API_KEY) {
-  console.error('❌  FACEIT_API_KEY not set — add it to .env');
-  process.exit(1);
+  console.warn('⚠️  FACEIT_API_KEY not set — FACEIT-Daten werden übersprungen, nur DACHCS wird aktualisiert.');
 }
 const OPEN_API = 'https://open.faceit.com/data/v4';
+
+const DACHCS_BASE = 'https://dachcs.de';
+// Wie viele der neuesten Saisons nach der eigenen Gruppe durchsucht werden
+const DACHCS_SEASONS_TO_SCAN = 4;
 
 const TEAMS = {
   main: {
     slug:        'main',
     label:       'Donuts',
     faceitId:    '46c77ad9-8098-4c9c-a674-00a6a79a303e',
-    dachcsGroup: 'https://dachcs.de/coverage/group/260',
     dachcsTeam:  'DIEDONUTS',
     // Extra nicknames not registered on the FACEIT team (standins etc.)
     extra:       ['dolan-', 'Ibrakadabra', '_reda'],
@@ -45,15 +54,13 @@ const TEAMS = {
     slug:        'nxt',
     label:       'Donuts Nxt',
     faceitId:    '5d25c833-2677-4c52-93e7-ce5699378a9a',
-    dachcsGroup: null,
-    dachcsTeam:  null,
+    dachcsTeam:  'DIEDONUTS NXT',
     extra:       ['chenko'],
   },
   dns: {
     slug:        'dns',
     label:       'Donuts DNS',
     faceitId:    '7de419f6-da07-46d0-819d-687874ffef17',
-    dachcsGroup: null,
     dachcsTeam:  null,
     // Players who may not appear in FACEIT team API (yet)
     extra:       ['LilliFee1987', 'lAL3Xl'],
@@ -65,6 +72,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const r2    = v  => Math.round(parseFloat(v || 0) * 100) / 100;
 
 async function fetchFACEIT(endpoint) {
+  if (!FACEIT_API_KEY) return null;
   try {
     const res = await fetch(`${OPEN_API}${endpoint}`, {
       headers: {
@@ -85,21 +93,44 @@ async function fetchFACEIT(endpoint) {
 }
 
 async function fetchHTML(url) {
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0 DonutsBot/3.0' },
+        signal:  AbortSignal.timeout(15000),
+      });
+      if (!res.ok) return '';
+      return await res.text();
+    } catch (e) {
+      console.warn(`  ⚠ fetchHTML (Versuch ${attempt}): ${e.message} — ${url}`);
+      await sleep(2000);
+    }
+  }
+  return '';
+}
+
+async function postForm(url, params) {
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 DonutsBot/2.0' },
+      method:  'POST',
+      headers: {
+        'User-Agent':   'Mozilla/5.0 DonutsBot/3.0',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams(params).toString(),
+      signal: AbortSignal.timeout(15000),
     });
-    if (!res.ok) return '';
-    return await res.text();
+    if (!res.ok) return null;
+    const text = await res.text();
+    try { return JSON.parse(text); } catch { return null; }
   } catch (e) {
-    console.warn(`  ⚠ fetchHTML error: ${e.message} — ${url}`);
-    return '';
+    console.warn(`  ⚠ postForm error: ${e.message} — ${url}`);
+    return null;
   }
 }
 
 // ── FACEIT: Player by Nickname ────────────────────────────────
 async function getPlayerByNickname(nickname) {
-  // GET /players?nickname={n}&game=cs2
   const data = await fetchFACEIT(`/players?nickname=${encodeURIComponent(nickname)}&game=cs2`);
   if (!data) return null;
   const cs2 = data.games?.cs2 || {};
@@ -136,8 +167,6 @@ async function getPlayerStats(faceitId) {
   if (!data?.lifetime) return null;
   const L = data.lifetime;
 
-  // The official v4 API uses human-readable keys in lifetime stats.
-  // ADR is rarely populated in lifetime data — treat 0 as null.
   const adrRaw = parseFloat(L['Average Damage per Round'] || 0);
   const krRaw  = parseFloat(L['Average K/R Ratio']        || 0);
 
@@ -187,60 +216,84 @@ async function getTeamMapStats(teamFaceitId) {
   return maps;
 }
 
-// ── FACEIT: Match list helper ─────────────────────────────────
-function parseMatchItem(match, teamFaceitId) {
-  const teams    = match.teams || {};
-  const teamKeys = Object.keys(teams);
-  const isTeam1  = teams[teamKeys[0]]?.team_id === teamFaceitId;
-  const myTeam   = teams[isTeam1 ? teamKeys[0] : teamKeys[1]] || {};
-  const oppTeam  = teams[isTeam1 ? teamKeys[1] : teamKeys[0]] || {};
-  const finished = match.status === 'FINISHED';
-  const myScore  = parseInt(match.results?.score?.[myTeam.team_id]  || 0);
-  const oppScore = parseInt(match.results?.score?.[oppTeam.team_id] || 0);
+// ── FACEIT: Team-Matches über Spieler-History ─────────────────
+// Die v4-API hat KEINEN /teams/{id}/history Endpoint. Stattdessen:
+// History der Roster-Spieler holen und Matches behalten, in denen
+// (a) eine Faction die Team-ID trägt, oder
+// (b) mindestens 3 Roster-Spieler in derselben Faction standen.
+async function getTeamMatchesViaPlayers(teamFaceitId, rosterIds, size = 10) {
+  const rosterSet = new Set(rosterIds);
+  const byId      = new Map();
 
-  // Determine competition label (ESEA, FACEIT league, etc.)
-  const competition = match.competition_name || match.championship_name || null;
+  for (const pid of rosterIds.slice(0, 6)) {
+    const data = await fetchFACEIT(`/players/${pid}/history?game=cs2&offset=0&limit=30`);
+    await sleep(250);
+    for (const item of (data?.items || [])) {
+      if (byId.has(item.match_id)) continue;
 
-  return {
-    matchId:     match.match_id,
-    date:        match.finished_at
-      ? new Date(match.finished_at * 1000).toISOString().split('T')[0]
-      : match.scheduled_at
-        ? new Date(match.scheduled_at * 1000).toISOString().split('T')[0]
-        : null,
-    time:        match.scheduled_at
-      ? new Date(match.scheduled_at * 1000).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' })
-      : null,
-    opponent:    oppTeam.name || 'Unknown',
-    competition,
-    result:      !finished ? (match.status === 'CANCELLED' ? 'cancelled' : 'upcoming')
-                 : myScore > oppScore  ? 'win'
-                 : myScore < oppScore  ? 'loss'
-                 : 'draw',
-    score:       finished ? `${myScore}:${oppScore}` : null,
-    status:      match.status,
-    faceitUrl:   `https://www.faceit.com/de/cs2/room/${match.match_id}`,
-  };
-}
+      const factions = Object.entries(item.teams || {});
+      if (factions.length !== 2) continue;
 
-// ── FACEIT: Recent finished matches ──────────────────────────
-async function getTeamMatches(teamFaceitId, size = 10) {
-  const data = await fetchFACEIT(
-    `/teams/${teamFaceitId}/history?game=cs2&offset=0&limit=${size}`
-  );
-  if (!data?.items) return [];
-  return data.items
-    .map(m => parseMatchItem(m, teamFaceitId))
-    .filter(m => m.result !== 'upcoming'); // history = only finished
+      let myKey = null;
+      for (const [key, fac] of factions) {
+        const facPlayers = (fac.players || []).map(p => p.player_id);
+        const overlap    = facPlayers.filter(id => rosterSet.has(id)).length;
+        if (fac.team_id === teamFaceitId || overlap >= 3) { myKey = key; break; }
+      }
+      if (!myKey) continue;
+
+      const oppKey  = factions.find(([k]) => k !== myKey)[0];
+      const myFac   = item.teams[myKey];
+      const oppFac  = item.teams[oppKey];
+      const status  = (item.status || '').toUpperCase();
+      const finished = status === 'FINISHED';
+      const myScore  = parseInt(item.results?.score?.[myKey]  ?? 0);
+      const oppScore = parseInt(item.results?.score?.[oppKey] ?? 0);
+      // Fallback über winner-Feld, falls score fehlt
+      const winner   = item.results?.winner;
+
+      let result;
+      if (!finished)                result = status === 'CANCELLED' ? 'cancelled' : 'upcoming';
+      else if (myScore !== oppScore) result = myScore > oppScore ? 'win' : 'loss';
+      else if (winner)              result = winner === myKey ? 'win' : 'loss';
+      else                          result = 'draw';
+
+      byId.set(item.match_id, {
+        matchId:     item.match_id,
+        _ts:         item.finished_at || item.started_at || 0,
+        date:        item.finished_at
+          ? new Date(item.finished_at * 1000).toISOString().split('T')[0]
+          : item.started_at
+            ? new Date(item.started_at * 1000).toISOString().split('T')[0]
+            : null,
+        time:        item.started_at
+          ? new Date(item.started_at * 1000).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' })
+          : null,
+        opponent:    oppFac?.nickname || oppFac?.name || 'Unknown',
+        teamName:    myFac?.nickname  || myFac?.name  || null,
+        competition: item.competition_name || null,
+        result,
+        score:       finished ? `${myScore}:${oppScore}` : null,
+        status,
+        faceitUrl:   item.faceit_url
+          ? item.faceit_url.replace('{lang}', 'de')
+          : `https://www.faceit.com/de/cs2/room/${item.match_id}`,
+      });
+    }
+  }
+
+  return [...byId.values()]
+    .filter(m => m.result === 'win' || m.result === 'loss' || m.result === 'draw')
+    .sort((a, b) => b._ts - a._ts)
+    .slice(0, size)
+    .map(({ _ts, ...m }) => m);
 }
 
 // ── FACEIT: Upcoming matches via active championships ─────────
-// Official v4 API: get team's tournaments → find active ones → get upcoming matches
 async function getTeamUpcomingMatches(teamFaceitId) {
   const upcoming = [];
 
   try {
-    // 1. Get tournaments the team is in
     const tourData = await fetchFACEIT(`/teams/${teamFaceitId}/tournaments?offset=0&limit=10`);
     const tours = tourData?.items || [];
     if (!tours.length) {
@@ -252,7 +305,6 @@ async function getTeamUpcomingMatches(teamFaceitId) {
       const champId = tour.championship_id || tour.id;
       if (!champId) continue;
 
-      // 2. Get upcoming matches for this championship
       const matchData = await fetchFACEIT(
         `/championships/${champId}/matches?type=upcoming&offset=0&limit=20`
       );
@@ -260,7 +312,6 @@ async function getTeamUpcomingMatches(teamFaceitId) {
       const matches = matchData?.items || [];
 
       for (const m of matches) {
-        // Only include matches where our team is involved
         const teams    = m.teams || {};
         const teamKeys = Object.keys(teams);
         const involved = teamKeys.some(k => teams[k]?.team_id === teamFaceitId);
@@ -288,7 +339,6 @@ async function getTeamUpcomingMatches(teamFaceitId) {
     console.warn(`  ⚠ getTeamUpcomingMatches: ${e.message}`);
   }
 
-  // Deduplicate by matchId
   const seen = new Set();
   return upcoming.filter(m => {
     if (seen.has(m.matchId)) return false;
@@ -297,7 +347,7 @@ async function getTeamUpcomingMatches(teamFaceitId) {
   });
 }
 
-// ── DACHCS: Parse Matches ─────────────────────────────────────
+// ── DACHCS: HTML → Text ───────────────────────────────────────
 function stripHtml(html) {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, '')
@@ -308,47 +358,157 @@ function stripHtml(html) {
     .replace(/&#\d+;/g, ' ').replace(/\s{2,}/g, ' ').trim();
 }
 
-function parseDACHCSMatches(html, teamName) {
+// ── DACHCS: Gruppen automatisch finden ────────────────────────
+// 1. /coverage/ → Saison-IDs (Dropdown, neueste zuerst)
+// 2. AJAX: Saison → Spielklassen → Gruppen
+// 3. Jede Gruppen-Seite laden und schauen, ob unser Team drinsteht
+// Ergebnis wird global gecacht, damit pro Lauf jede Seite nur 1x geladen wird.
+let _dachcsGroupsCache = null;
+
+async function getAllDachcsGroups() {
+  if (_dachcsGroupsCache) return _dachcsGroupsCache;
+  const groups = [];
+
+  const covHtml = await fetchHTML(`${DACHCS_BASE}/coverage/`);
+  const saisons = [...covHtml.matchAll(/<option[^>]*data-saison='(\d+)'[^>]*>([^<]+)<\/option>/g)]
+    .map(m => ({ id: m[1], title: m[2].trim() }));
+
+  if (!saisons.length) {
+    console.warn('  ⚠ DACHCS: Keine Saisons auf /coverage/ gefunden.');
+    _dachcsGroupsCache = [];
+    return [];
+  }
+  console.log(`  DACHCS Saisons gefunden: ${saisons.map(s => s.title).join(', ')}`);
+
+  for (const saison of saisons.slice(0, DACHCS_SEASONS_TO_SCAN)) {
+    const spielklassen = await postForm(
+      `${DACHCS_BASE}/assets/php/ajax/change.saison.php`, { saison: saison.id }
+    ) || [];
+    await sleep(150);
+
+    for (const sk of spielklassen) {
+      const gruppen = await postForm(
+        `${DACHCS_BASE}/assets/php/ajax/change.spielklasse.php`,
+        { saison: saison.id, spielklasse: sk.id }
+      ) || [];
+      await sleep(150);
+
+      for (const g of gruppen) {
+        groups.push({
+          groupId:     g.id,
+          gruppe:      g.title,
+          spielklasse: sk.title,
+          saison:      saison.title,
+          url:         `${DACHCS_BASE}/coverage/group/${g.id}`,
+          html:        null, // lazy
+        });
+      }
+    }
+  }
+
+  console.log(`  DACHCS: ${groups.length} Gruppen in den neuesten ${DACHCS_SEASONS_TO_SCAN} Saisons.`);
+  _dachcsGroupsCache = groups;
+  return groups;
+}
+
+// Exakter Team-Vergleich (verhindert, dass "DIEDONUTS" auch "DIEDONUTS NXT" matcht)
+function isSameTeam(name, teamName) {
+  return (name || '').trim().toUpperCase() === (teamName || '').trim().toUpperCase();
+}
+
+// Alle Gruppen-Seiten EINMAL laden und für alle Teams gleichzeitig prüfen.
+// Ergebnis: Map teamName(UPPER) → [groupMeta, …]
+let _teamGroupsCache = null;
+
+async function discoverAllTeamGroups(teamNames) {
+  if (_teamGroupsCache) return _teamGroupsCache;
+  const result = new Map(teamNames.map(t => [t.toUpperCase(), []]));
+  const groups = await getAllDachcsGroups();
+
+  let scanned = 0;
+  for (const g of groups) {
+    g.html = await fetchHTML(g.url);
+    await sleep(250);
+    scanned++;
+    if (scanned % 25 === 0) console.log(`  … ${scanned}/${groups.length} Gruppen gescannt`);
+    if (!g.html) continue;
+
+    const htmlUpper = g.html.toUpperCase();
+    // Billiger Vorab-Check, erst dann exakte Bestätigung über die Tabelle
+    const candidates = teamNames.filter(t => htmlUpper.includes(t.toUpperCase()));
+    if (!candidates.length) { g.html = ''; continue; } // Speicher freigeben
+
+    const standings = parseDACHCSStandings(g.html);
+    for (const t of candidates) {
+      if (standings.some(s => isSameTeam(s.team, t))) {
+        console.log(`  ✔ ${t} gefunden in: ${g.saison} / Spielklasse ${g.spielklasse} / ${g.gruppe} (group/${g.groupId})`);
+        result.get(t.toUpperCase()).push(g);
+      }
+    }
+  }
+
+  _teamGroupsCache = result;
+  return result;
+}
+
+async function findTeamDachcsGroups(teamName, allTeamNames) {
+  const map   = await discoverAllTeamGroups(allTeamNames);
+  const found = map.get(teamName.toUpperCase()) || [];
+  if (!found.length) console.log(`  DACHCS: ${teamName} in keiner aktuellen Gruppe gefunden.`);
+  return found;
+}
+
+// ── DACHCS: Parse Matches ─────────────────────────────────────
+// Unterstützt beide Formate:
+//   alt: "10.05.2026 10.05. 19:00 TeamA - BO3 Spk 4 Gruppe D - TeamB Details"
+//   neu: "03.07.2026 03.07. 23:00 TeamA - LIVE B Swiss - TeamB Details"
+function parseDACHCSMatches(html, teamName, groupMeta) {
   const upcoming = [];
   const recent   = [];
   if (!html) return { upcoming, recent };
 
   const text      = stripHtml(html);
-  const teamLower = teamName.toLowerCase();
+  const groupUrl  = groupMeta?.url || `${DACHCS_BASE}/coverage/`;
+  const compName  = groupMeta ? `${groupMeta.saison}` : null;
+  const divLabel  = groupMeta ? [groupMeta.spielklasse, groupMeta.gruppe].filter(Boolean).join(' ') : null;
 
-  // Upcoming: DD.MM.YYYY DD.MM. HH:MM TeamA - BO3 Spk N Gruppe X - TeamB Details [Cast: twitchnick]
-  const upRe = /(\d{2}\.\d{2}\.\d{4})\s+\d{2}\.\d{2}\.\s+(\d{2}:\d{2})\s+(.+?)\s+-\s+(BO\d|LIVE)\s+Spk\s+(\d+)\s+Gruppe\s+(\w+)\s+-\s+(.+?)\s+Details/g;
-  let m;
+  // Division-String wörtlich matchen (z.B. "B Swiss" oder "Cycle 3 Gruppe B").
+  // Wichtig, weil Divisionsnamen Zahlen enthalten können und eine generische
+  // Regex sonst Scores/Teamnamen falsch zuordnet.
+  const escRe  = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const divPat = divLabel
+    ? escRe(divLabel).replace(/\s+/g, '\\s+')
+    : '.+?';
 
-  // Extract all Twitch links/caster names from the raw HTML (before stripping)
-  // DACHCS embeds them as: twitch.tv/channelname or in anchor hrefs
+  // Twitch-Caster-Links aus dem rohen HTML ziehen
   const twitchLinksInHtml = [];
   const twitchHrefRe = /twitch\.tv\/([a-zA-Z0-9_]+)/g;
   let twitchM;
   while ((twitchM = twitchHrefRe.exec(html)) !== null) {
     const nick = twitchM[1].toLowerCase();
-    // Exclude generic/org channels that aren't match casts
     if (!['diedonuts_esports', 'videos', 'directory'].includes(nick)) {
       twitchLinksInHtml.push(nick);
     }
   }
 
+  // Upcoming: DATE SHORTDATE TIME Team1 - (BOx|LIVE) <Division...> - Team2 Details
+  const upRe = new RegExp(
+    '(\\d{2}\\.\\d{2}\\.\\d{4})\\s+\\d{2}\\.\\d{2}\\.\\s+(\\d{2}:\\d{2})\\s+(.+?)\\s+-\\s+(BO\\d|LIVE)\\s+' +
+    divPat + '\\s+-\\s+(.+?)\\s+Details', 'g');
+  let m;
   while ((m = upRe.exec(text)) !== null) {
-    const [, date, time, team1, format, spkNum, gruppe, team2] = m;
+    const [, date, time, team1, format, team2] = m;
     const t1 = team1.trim(), t2 = team2.trim();
-    if (!t1.toLowerCase().includes(teamLower) && !t2.toLowerCase().includes(teamLower)) continue;
+    if (!isSameTeam(t1, teamName) && !isSameTeam(t2, teamName)) continue;
 
-    // Try to find a caster for this match:
-    // Look for "Cast" keyword near this match in the text
+    // Caster für dieses Match suchen ("Cast: xyz" in der Nähe)
     const matchEnd = m.index + m[0].length;
     const snippet  = text.slice(matchEnd, matchEnd + 200);
     let caster = null;
-    const castTextRe = /Cast[:\s]+(?:twitch\.tv\/)?([a-zA-Z0-9_]+)/i;
-    const castMatch  = snippet.match(castTextRe);
+    const castMatch = snippet.match(/Cast[:\s]+(?:twitch\.tv\/)?([a-zA-Z0-9_]+)/i);
     if (castMatch) {
       caster = castMatch[1];
     } else if (twitchLinksInHtml.length) {
-      // Fallback: if there's only one unique Twitch link in the whole page, it's likely the caster
       const unique = [...new Set(twitchLinksInHtml)];
       if (unique.length === 1) caster = unique[0];
     }
@@ -360,21 +520,24 @@ function parseDACHCSMatches(html, teamName) {
       team2:     t2,
       format:    format === 'LIVE' ? 'BO3' : format,
       isLive:    format === 'LIVE',
-      division:  `Spk ${spkNum}`,
-      group:     `Gruppe ${gruppe}`,
-      isHome:    t1.toLowerCase().includes(teamLower),
+      division:  divLabel,
+      group:     null,
+      competition: compName,
+      isHome:    isSameTeam(t1, teamName),
       caster:    caster || null,
-      dachcsUrl: 'https://dachcs.de/coverage/group/260',
+      dachcsUrl: groupUrl,
     });
   }
 
-  // Recent: DD.MM.YYYY DD.MM. HH:MM TeamA SCORE BO3 Spk N Gruppe X SCORE TeamB Details
-  const reRe = /(\d{2}\.\d{2}\.\d{4})\s+\d{2}\.\d{2}\.\s+[\d:]+\s+(.+?)\s+(\d+)\s+(BO\d)\s+Spk\s+(\d+)\s+Gruppe\s+(\w+)\s+(\d+)\s+(.+?)\s+Details/g;
+  // Recent: DATE SHORTDATE TIME Team1 SCORE (BOx) <Division...> SCORE Team2 Details
+  const reRe = new RegExp(
+    '(\\d{2}\\.\\d{2}\\.\\d{4})\\s+\\d{2}\\.\\d{2}\\.\\s+[\\d:]+\\s+(.+?)\\s+(\\d+)\\s+(BO\\d)\\s+' +
+    divPat + '\\s+(\\d+)\\s+(.+?)\\s+Details', 'g');
   while ((m = reRe.exec(text)) !== null) {
-    const [, date, team1, score1, format, spkNum, gruppe, score2, team2] = m;
+    const [, date, team1, score1, format, score2, team2] = m;
     const t1 = team1.trim(), t2 = team2.trim();
-    if (!t1.toLowerCase().includes(teamLower) && !t2.toLowerCase().includes(teamLower)) continue;
-    const isTeam1     = t1.toLowerCase().includes(teamLower);
+    if (!isSameTeam(t1, teamName) && !isSameTeam(t2, teamName)) continue;
+    const isTeam1     = isSameTeam(t1, teamName);
     const donutsScore = parseInt(isTeam1 ? score1 : score2);
     const oppScore    = parseInt(isTeam1 ? score2 : score1);
     recent.push({
@@ -383,13 +546,14 @@ function parseDACHCSMatches(html, teamName) {
       result:   donutsScore > oppScore ? 'win' : donutsScore < oppScore ? 'loss' : 'draw',
       score:    `${donutsScore}:${oppScore}`,
       format,
-      division: `Spk ${spkNum}`,
-      group:    `Gruppe ${gruppe}`,
-      dachcsUrl: 'https://dachcs.de/coverage/group/260',
+      division: divLabel,
+      group:    null,
+      competition: compName,
+      dachcsUrl: groupUrl,
     });
   }
 
-  console.log(`  DACHCS: ${upcoming.length} upcoming, ${recent.length} recent`);
+  console.log(`  DACHCS [${groupMeta?.saison || '?'}]: ${upcoming.length} upcoming, ${recent.length} recent`);
   return { upcoming, recent };
 }
 
@@ -398,7 +562,7 @@ function parseDACHCSStandings(html) {
   const standings = [];
   if (!html) return standings;
   const text  = stripHtml(html);
-  const block = text.match(/Points(.+?)N[äa]chsten/s)?.[1] || text;
+  const block = text.match(/Points(.+?)(N[äa]chsten|Letzten)/s)?.[1] || text;
   const re    = /(\d+)\.\s+(.+?)\s+(\d+)\s+(\d+)\s+(\d+)\s+(-?\d+)\s+(\d+)/g;
   let m;
   while ((m = re.exec(block)) !== null) {
@@ -418,9 +582,8 @@ function parseDACHCSStandings(html) {
 // ── Fetch all players for a team (registered + extras) ────────
 async function fetchTeamPlayers(cfg) {
   const players = [];
-  const seen    = new Set(); // deduplicate by faceitId
+  const seen    = new Set();
 
-  // 1. Team members registered on FACEIT team
   console.log('  Fetching FACEIT team members…');
   const members = await getTeamMembers(cfg.faceitId);
   await sleep(300);
@@ -440,7 +603,6 @@ async function fetchTeamPlayers(cfg) {
     players.push({ ...profile, stats: stats || {} });
   }
 
-  // 2. Extra players (standins / not on FACEIT team yet)
   if (cfg.extra?.length) {
     console.log(`  Fetching ${cfg.extra.length} extra player(s)…`);
     for (const nick of cfg.extra) {
@@ -463,7 +625,11 @@ async function fetchTeamPlayers(cfg) {
 
 // ── Main ─────────────────────────────────────────────────────
 async function main() {
-  console.log('🍩 DieDonuts Scraper v2 starting…\n');
+  console.log('🍩 DieDonuts Scraper v3 starting…\n');
+
+  // Alte Daten laden, damit FACEIT-Daten bei einem Lauf ohne API-Key erhalten bleiben
+  let previous = null;
+  try { previous = JSON.parse(readFileSync(OUT_FILE, 'utf8')); } catch { /* first run */ }
 
   const output = {
     lastUpdated: new Date().toISOString(),
@@ -473,45 +639,67 @@ async function main() {
 
   for (const [key, cfg] of Object.entries(TEAMS)) {
     console.log(`\n── Team: ${cfg.label} ──────────────────────`);
+    const prevTeam = previous?.teams?.[key] || {};
 
-    // Players
-    const players = await fetchTeamPlayers(cfg);
+    // Players (FACEIT)
+    let players = [];
+    let mapStats = {};
+    let faceitMatches = [];
+    let faceitUpcoming = [];
 
-    // Map stats
-    console.log('  Fetching map stats…');
-    const mapStats = await getTeamMapStats(cfg.faceitId);
-    await sleep(300);
+    if (FACEIT_API_KEY) {
+      players = await fetchTeamPlayers(cfg);
 
-    // Match history (FACEIT — finished)
-    console.log('  Fetching match history…');
-    const faceitMatches = await getTeamMatches(cfg.faceitId, 10);
-    await sleep(300);
+      console.log('  Fetching map stats…');
+      mapStats = await getTeamMapStats(cfg.faceitId);
+      await sleep(300);
 
-    // Upcoming FACEIT/ESEA matches (scheduled)
-    console.log('  Fetching upcoming FACEIT matches…');
-    const faceitUpcoming = await getTeamUpcomingMatches(cfg.faceitId);
-    if (faceitUpcoming.length) {
-      console.log(`  → ${faceitUpcoming.length} upcoming FACEIT match(es) found`);
-      faceitUpcoming.forEach(m => console.log(`     ${m.date} ${m.time || ''} vs ${m.opponent} [${m.competition || 'FACEIT'}]`));
+      console.log('  Fetching match history (via player histories)…');
+      const rosterIds = players.map(p => p.faceitId);
+      faceitMatches = await getTeamMatchesViaPlayers(cfg.faceitId, rosterIds, 10);
+      console.log(`  → ${faceitMatches.length} finished team match(es) found`);
+
+      console.log('  Fetching upcoming FACEIT matches…');
+      faceitUpcoming = await getTeamUpcomingMatches(cfg.faceitId);
+      if (faceitUpcoming.length) {
+        console.log(`  → ${faceitUpcoming.length} upcoming FACEIT match(es) found`);
+        faceitUpcoming.forEach(m => console.log(`     ${m.date} ${m.time || ''} vs ${m.opponent} [${m.competition || 'FACEIT'}]`));
+      }
+      await sleep(300);
+    } else {
+      // Kein Key: alte FACEIT-Daten behalten
+      players        = prevTeam.players        || [];
+      mapStats       = prevTeam.mapStats       || {};
+      faceitMatches  = prevTeam.faceitMatches  || [];
+      faceitUpcoming = prevTeam.faceitUpcoming || [];
+      console.log('  (FACEIT übersprungen — alte Daten übernommen)');
     }
-    await sleep(300);
 
-    // DACHCS
-    let dachcsUpcoming = [], dachcsRecent = [], standings = [];
-    if (cfg.dachcsGroup && cfg.dachcsTeam) {
+    // DACHCS — Gruppe(n) automatisch finden
+    let dachcsUpcoming = [], dachcsRecent = [], standings = [], dachcsUrl = null;
+    if (cfg.dachcsTeam) {
       console.log('  Scraping DACHCS…');
-      const html = await fetchHTML(cfg.dachcsGroup);
-      const parsed   = parseDACHCSMatches(html, cfg.dachcsTeam);
-      dachcsUpcoming = parsed.upcoming;
-      dachcsRecent   = parsed.recent;
-      standings      = parseDACHCSStandings(html);
-      await sleep(500);
+      const allDachcsTeams = Object.values(TEAMS).map(t => t.dachcsTeam).filter(Boolean);
+      const groups = await findTeamDachcsGroups(cfg.dachcsTeam, allDachcsTeams);
+      for (const g of groups) {
+        const parsed = parseDACHCSMatches(g.html, cfg.dachcsTeam, g);
+        dachcsUpcoming.push(...parsed.upcoming);
+        dachcsRecent.push(...parsed.recent);
+        if (!standings.length) {
+          standings = parseDACHCSStandings(g.html);
+          dachcsUrl = g.url;
+        }
+      }
+      // Sortieren: upcoming aufsteigend, recent absteigend
+      dachcsUpcoming.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+      dachcsRecent.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     }
 
     output.teams[key] = {
       slug: cfg.slug,
       label: cfg.label,
       faceitId: cfg.faceitId,
+      dachcsUrl,
       players,
       mapStats,
       faceitMatches,
@@ -521,13 +709,12 @@ async function main() {
       standings,
     };
 
-    // Collect for global leaderboard
     for (const p of players) {
       if (p.elo > 0) output.allPlayers.push({ ...p, team: cfg.label, teamSlug: key });
     }
   }
 
-  // Sort + deduplicate leaderboard (highest ELO wins when player appears in multiple teams)
+  // Sort + deduplicate leaderboard
   output.allPlayers.sort((a, b) => b.elo - a.elo);
   const seen = new Set();
   output.allPlayers = output.allPlayers.filter(p => {
@@ -542,7 +729,6 @@ async function main() {
   console.log(`   Teams:   ${Object.keys(output.teams).length}`);
   console.log(`   Players: ${output.allPlayers.length}`);
   console.log(`   Updated: ${output.lastUpdated}`);
-  console.log(`   File:    ${OUT_FILE}`);
 }
 
 main().catch(err => {
