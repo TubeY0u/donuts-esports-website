@@ -261,6 +261,8 @@ async function getTeamMatchesViaPlayers(teamFaceitId, rosterIds, size = 10) {
       byId.set(item.match_id, {
         matchId:     item.match_id,
         _ts:         item.finished_at || item.started_at || 0,
+        _myKey:      myKey,
+        _oppKey:     oppKey,
         date:        item.finished_at
           ? new Date(item.finished_at * 1000).toISOString().split('T')[0]
           : item.started_at
@@ -282,11 +284,43 @@ async function getTeamMatchesViaPlayers(teamFaceitId, rosterIds, size = 10) {
     }
   }
 
-  return [...byId.values()]
+  const matches = [...byId.values()]
     .filter(m => m.result === 'win' || m.result === 'loss' || m.result === 'draw')
     .sort((a, b) => b._ts - a._ts)
-    .slice(0, size)
-    .map(({ _ts, ...m }) => m);
+    .slice(0, size);
+
+  // Liga-/Turnier-Matches (BO3 etc.): Die Spieler-History liefert dort nur
+  // Runden einer Map. Über /matches/{id} holen wir best_of + echten Map-Score.
+  for (const m of matches) {
+    if (/queue|matchmaking/i.test(m.competition || '')) continue;
+    const det = await fetchFACEIT(`/matches/${m.matchId}`);
+    await sleep(250);
+    if (!det) continue;
+
+    const bo   = parseInt(det.best_of || 0) || null;
+    const sc   = det.results?.score || {};
+    const maps = Array.isArray(det.detailed_results) ? det.detailed_results : [];
+    const myS  = sc[m._myKey], opS = sc[m._oppKey];
+
+    if (bo && bo > 1 && myS != null && opS != null) {
+      // Map-Score statt Runden einer einzelnen Map
+      m.score  = `${myS}:${opS}`;
+      m.result = parseInt(myS) > parseInt(opS) ? 'win'
+               : parseInt(myS) < parseInt(opS) ? 'loss' : 'draw';
+      m.format = `BO${bo}`;
+      if (maps.length > 1) {
+        m.mapScores = maps.map(r =>
+          `${r.factions?.[m._myKey]?.score ?? '?'}:${r.factions?.[m._oppKey]?.score ?? '?'}`);
+      }
+    } else if (bo === 1 && maps.length === 1) {
+      const f = maps[0].factions || {};
+      const a = f[m._myKey]?.score, b = f[m._oppKey]?.score;
+      if (a != null && b != null) m.score = `${a}:${b}`;
+      m.format = 'BO1';
+    }
+  }
+
+  return matches.map(({ _ts, _myKey, _oppKey, ...m }) => m);
 }
 
 // ── FACEIT: Upcoming matches via active championships ─────────
@@ -481,15 +515,30 @@ function parseDACHCSMatches(html, teamName, groupMeta) {
     : '.+?';
 
   // Twitch-Caster-Links aus dem rohen HTML ziehen
-  const twitchLinksInHtml = [];
-  const twitchHrefRe = /twitch\.tv\/([a-zA-Z0-9_]+)/g;
-  let twitchM;
-  while ((twitchM = twitchHrefRe.exec(html)) !== null) {
-    const nick = twitchM[1].toLowerCase();
-    if (!['diedonuts_esports', 'videos', 'directory'].includes(nick)) {
-      twitchLinksInHtml.push(nick);
+  // Cast-Links zeilenweise aus dem rohen HTML: Jede Match-Zeile beginnt mit
+  // dem vollen Datum (DD.MM.YYYY); der Twitch-Link des Casts steht in der Zeile.
+  const EXCLUDE_TWITCH = ['diedonuts_esports', 'videos', 'directory'];
+  const rowCasters = [];
+  {
+    const dre  = /\d{2}\.\d{2}\.\d{4}/g;
+    const idxs = [];
+    let dm;
+    while ((dm = dre.exec(html)) !== null) idxs.push(dm.index);
+    for (let i = 0; i < idxs.length; i++) {
+      const end = i + 1 < idxs.length ? idxs[i + 1] : Math.min(idxs[i] + 5000, html.length);
+      const seg = html.slice(idxs[i], end);
+      const tw  = seg.match(/twitch\.tv\/([a-zA-Z0-9_]+)/);
+      rowCasters.push({
+        date:   html.substr(idxs[i], 10),
+        caster: tw && !EXCLUDE_TWITCH.includes(tw[1].toLowerCase()) ? tw[1] : null,
+        seg,
+      });
     }
   }
+  const findCaster = (dateDE, teamStr) => {
+    const row = rowCasters.find(r => r.date === dateDE && r.seg.includes(teamStr));
+    return row ? row.caster : null;
+  };
 
   // Upcoming: DATE SHORTDATE TIME Team1 - (BOx|LIVE) <Division...> - Team2 Details
   const upRe = new RegExp(
@@ -501,17 +550,8 @@ function parseDACHCSMatches(html, teamName, groupMeta) {
     const t1 = team1.trim(), t2 = team2.trim();
     if (!isSameTeam(t1, teamName) && !isSameTeam(t2, teamName)) continue;
 
-    // Caster für dieses Match suchen ("Cast: xyz" in der Nähe)
-    const matchEnd = m.index + m[0].length;
-    const snippet  = text.slice(matchEnd, matchEnd + 200);
-    let caster = null;
-    const castMatch = snippet.match(/Cast[:\s]+(?:twitch\.tv\/)?([a-zA-Z0-9_]+)/i);
-    if (castMatch) {
-      caster = castMatch[1];
-    } else if (twitchLinksInHtml.length) {
-      const unique = [...new Set(twitchLinksInHtml)];
-      if (unique.length === 1) caster = unique[0];
-    }
+    // Caster: Twitch-Link aus der zugehörigen Match-Zeile
+    const caster = findCaster(date, t2) || findCaster(date, t1);
 
     upcoming.push({
       date:      date.split('.').reverse().join('-'),
