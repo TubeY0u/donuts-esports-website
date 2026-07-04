@@ -10,7 +10,9 @@ export const TEAMS = {
   main: {
     faceitId:    '46c77ad9-8098-4c9c-a674-00a6a79a303e',
     label:       'Donuts',
-    dachcsGroup: 'https://dachcs.de/coverage/group/260',
+    // Gruppe wird automatisch vom Scraper ermittelt (stats.json → dachcsUrl);
+    // dieser Wert ist nur ein Fallback, falls stats.json fehlt.
+    dachcsGroup: 'https://dachcs.de/coverage/',
     dachcsName:  'DIEDONUTS',
   },
   nxt: {
@@ -262,13 +264,18 @@ export function parseDACHCSHtml(rawHtml, teamName) {
   console.debug('[stats] DACHCS text snippet:', text.slice(0, 300));
 
   // ── Upcoming matches ────────────────────────────────────────
-  // Pattern in plain text:
-  // "10.05.2026 10.05. 19:00 TeamA - BO3 Spk 4 Gruppe D - TeamB Details"
-  // Date appears twice: full (DD.MM.YYYY) then short (DD.MM.) before the time
-  const upRe = /(\d{2}\.\d{2}\.\d{4})\s+\d{2}\.\d{2}\.\s+(\d{2}:\d{2})\s+(.+?)\s+-\s+(BO\d|LIVE)\s+(Spk\s*\d+)\s+(Gruppe\s*\w+)\s+-\s+(.+?)\s+Details/g;
+  // Unterstützt beide DACHCS-Formate:
+  //   alt: "10.05.2026 10.05. 19:00 TeamA - BO3 Spk 4 Gruppe D - TeamB Details"
+  //   neu: "03.07.2026 03.07. 23:00 TeamA - LIVE B Swiss - TeamB Details"
+  const upRe = /(\d{2}\.\d{2}\.\d{4})\s+\d{2}\.\d{2}\.\s+(\d{2}:\d{2})\s+(.+?)\s+-\s+(BO\d|LIVE)\s+(.+?)\s+-\s+(.+?)\s+Details/g;
   let m;
   while ((m = upRe.exec(text)) !== null) {
-    const [, rawDate, time, t1, fmt, spk, grp, t2] = m;
+    const [, rawDate, time, t1, fmt, div, t2] = m;
+    // Nur Matches unseres Teams (exakter Vergleich, damit "DIEDONUTS"
+    // nicht auch "DIEDONUTS NXT" matcht)
+    const isT1 = t1.trim().toUpperCase() === teamName.toUpperCase();
+    const isT2 = t2.trim().toUpperCase() === teamName.toUpperCase();
+    if (!isT1 && !isT2) continue;
     const date = rawDate.split('.').reverse().join('-');
     upcoming.push({
       date,
@@ -277,18 +284,20 @@ export function parseDACHCSHtml(rawHtml, teamName) {
       team2:     t2.trim(),
       format:    fmt === 'LIVE' ? 'BO3' : fmt,
       isLive:    fmt === 'LIVE',
-      division:  spk.trim(),
-      group:     grp.trim(),
+      division:  div.trim(),
+      group:     '',
       isDonuts1: t1.trim().toUpperCase() === teamName.toUpperCase(),
     });
   }
   console.debug('[stats] DACHCS upcoming found:', upcoming.length);
 
   // ── Recent matches ──────────────────────────────────────────
-  // "10.05.2026 10.05. HH:MM TeamA score1 BO3 Spk X Gruppe Y score2 TeamB Details"
-  const reRe = /(\d{2}\.\d{2}\.\d{4})\s+\d{2}\.\d{2}\.\s+[\d:]+\s+(.+?)\s+(\d+)\s+(BO\d)\s+(Spk\s*\d+)\s+(Gruppe\s*\w+)\s+(\d+)\s+(.+?)\s+Details/g;
+  // "10.05.2026 10.05. HH:MM TeamA score1 BO3 <Division> score2 TeamB Details"
+  // Division greedy, aber nie über "Details" hinaus — Divisionsnamen können
+  // Zahlen enthalten ("Cycle 3"), sonst werden Score/Teamname falsch zugeordnet.
+  const reRe = /(\d{2}\.\d{2}\.\d{4})\s+\d{2}\.\d{2}\.\s+[\d:]+\s+(.+?)\s+(\d+)\s+(BO\d)\s+((?:(?!Details).)+)\s+(\d+)\s+(.+?)\s+Details/g;
   while ((m = reRe.exec(text)) !== null) {
-    const [, rawDate, t1, s1, fmt, spk, grp, s2, t2] = m;
+    const [, rawDate, t1, s1, fmt, div, s2, t2] = m;
     const isTeam1 = t1.trim().toUpperCase() === teamName.toUpperCase();
     const isTeam2 = t2.trim().toUpperCase() === teamName.toUpperCase();
     if (!isTeam1 && !isTeam2) continue;
@@ -300,8 +309,8 @@ export function parseDACHCSHtml(rawHtml, teamName) {
       result:   ds > os ? 'win' : 'loss',
       score:    `${ds}:${os}`,
       format:   fmt,
-      division: spk.trim(),
-      group:    grp.trim(),
+      division: div.trim(),
+      group:    '',
     });
   }
   console.debug('[stats] DACHCS recent found:', recent.length);
@@ -346,6 +355,7 @@ function jsonToTeamData(teamKey, cfg, json) {
   if (!t || !t.players?.length) return null;
   return {
     ...cfg, teamKey,
+    dachcsUrl: t.dachcsUrl || null, // vom Scraper automatisch ermittelte Gruppe
     players:  t.players,
     mapStats: t.mapStats  || {},
     matches:  t.faceitMatches || [],
@@ -368,10 +378,18 @@ export async function loadTeamData(teamKey) {
   const fromJson = jsonToTeamData(teamKey, cfg, json);
   if (fromJson) {
     console.debug('[stats] using stats.json for', teamKey);
-    // Fire live DACHCS fetch in background to get fresh upcoming matches
-    if (cfg.dachcsGroup && cfg.dachcsName) {
-      fetchDACHCSMatches(cfg.dachcsGroup, cfg.dachcsName)
-        .then(dachcs => { fromJson.dachcs = dachcs; })
+    // Fire live DACHCS fetch in background to get fresh upcoming matches.
+    // Gruppe kommt bevorzugt aus stats.json (vom Scraper automatisch ermittelt).
+    const groupUrl = fromJson.dachcsUrl || cfg.dachcsGroup;
+    if (groupUrl && groupUrl.includes('/group/') && cfg.dachcsName) {
+      fetchDACHCSMatches(groupUrl, cfg.dachcsName)
+        .then(dachcs => {
+          // Nur übernehmen, wenn wirklich Daten geparst wurden —
+          // sonst würden gültige Scraper-Daten überschrieben.
+          if (dachcs && (dachcs.upcoming.length || dachcs.recent.length || dachcs.standings.length)) {
+            fromJson.dachcs = dachcs;
+          }
+        })
         .catch(() => {});
     }
     return fromJson;
