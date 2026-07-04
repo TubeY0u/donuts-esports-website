@@ -251,24 +251,61 @@
   }
 
   // =========================================================
-  // NÄCHSTE MATCHES — hier eintragen & Netlify neu hochladen
+  // NÄCHSTE MATCHES
+  // Werden AUTOMATISCH aus /data/stats.json geladen (DACHCS +
+  // FACEIT, täglich vom Scraper aktualisiert).
+  // Die Liste unten ist nur für MANUELLE Zusatz-Einträge
+  // (z.B. Showmatches, die nirgends gelistet sind):
+  //   { roster: 'Main Roster', opponent: 'Gegner', league: 'Turnier', date: '2026-05-10T19:00', faceitUrl: '', castUrl: '' },
   // =========================================================
-  //
-  //  So geht's:
-  //  1. Zeile kopieren, // am Anfang entfernen
-  //  2. Werte anpassen:
-  //     roster:    'Main Roster'  oder  'Nxt Roster'
-  //     opponent:  Gegner genau wie auf FACEIT
-  //     league:    Turniername
-  //     date:      'JJJJ-MM-TTTHH:MM'  (z.B. '2026-05-10T19:00')
-  //     faceitUrl: Link zum FACEIT-Room (oder '' leer lassen)
-  //  3. Gespielte Matches einfach löschen
-  //
   const MATCHES = [
-    { roster: 'Main Roster', opponent: 'Ancoris Esports Tide', league: 'DACH CS Masters S5 · SPK 4', date: '2026-05-03T19:00', faceitUrl: 'https://www.faceit.com/de/cs2/room/1-0c873438-d8f6-4a71-9bea-dec33fb4fd59', castUrl: 'https://www.twitch.tv/justkristinthings' },
-    // { roster: 'Main Roster', opponent: 'Gegner', league: 'DACH CS Masters S5 · SPK 4', date: '2026-05-10T19:00', faceitUrl: '', castUrl: '' },
   ];
   // =========================================================
+
+  const ROSTER_LABELS = { main: 'Main Roster', nxt: 'Nxt Roster', dns: 'DNS Roster' };
+  let _autoMatchesCache = null;
+
+  async function fetchAutoMatches() {
+    if (_autoMatchesCache) return _autoMatchesCache;
+    const out = [];
+    try {
+      const res = await fetch('/data/stats.json');
+      if (res.ok) {
+        const data = await res.json();
+        for (const [slug, t] of Object.entries(data.teams || {})) {
+          (t.dachcsUpcoming || []).forEach(m => {
+            if (!m.date) return;
+            const opp = m.isHome === false ? m.team1 : m.team2;
+            out.push({
+              roster:    ROSTER_LABELS[slug] || t.label || slug,
+              teamName:  t.label,
+              opponent:  opp || 'TBD',
+              league:    m.competition || m.division || 'DACHCS',
+              date:      `${m.date}T${m.time || '20:00'}`,
+              faceitUrl: m.dachcsUrl || '',
+              castUrl:   m.caster ? `https://www.twitch.tv/${m.caster}` : '',
+            });
+          });
+          (t.faceitUpcoming || []).forEach(m => {
+            if (!m.date) return;
+            out.push({
+              roster:    ROSTER_LABELS[slug] || t.label || slug,
+              teamName:  t.label,
+              opponent:  m.opponent || 'TBD',
+              league:    m.competition || 'FACEIT',
+              date:      `${m.date}T${m.time || '20:00'}`,
+              faceitUrl: m.faceitUrl || '',
+              castUrl:   '',
+            });
+          });
+        }
+      }
+    } catch (e) {
+      console.info('[Donuts Matches] stats.json nicht verfügbar:', e);
+    }
+    _autoMatchesCache = out;
+    return out;
+  }
 
   function renderNmCards(matches) {
     const container = document.getElementById('nmCards');
@@ -319,11 +356,22 @@
     }).join('');
   }
 
-  function loadNextMatches() {
+  async function loadNextMatches() {
     const container = document.getElementById('nmCards');
     if (!container) return;
-    const now = new Date();
-    const upcoming = MATCHES
+    const now  = new Date();
+    const auto = await fetchAutoMatches();
+
+    // Manuelle + automatische Einträge kombinieren, Duplikate raus
+    const seen = new Set();
+    const all  = [...MATCHES, ...auto].filter(m => {
+      const key = `${(m.date || '').slice(0, 10)}|${(m.opponent || '').toLowerCase()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    const upcoming = all
       .filter(m => new Date(m.date) > new Date(now - 2 * 3600 * 1000))
       .sort((a, b) => new Date(a.date) - new Date(b.date));
     renderNmCards(upcoming);
