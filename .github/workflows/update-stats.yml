@@ -1,0 +1,46 @@
+# ============================================================
+#  DieDonuts Esports — Auto Stats Updater
+#  Runs scraper.js twice daily → commits stats.json
+#  WICHTIG: Diese Datei muss im GitHub-Repo liegen
+#  (.github/workflows/update-stats.yml), sonst läuft nichts!
+#  Benötigtes GitHub Secret: FACEIT_API_KEY
+# ============================================================
+name: Update Stats
+
+on:
+  schedule:
+    # Täglich 06:00 + 18:00 UTC (08:00/20:00 CEST)
+    - cron: '0 6,18 * * *'
+  # Manueller Start über den GitHub-Actions-Tab
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run scraper
+        env:
+          FACEIT_API_KEY: ${{ secrets.FACEIT_API_KEY }}
+        run: node scraper.js
+
+      - name: Commit updated stats.json
+        run: |
+          git config user.name  "Donuts Bot"
+          git config user.email "bot@diedonuts.de"
+          git add data/stats.json
+          # Only commit if the file actually changed
+          git diff --cached --quiet && echo "No changes, skipping commit." || \
+            git commit -m "chore: update stats.json [skip ci]"
+          git pull --rebase origin main || true
+          git push
