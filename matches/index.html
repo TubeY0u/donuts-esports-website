@@ -418,8 +418,11 @@ function renderUpcomingCard(m, teamSlug) {
   const dateStr = fmtDate(m.date);
   const us   = m.isHome !== false ? (m.team1 || 'DIEDONUTS') : (m.team2 || 'DIEDONUTS');
   const them = m.isHome !== false ? (m.team2 || m.opponent || '?') : (m.team1 || m.opponent || '?');
+  // LIVE-Badge verlinkt direkt auf den eingetragenen Cast-Stream
   const vsHtml = m.isLive
-    ? `<div class="nm-vs nm-vs--live"><span class="live-dot"></span>LIVE</div>`
+    ? (m.caster
+        ? `<a class="nm-vs nm-vs--live" href="https://www.twitch.tv/${encodeURIComponent(m.caster)}" target="_blank" rel="noopener" style="text-decoration:none;" title="Zum Stream von ${m.caster}"><span class="live-dot"></span>LIVE</a>`
+        : `<div class="nm-vs nm-vs--live"><span class="live-dot"></span>LIVE</div>`)
     : `<div class="nm-vs">VS</div>`;
   const dachcsUrl  = m.faceitUrl || m.dachcsUrl || meta.dachcsUrl || 'https://dachcs.de';
   const linkLabel  = m._src === 'faceit' ? 'FACEIT' : 'DACHCS';
@@ -459,7 +462,8 @@ function renderResultRow(m, teamSlug, source = 'dachcs') {
   const meta     = TEAM_META[teamSlug] || {};
   const badgeCls = m.result === 'win' ? 'win' : m.result === 'loss' ? 'loss' : 'draw';
   const badgeTxt = m.result === 'win' ? 'WIN' : m.result === 'loss' ? 'LOSS' : 'DRAW';
-  const league   = [m.division, m.group, m.format].filter(Boolean).join(' · ');
+  let league     = m.competition || [m.division, m.group, m.format].filter(Boolean).join(' · ');
+  if (m.mapScores && m.mapScores.length) league += ` · Maps ${m.mapScores.join(' / ')}`;
   const linkUrl  = m.faceitUrl || m.dachcsUrl || (TEAM_META[teamSlug]?.dachcsUrl) || '#';
   const linkTxt  = m.faceitUrl ? 'FACEIT →' : 'DACHCS →';
   return `<div class="result-row">
@@ -550,6 +554,18 @@ function renderAll() {
       standingsSections += renderStandings(t.standings, slug);
     }
   }
+
+  // Duplikate entfernen: Liga-Matches tauchen bei DACHCS UND FACEIT auf.
+  // DACHCS-Eintrag gewinnt (offizielles Liga-Ergebnis), FACEIT-Zwilling fliegt raus.
+  const normName = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const nearDate = (a, b) => Math.abs(new Date(a) - new Date(b)) <= 2 * 86400000;
+  const dachcsRecentKeys = allRecent
+    .filter(m => m._src === 'dachcs')
+    .map(m => ({ o: normName(m.opponent), d: m.date, s: m._slug }));
+  allRecent = allRecent.filter(m =>
+    m._src !== 'faceit' ||
+    !dachcsRecentKeys.some(k => k.s === m._slug && k.o === normName(m.opponent) && nearDate(k.d, m.date))
+  );
 
   // Sort
   allUpcoming.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
