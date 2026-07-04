@@ -1787,13 +1787,15 @@ section + section { border-top: 1px solid var(--border-soft); }
   flex-direction: column;
   gap: 5px;
   flex: 1;
+  min-width: 0; /* erlaubt Umbruch statt Überlauf im Flex-Layout */
 }
 .nm-team-name {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 18px;
   letter-spacing: 1px;
-  line-height: 1;
+  line-height: 1.15;
   color: var(--fg);
+  overflow-wrap: break-word; /* lange Teamnamen umbrechen statt abschneiden */
 }
 .nm-team--us .nm-team-name { color: var(--accent); }
 .nm-team--opp { text-align: right; }
