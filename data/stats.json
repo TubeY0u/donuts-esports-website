@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-10T09:30:59.469Z",
+  "lastUpdated": "2026-07-10T19:24:01.859Z",
   "teams": {
     "main": {
       "slug": "main",
@@ -23,44 +23,6 @@
             "kr": null,
             "adr": null,
             "hs": 43,
-            "avgKills": 0
-          }
-        },
-        {
-          "faceitId": "024be859-e215-42dd-a7ed-18f7bbf91b3c",
-          "nickname": "hALFY",
-          "avatar": "https://distribution.faceit-cdn.net/images/b5053aee-a67a-4210-92b8-5162979b139f.jpg",
-          "country": "de",
-          "elo": 2499,
-          "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/hALFY",
-          "stats": {
-            "matches": 3771,
-            "wins": 1913,
-            "winRate": 51,
-            "kd": 1.4,
-            "kr": null,
-            "adr": null,
-            "hs": 42,
-            "avgKills": 0
-          }
-        },
-        {
-          "faceitId": "72791ffd-550e-4ea9-8912-008cc0bb475d",
-          "nickname": "_reda",
-          "avatar": "https://distribution.faceit-cdn.net/images/2c36cd3d-69a1-4b1c-a374-5f835d1899d9.jpg",
-          "country": "de",
-          "elo": 1836,
-          "level": 9,
-          "faceitUrl": "https://www.faceit.com/de/players/_reda",
-          "stats": {
-            "matches": 2050,
-            "wins": 1029,
-            "winRate": 50,
-            "kd": 0.94,
-            "kr": null,
-            "adr": null,
-            "hs": 51,
             "avgKills": 0
           }
         },
@@ -122,25 +84,6 @@
           }
         },
         {
-          "faceitId": "e0f0313c-c2aa-4e8a-9874-8eb2be3d628d",
-          "nickname": "chrizzW",
-          "avatar": "https://distribution.faceit-cdn.net/images/df3a7fd1-210f-4503-bac5-aff0ab58cc1c.jpg",
-          "country": "de",
-          "elo": 2121,
-          "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/chrizzW",
-          "stats": {
-            "matches": 4429,
-            "wins": 2192,
-            "winRate": 49,
-            "kd": 1.16,
-            "kr": null,
-            "adr": null,
-            "hs": 46,
-            "avgKills": 0
-          }
-        },
-        {
           "faceitId": "824221b9-8639-4e24-a87b-f5b17f66fdcb",
           "nickname": "svN--",
           "avatar": "https://distribution.faceit-cdn.net/images/3259f102-7346-40fb-8223-1a6a3f9dc4d8.jpg",
@@ -158,14 +101,89 @@
             "hs": 51,
             "avgKills": 0
           }
+        },
+        {
+          "faceitId": "024be859-e215-42dd-a7ed-18f7bbf91b3c",
+          "nickname": "hALFY",
+          "avatar": "https://distribution.faceit-cdn.net/images/b5053aee-a67a-4210-92b8-5162979b139f.jpg",
+          "country": "de",
+          "elo": 2499,
+          "level": 10,
+          "faceitUrl": "https://www.faceit.com/de/players/hALFY",
+          "stats": {
+            "matches": 3771,
+            "wins": 1913,
+            "winRate": 51,
+            "kd": 1.4,
+            "kr": null,
+            "adr": null,
+            "hs": 42,
+            "avgKills": 0
+          }
+        },
+        {
+          "faceitId": "72791ffd-550e-4ea9-8912-008cc0bb475d",
+          "nickname": "_reda",
+          "avatar": "https://distribution.faceit-cdn.net/images/2c36cd3d-69a1-4b1c-a374-5f835d1899d9.jpg",
+          "country": "de",
+          "elo": 1836,
+          "level": 9,
+          "faceitUrl": "https://www.faceit.com/de/players/_reda",
+          "stats": {
+            "matches": 2050,
+            "wins": 1029,
+            "winRate": 50,
+            "kd": 0.94,
+            "kr": null,
+            "adr": null,
+            "hs": 51,
+            "avgKills": 0
+          }
+        },
+        {
+          "faceitId": "e0f0313c-c2aa-4e8a-9874-8eb2be3d628d",
+          "nickname": "chrizzW",
+          "avatar": "https://distribution.faceit-cdn.net/images/df3a7fd1-210f-4503-bac5-aff0ab58cc1c.jpg",
+          "country": "de",
+          "elo": 2121,
+          "level": 10,
+          "faceitUrl": "https://www.faceit.com/de/players/chrizzW",
+          "stats": {
+            "matches": 4429,
+            "wins": 2192,
+            "winRate": 49,
+            "kd": 1.16,
+            "kr": null,
+            "adr": null,
+            "hs": 46,
+            "avgKills": 0
+          }
         }
       ],
       "mapStats": {
+        "inferno": {
+          "label": "Inferno",
+          "played": 1,
+          "wins": 0,
+          "winRate": 0
+        },
+        "ancient": {
+          "label": "Ancient",
+          "played": 73,
+          "wins": 22,
+          "winRate": 30
+        },
         "mirage": {
           "label": "Mirage",
           "played": 6,
           "wins": 1,
           "winRate": 17
+        },
+        "cache": {
+          "label": "Cache",
+          "played": 3,
+          "wins": 2,
+          "winRate": 67
         },
         "mills": {
           "label": "Mills",
@@ -179,17 +197,11 @@
           "wins": 1,
           "winRate": 20
         },
-        "anubis": {
-          "label": "Anubis",
-          "played": 41,
-          "wins": 16,
-          "winRate": 39
-        },
-        "cache": {
-          "label": "Cache",
-          "played": 3,
-          "wins": 2,
-          "winRate": 67
+        "nuke": {
+          "label": "Nuke",
+          "played": 23,
+          "wins": 13,
+          "winRate": 57
         },
         "overpass": {
           "label": "Overpass",
@@ -197,23 +209,11 @@
           "wins": 0,
           "winRate": 0
         },
-        "inferno": {
-          "label": "Inferno",
-          "played": 1,
-          "wins": 0,
-          "winRate": 0
-        },
-        "ancient": {
-          "label": "Ancient",
-          "played": 73,
-          "wins": 22,
-          "winRate": 30
-        },
-        "nuke": {
-          "label": "Nuke",
-          "played": 23,
-          "wins": 13,
-          "winRate": 57
+        "anubis": {
+          "label": "Anubis",
+          "played": 41,
+          "wins": 16,
+          "winRate": 39
         }
       },
       "faceitMatches": [
@@ -405,6 +405,24 @@
       "standings": [
         {
           "pos": 1,
+          "team": "EVOLUPE",
+          "played": 2,
+          "wins": 2,
+          "losses": 0,
+          "rd": 20,
+          "points": 6
+        },
+        {
+          "pos": 2,
+          "team": "FL - Manzanilla de la muerte",
+          "played": 2,
+          "wins": 1,
+          "losses": 1,
+          "rd": 7,
+          "points": 4
+        },
+        {
+          "pos": 3,
           "team": "Lapirus GichtmbH",
           "played": 1,
           "wins": 1,
@@ -413,30 +431,12 @@
           "points": 3
         },
         {
-          "pos": 2,
-          "team": "FL - Manzanilla de la muerte",
-          "played": 1,
-          "wins": 1,
-          "losses": 0,
-          "rd": 17,
-          "points": 3
-        },
-        {
-          "pos": 3,
+          "pos": 4,
           "team": "Omega5",
           "played": 1,
           "wins": 1,
           "losses": 0,
           "rd": 15,
-          "points": 3
-        },
-        {
-          "pos": 4,
-          "team": "EVOLUPE",
-          "played": 1,
-          "wins": 1,
-          "losses": 0,
-          "rd": 10,
           "points": 3
         },
         {
@@ -674,11 +674,11 @@
           "nickname": "Kristin",
           "avatar": "https://distribution.faceit-cdn.net/images/095e9c68-07b5-443e-be68-178b924f328e.jpg",
           "country": "de",
-          "elo": 1544,
-          "level": 8,
+          "elo": 1516,
+          "level": 7,
           "faceitUrl": "https://www.faceit.com/de/players/Kristin",
           "stats": {
-            "matches": 436,
+            "matches": 437,
             "wins": 246,
             "winRate": 56,
             "kd": 0.76,
@@ -935,12 +935,12 @@
           "nickname": "TOKIOPEEK",
           "avatar": "https://distribution.faceit-cdn.net/images/e368b9ec-12da-473f-a1ea-d547d713b520.jpg",
           "country": "de",
-          "elo": 1892,
+          "elo": 1897,
           "level": 9,
           "faceitUrl": "https://www.faceit.com/de/players/TOKIOPEEK",
           "stats": {
-            "matches": 554,
-            "wins": 281,
+            "matches": 558,
+            "wins": 283,
             "winRate": 51,
             "kd": 1.21,
             "kr": null,
@@ -1308,12 +1308,12 @@
       "nickname": "TOKIOPEEK",
       "avatar": "https://distribution.faceit-cdn.net/images/e368b9ec-12da-473f-a1ea-d547d713b520.jpg",
       "country": "de",
-      "elo": 1892,
+      "elo": 1897,
       "level": 9,
       "faceitUrl": "https://www.faceit.com/de/players/TOKIOPEEK",
       "stats": {
-        "matches": 554,
-        "wins": 281,
+        "matches": 558,
+        "wins": 283,
         "winRate": 51,
         "kd": 1.21,
         "kr": null,
@@ -1430,27 +1430,6 @@
       "teamSlug": "nxt"
     },
     {
-      "faceitId": "bff9b5ea-0b7f-468f-a225-f989f9a104c9",
-      "nickname": "Kristin",
-      "avatar": "https://distribution.faceit-cdn.net/images/095e9c68-07b5-443e-be68-178b924f328e.jpg",
-      "country": "de",
-      "elo": 1544,
-      "level": 8,
-      "faceitUrl": "https://www.faceit.com/de/players/Kristin",
-      "stats": {
-        "matches": 436,
-        "wins": 246,
-        "winRate": 56,
-        "kd": 0.76,
-        "kr": null,
-        "adr": null,
-        "hs": 46,
-        "avgKills": 0
-      },
-      "team": "Donuts Nxt",
-      "teamSlug": "nxt"
-    },
-    {
       "faceitId": "bd1fef32-119e-4f65-a4b8-3cde472cd417",
       "nickname": "-Tobi666",
       "avatar": "https://distribution.faceit-cdn.net/images/ded315c0-2c9d-4a8c-b22b-312cc6f08570.jpg",
@@ -1466,6 +1445,27 @@
         "kr": null,
         "adr": null,
         "hs": 50,
+        "avgKills": 0
+      },
+      "team": "Donuts Nxt",
+      "teamSlug": "nxt"
+    },
+    {
+      "faceitId": "bff9b5ea-0b7f-468f-a225-f989f9a104c9",
+      "nickname": "Kristin",
+      "avatar": "https://distribution.faceit-cdn.net/images/095e9c68-07b5-443e-be68-178b924f328e.jpg",
+      "country": "de",
+      "elo": 1516,
+      "level": 7,
+      "faceitUrl": "https://www.faceit.com/de/players/Kristin",
+      "stats": {
+        "matches": 437,
+        "wins": 246,
+        "winRate": 56,
+        "kd": 0.76,
+        "kr": null,
+        "adr": null,
+        "hs": 46,
         "avgKills": 0
       },
       "team": "Donuts Nxt",
