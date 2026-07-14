@@ -224,6 +224,7 @@ async function getTeamMapStats(teamFaceitId) {
 async function getTeamMatchesViaPlayers(teamFaceitId, rosterIds, size = 10) {
   const rosterSet = new Set(rosterIds);
   const byId      = new Map();
+  const champIds  = new Map(); // competition_id -> competition_name (für Upcoming-Scan, z. B. ESEA)
 
   for (const pid of rosterIds.slice(0, 6)) {
     const data = await fetchFACEIT(`/players/${pid}/history?game=cs2&offset=0&limit=30`);
@@ -241,6 +242,11 @@ async function getTeamMatchesViaPlayers(teamFaceitId, rosterIds, size = 10) {
         if (fac.team_id === teamFaceitId || overlap >= 3) { myKey = key; break; }
       }
       if (!myKey) continue;
+
+      // Liga-/Turnier-Championships merken (ESEA, DACH CS etc.) — kein Matchmaking
+      if (item.competition_id && !/queue|matchmaking/i.test(item.competition_name || '')) {
+        champIds.set(item.competition_id, item.competition_name || null);
+      }
 
       const oppKey  = factions.find(([k]) => k !== myKey)[0];
       const myFac   = item.teams[myKey];
@@ -320,53 +326,64 @@ async function getTeamMatchesViaPlayers(teamFaceitId, rosterIds, size = 10) {
     }
   }
 
-  return matches.map(({ _ts, _myKey, _oppKey, ...m }) => m);
+  return { matches: matches.map(({ _ts, _myKey, _oppKey, ...m }) => m), champIds };
 }
 
-// ── FACEIT: Upcoming matches via active championships ─────────
-async function getTeamUpcomingMatches(teamFaceitId) {
-  const upcoming = [];
+// ── FACEIT: Upcoming matches via championships ────────────────
+// Quellen für Championship-IDs:
+//  (a) /teams/{id}/tournaments (liefert oft leer, deprecated)
+//  (b) champIds aus der Spieler-History (ESEA, DACH CS Ligen etc.)
+function mapChampMatch(m, teamFaceitId, fallbackName) {
+  const teams    = m.teams || {};
+  const teamKeys = Object.keys(teams);
+  const facId    = k => teams[k]?.faction_id || teams[k]?.team_id;
+  if (!teamKeys.some(k => facId(k) === teamFaceitId)) return null;
 
+  const isTeam1 = facId(teamKeys[0]) === teamFaceitId;
+  const oppTeam = teams[isTeam1 ? teamKeys[1] : teamKeys[0]] || {};
+  const schedAt = m.scheduled_at;
+  const dateObj = schedAt ? new Date(schedAt * 1000) : null;
+
+  return {
+    matchId:     m.match_id,
+    date:        dateObj ? dateObj.toISOString().split('T')[0] : null,
+    time:        dateObj ? dateObj.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }) : null,
+    opponent:    oppTeam.name || 'Unknown',
+    competition: m.competition_name || fallbackName || null,
+    result:      'upcoming',
+    score:       null,
+    status:      m.status || 'SCHEDULED',
+    faceitUrl:   `https://www.faceit.com/de/cs2/room/${m.match_id}`,
+  };
+}
+
+async function getTeamUpcomingMatches(teamFaceitId, historyChampIds = new Map()) {
+  const upcoming = [];
+  const champs   = new Map(historyChampIds); // id -> name
+
+  // (a) tournaments-Endpoint als Zusatzquelle
   try {
     const tourData = await fetchFACEIT(`/teams/${teamFaceitId}/tournaments?offset=0&limit=10`);
-    const tours = tourData?.items || [];
-    if (!tours.length) {
-      console.log('  No active tournaments found for team.');
-      return [];
-    }
-
-    for (const tour of tours.slice(0, 5)) {
+    for (const tour of (tourData?.items || []).slice(0, 5)) {
       const champId = tour.championship_id || tour.id;
-      if (!champId) continue;
+      if (champId && !champs.has(champId)) champs.set(champId, tour.name || null);
+    }
+  } catch (e) { /* deprecated, egal */ }
 
-      const matchData = await fetchFACEIT(
-        `/championships/${champId}/matches?type=upcoming&offset=0&limit=20`
-      );
-      await sleep(200);
-      const matches = matchData?.items || [];
-
-      for (const m of matches) {
-        const teams    = m.teams || {};
-        const teamKeys = Object.keys(teams);
-        const involved = teamKeys.some(k => teams[k]?.team_id === teamFaceitId);
-        if (!involved) continue;
-
-        const isTeam1 = teams[teamKeys[0]]?.team_id === teamFaceitId;
-        const oppTeam = teams[isTeam1 ? teamKeys[1] : teamKeys[0]] || {};
-        const schedAt = m.scheduled_at;
-        const dateObj = schedAt ? new Date(schedAt * 1000) : null;
-
-        upcoming.push({
-          matchId:     m.match_id,
-          date:        dateObj ? dateObj.toISOString().split('T')[0] : null,
-          time:        dateObj ? dateObj.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }) : null,
-          opponent:    oppTeam.name || 'Unknown',
-          competition: tour.name || m.competition_name || null,
-          result:      'upcoming',
-          score:       null,
-          status:      m.status || 'SCHEDULED',
-          faceitUrl:   `https://www.faceit.com/de/cs2/room/${m.match_id}`,
-        });
+  // (b) alle bekannten Championships auf Upcoming-Matches scannen
+  try {
+    for (const [champId, champName] of [...champs].slice(0, 8)) {
+      for (let offset = 0; offset <= 100; offset += 100) {
+        const matchData = await fetchFACEIT(
+          `/championships/${champId}/matches?type=upcoming&offset=${offset}&limit=100`
+        );
+        await sleep(200);
+        const items = matchData?.items || [];
+        for (const m of items) {
+          const mapped = mapChampMatch(m, teamFaceitId, champName);
+          if (mapped) upcoming.push(mapped);
+        }
+        if (items.length < 100) break;
       }
     }
   } catch (e) {
@@ -696,11 +713,12 @@ async function main() {
 
       console.log('  Fetching match history (via player histories)…');
       const rosterIds = players.map(p => p.faceitId);
-      faceitMatches = await getTeamMatchesViaPlayers(cfg.faceitId, rosterIds, 10);
+      const teamHist = await getTeamMatchesViaPlayers(cfg.faceitId, rosterIds, 10);
+      faceitMatches = teamHist.matches;
       console.log(`  → ${faceitMatches.length} finished team match(es) found`);
 
       console.log('  Fetching upcoming FACEIT matches…');
-      faceitUpcoming = await getTeamUpcomingMatches(cfg.faceitId);
+      faceitUpcoming = await getTeamUpcomingMatches(cfg.faceitId, teamHist.champIds);
       if (faceitUpcoming.length) {
         console.log(`  → ${faceitUpcoming.length} upcoming FACEIT match(es) found`);
         faceitUpcoming.forEach(m => console.log(`     ${m.date} ${m.time || ''} vs ${m.opponent} [${m.competition || 'FACEIT'}]`));
@@ -733,6 +751,21 @@ async function main() {
       // Sortieren: upcoming aufsteigend, recent absteigend
       dachcsUpcoming.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
       dachcsRecent.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    }
+
+    // Duplikate: Liga-Matches stehen bei DACHCS UND als FACEIT-Championship-Match.
+    // DACHCS-Eintrag gewinnt (Cast-Info etc.), FACEIT-Zwilling fliegt raus.
+    if (faceitUpcoming.length && dachcsUpcoming.length) {
+      const normName = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const nearDate = (a, b) => Math.abs(new Date(a) - new Date(b)) <= 2 * 86400000;
+      const before = faceitUpcoming.length;
+      faceitUpcoming = faceitUpcoming.filter(fm => !dachcsUpcoming.some(dm => {
+        const dOpp = dm.isHome === false ? dm.team1 : dm.team2;
+        return normName(dOpp) === normName(fm.opponent) && fm.date && dm.date && nearDate(dm.date, fm.date);
+      }));
+      if (before !== faceitUpcoming.length) {
+        console.log(`  → ${before - faceitUpcoming.length} FACEIT-Duplikat(e) von DACHCS-Matches entfernt`);
+      }
     }
 
     output.teams[key] = {
