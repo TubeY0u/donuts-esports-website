@@ -1195,38 +1195,47 @@ section + section { border-top: 1px solid var(--border-soft); }
   position: relative;
   z-index: 1; /* above the .initials grid placeholder */
 }
-/* Player photo placeholder — tactical grid pattern */
+/* Player photo placeholder — tactical HUD with initials */
 .player-photo .initials {
   position: absolute;
   inset: 0;
-  display: block;
-  font-size: 0; /* hide any text */
-  z-index: 0;   /* behind the photo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 22%;
+  z-index: 0;
+  font-family: var(--font-display);
+  font-size: 58px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 56, 102, 0.55);
+  text-shadow: 0 0 36px rgba(225, 29, 72, 0.35);
   background-color: var(--surface-2);
   background-image:
     linear-gradient(var(--border) 1px, transparent 1px),
     linear-gradient(90deg, var(--border) 1px, transparent 1px),
-    radial-gradient(circle at 50% 38%, rgba(225,29,72,0.13) 0%, transparent 65%);
-  background-size: 32px 32px, 32px 32px, 100% 100%;
+    linear-gradient(115deg, transparent 42%, rgba(225,29,72,0.07) 50%, transparent 58%),
+    radial-gradient(circle at 50% 40%, rgba(225,29,72,0.16) 0%, transparent 65%);
+  background-size: 32px 32px, 32px 32px, 100% 100%, 100% 100%;
   user-select: none;
 }
-/* Crosshair dot in center */
+/* HUD target frame around the initials */
 .player-photo .initials::before {
   content: "";
   position: absolute;
-  left: 50%; top: 38%;
-  width: 40px; height: 40px;
+  left: 50%; top: 40%;
+  width: 128px; height: 128px;
   transform: translate(-50%, -50%);
   background-image:
-    linear-gradient(var(--accent) 0 0),
-    linear-gradient(var(--accent) 0 0),
-    linear-gradient(var(--accent) 0 0),
-    linear-gradient(var(--accent) 0 0),
-    radial-gradient(circle, var(--accent) 2px, transparent 2px);
-  background-size: 2px 14px, 14px 2px, 2px 14px, 14px 2px, 100% 100%;
-  background-position: 50% 0, 100% 50%, 50% 100%, 0 50%, 50% 50%;
+    linear-gradient(var(--accent) 0 0), linear-gradient(var(--accent) 0 0),
+    linear-gradient(var(--accent) 0 0), linear-gradient(var(--accent) 0 0),
+    linear-gradient(var(--accent) 0 0), linear-gradient(var(--accent) 0 0),
+    linear-gradient(var(--accent) 0 0), linear-gradient(var(--accent) 0 0);
+  background-size: 18px 2px, 2px 18px, 18px 2px, 2px 18px, 18px 2px, 2px 18px, 18px 2px, 2px 18px;
+  background-position: 0 0, 0 0, 100% 0, 100% 0, 0 100%, 0 100%, 100% 100%, 100% 100%;
   background-repeat: no-repeat;
-  opacity: 0.35;
+  opacity: 0.5;
 }
 .player-photo::after {
   content: "";
