@@ -1,39 +1,22 @@
-// Debug: Wo liegen die ESEA-Matches in der FACEIT-API?
 const KEY = process.env.FACEIT_API_KEY || '';
-const TEAMS = {
-  main: '46c77ad9-8098-4c9c-a674-00a6a79a303e',
-  nxt:  '5d25c833-2677-4c52-93e7-ce5699378a9a',
-};
+const HALFY = '024be859-e215-42dd-a7ed-18f7bbf91b3c';
 
 async function dataApi(path) {
   const r = await fetch(`https://open.faceit.com/data/v4${path}`, {
-    headers: { Authorization: `Bearer ${KEY}` },
-  });
+    headers: { Authorization: `Bearer ${KEY}` } });
   return { status: r.status, body: await r.json().catch(() => null) };
 }
-
-async function webApi(url) {
-  const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
-  const text = await r.text();
-  let body = null;
-  try { body = JSON.parse(text); } catch { body = text.slice(0, 200); }
-  return { status: r.status, body };
-}
-
 function dump(label, obj) {
   console.log(`\n########## ${label} ##########`);
-  console.log(JSON.stringify(obj, null, 1).slice(0, 6000));
+  console.log(JSON.stringify(obj, null, 1).slice(0, 8000));
 }
-
 (async () => {
-  for (const [slug, id] of Object.entries(TEAMS)) {
-    dump(`${slug}: data-api /teams/{id}/tournaments`,
-      await dataApi(`/teams/${id}/tournaments?offset=0&limit=20`));
-    dump(`${slug}: web-api team-leagues v2 profile`,
-      await webApi(`https://www.faceit.com/api/team-leagues/v2/teams/${id}/profile`));
-    dump(`${slug}: web-api groupByState`,
-      await webApi(`https://www.faceit.com/api/match/v1/matches/groupByState?participantId=${id}&participantType=TEAM`));
-    dump(`${slug}: web-api team-leagues v1 summary`,
-      await webApi(`https://www.faceit.com/api/team-leagues/v1/teams/${id}/leagues/a14b8616-45b9-4581-8637-4dfd0b5f6af8/summary`));
-  }
+  const s = await dataApi(`/search/teams?nickname=donuts&offset=0&limit=30`);
+  // kompakt
+  const teams = (s.body?.items || []).map(t => ({ id: t.team_id, name: t.name, game: t.game }));
+  dump('search teams "donuts"', { status: s.status, teams });
+  dump('halfy teams (v4 unofficial)', await dataApi(`/players/${HALFY}/teams?offset=0&limit=20`).then(r => ({
+    status: r.status,
+    teams: (r.body?.items || []).map(t => ({ id: t.team_id, name: t.name, game: t.game })) || r.body
+  })));
 })();
