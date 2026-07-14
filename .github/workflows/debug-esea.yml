@@ -1,0 +1,12 @@
+name: Debug ESEA
+on: workflow_dispatch
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node debug-esea.js
+        env:
+          FACEIT_API_KEY: ${{ secrets.FACEIT_API_KEY }}
