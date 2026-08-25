@@ -55,13 +55,13 @@ const TEAMS = {
     label:       'Donuts Nxt',
     faceitId:    '5d25c833-2677-4c52-93e7-ce5699378a9a',
     dachcsTeam:  'DIEDONUTS NXT',
-    extra:       ['chenko'],
+    extra:       [],
   },
   dns: {
     slug:        'dns',
     label:       'Donuts DNS',
     faceitId:    '7de419f6-da07-46d0-819d-687874ffef17',
-    dachcsTeam:  null,
+    dachcsTeam:  'DIEDONUTS DNS',
     // Players who may not appear in FACEIT team API (yet)
     extra:       ['LilliFee1987', 'lAL3Xl'],
   },
