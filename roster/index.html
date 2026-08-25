@@ -680,11 +680,13 @@ function patchCard(article, p) {
 
 // ── Render map stats bar section ─────────────────────────────
 function renderMapStats(el, mapStats) {
-  if (!el || !mapStats) return;
-  const entries = Object.entries(mapStats)
+  if (!el) return;
+  const entries = Object.entries(mapStats || {})
     .filter(([, v]) => v.played >= 3)
     .sort((a, b) => b[1].winRate - a[1].winRate);
-  if (!entries.length) return;
+  // Ohne Daten: leeren Kasten ausblenden statt leer stehen lassen
+  if (!entries.length) { el.style.display = 'none'; return; }
+  el.style.display = '';
 
   const totalW = entries.reduce((s, [,v]) => s + v.wins, 0);
   const totalP = entries.reduce((s, [,v]) => s + v.played, 0);
@@ -720,7 +722,10 @@ function patchTeamQuick(blockId, players) {
   const block = document.getElementById(blockId);
   if (!block) return;
   // Only count players whose card actually lives in THIS team's block
-  const active = players.filter(p => p.elo > 0 && block.querySelector(`[data-nickname="${p.nickname}"]`));
+  const active = players.filter(p => {
+    const card = block.querySelector(`[data-nickname="${p.nickname}"]`);
+    return p.elo > 0 && card && !card.classList.contains('player--standin');
+  });
   if (!active.length) return;
   const topElo = Math.max(...active.map(p => p.elo));
   const avgElo = Math.round(active.reduce((s, p) => s + p.elo, 0) / active.length);
