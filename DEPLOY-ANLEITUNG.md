@@ -49,7 +49,21 @@ sonst kollidiert dein Commit mit dem des Bots.
 | Partner / Sponsoren | `data/partners.json` (leer = Sektion ausgeblendet) |
 | Team-Texte und Spielerkarten | `roster/main/`, `roster/nxt/`, `roster/dns/` |
 | Zusätzliche Matches (Showmatches) | `js/main.js`, Konstante `MATCHES` |
-| Alles andere an Zahlen | gar nicht — kommt aus `data/stats.json` |
+| Alles andere an Zahlen | gar nicht, kommt aus `data/stats.json` |
+
+## Wenn sich eine Aufstellung aendert
+
+Die Spielerkarten stehen fest im HTML der jeweiligen Team-Seite. Standins tragen
+dort die Klasse `player--standin` und zaehlen nicht zur Aufstellung.
+
+Die Uebersicht unter `/roster/` zeigt genau die fuenf Startspieler. Welche das
+sind, steht als `data-lineup` an der jeweiligen `.tc-card` in
+`roster/index.html`, mit Nickname, Bildpfad und Initialen. Wenn du auf einer
+Team-Seite jemanden austauschst, musst du diese Liste mit anpassen, sonst zeigt
+die Uebersicht noch die alte Aufstellung.
+
+Der Nickname darin muss exakt dem `data-nickname` der Spielerkarte entsprechen,
+sonst findet die Uebersicht die ELO nicht.
 
 ## Offener Punkt: K/R und ADR
 

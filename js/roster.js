@@ -251,11 +251,23 @@ async function renderTeamCards() {
     const t = json && json.teams ? json.teams[slug] : null;
     if (!t) return;
 
-    const players = (t.players || []).filter(p => p.elo > 0);
-    const top = players.length ? Math.max(...players.map(p => p.elo)) : 0;
+    const all = (t.players || []).filter(p => p.elo > 0);
+
+    // Startaufstellung steht als data-lineup auf der Karte (aus der Team-Seite
+    // generiert). Nur die zaehlen hier, Standins bleiben aussen vor.
+    let lineup = [];
+    try { lineup = JSON.parse(card.dataset.lineup || '[]'); } catch (e) { lineup = []; }
+
+    const byNick = new Map(all.map(p => [p.nickname.toLowerCase(), p]));
+    const shown = lineup.length
+      ? lineup.slice(0, 5).map(l => ({ ...l, data: byNick.get(String(l.n).toLowerCase()) }))
+      : all.slice(0, 5).map(p => ({ n: p.nickname, p: '', i: p.nickname.slice(0, 2).toUpperCase(), data: p }));
+
+    const elos = shown.map(x => x.data && x.data.elo).filter(v => v > 0);
+    const top  = elos.length ? Math.max(...elos) : 0;
     const set = (sel, v) => { const e = card.querySelector(sel); if (e && v != null) e.textContent = v; };
 
-    set('[data-slot="count"]', players.length || '—');
+    set('[data-slot="count"]', shown.length || '—');
     set('[data-slot="top"]',   top ? top.toLocaleString('de-DE') : '—');
 
     const row = ownStanding(t);
@@ -268,15 +280,14 @@ async function renderTeamCards() {
       set('[data-slot="status"]', 'Keine Liga-Runde');
     }
 
-    // Gesichter der Spieler mit Foto
+    // Gesichter der Startaufstellung, echte Bildpfade aus der Team-Seite
     const faces = card.querySelector('[data-slot="faces"]');
     if (faces) {
-      faces.innerHTML = players.slice(0, 6).map(p => {
-        const nick = escH(p.nickname);
-        const file = nick.toLowerCase().replace(/[^a-z0-9]/g, '');
-        const ini  = nick.slice(0, 2).toUpperCase();
-        return `<span class="tc-face" title="${nick}"><span>${ini}</span>` +
-               `<img src="/assets/players/${file}.png" alt="" loading="lazy" onerror="this.remove()"></span>`;
+      faces.innerHTML = shown.map(x => {
+        const nick = escH(x.n);
+        const ini  = escH(x.i || String(x.n).slice(0, 2).toUpperCase());
+        const img  = x.p ? `<img src="${escH(x.p)}" alt="" loading="lazy" onerror="this.remove()">` : '';
+        return `<span class="tc-face" title="${nick}"><span>${ini}</span>${img}</span>`;
       }).join('');
     }
   });
