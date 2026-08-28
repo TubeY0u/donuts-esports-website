@@ -666,8 +666,8 @@
   async function checkTwitchLive() {
     const streamCards = document.querySelectorAll('.stream-card[data-twitch]');
     // Homepage: Banner-Kanäle immer prüfen auch wenn keine stream-cards da sind
-    const bannerHandles = ['diedonuts_esports','tube_y0u','justkristinthings','derohnedaumen','sirokkoko'];
-    const bannerNames   = { diedonuts_esports:'DieDonuts Esports', tube_y0u:'TubeYou', justkristinthings:'Kriistiin_', derohnedaumen:'-_-Calli', sirokkoko:'sirokkoko' };
+    const bannerHandles = ['diedonuts_esports','tube_y0u','its_kriistiin','derohnedaumen','sirokkoko'];
+    const bannerNames   = { diedonuts_esports:'DieDonuts Esports', tube_y0u:'TubeYou', its_kriistiin:'Kristin', derohnedaumen:'-_-Calli', sirokkoko:'sirokkoko' };
     if (!streamCards.length && !document.getElementById('liveBanner')) return;
 
     // Ohne API-Key: nichts tun (Cards bleiben OFFLINE)
