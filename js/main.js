@@ -13,6 +13,11 @@
 (() => {
   'use strict';
 
+  // Schutz vor doppeltem Einbinden: sonst haengen alle Klick-Handler zweimal
+  // und heben sich gegenseitig auf (Spielerkarten drehen sich dann nicht mehr).
+  if (window.__donutsMain) return;
+  window.__donutsMain = true;
+
   // ---- Nav: scroll state -------------------------------------------------
   const nav = document.getElementById('nav');
   if (nav) {
@@ -764,6 +769,8 @@
 
 // ---- Particle Background Canvas ----------------------------------------
 (function initParticles() {
+  if (window.__donutsParticles) return;
+  window.__donutsParticles = true;
   const canvas = document.createElement('canvas');
   canvas.id = 'particleCanvas';
   document.body.insertBefore(canvas, document.body.firstChild);
@@ -821,6 +828,8 @@
 
 // ---- Konami Code — Donut Rain ------------------------------------------
 (function initKonami() {
+  if (window.__donutsKonami) return;
+  window.__donutsKonami = true;
   const CODE = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
   let pos = 0;
 
