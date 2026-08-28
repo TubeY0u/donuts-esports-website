@@ -1,0 +1,4 @@
+{
+  "_comment": "Partner & Sponsoren der Startseite. Solange 'entries' leer ist, wird die ganze Sektion gar nicht erst angezeigt. Neuen Partner eintragen: name, url, logo (Datei nach /assets/partners/ legen), text (ein kurzer Satz), tag (z.B. Bootcamp, Hardware, Apparel).",
+  "entries": []
+}

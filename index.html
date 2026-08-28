@@ -129,7 +129,7 @@
         </div>
         <div class="hero-meta">
           <div class="hero-meta-item">
-            <div class="v" data-count="12">12</div>
+            <div class="v" id="statPlayers" data-count="12">12</div>
             <div class="l">Spieler</div>
           </div>
           <div class="hero-meta-item">
@@ -153,7 +153,7 @@
           <span class="hpf-corner hpf-br"></span>
           <div class="hpf-label">
             <span><span class="bn-die">Die</span><span class="bn-don">Donuts</span> Esports</span>
-            <span>Letzter Spieltag · DachCS S5</span>
+            <span id="heroRotate">Entry 2026 · Cycle 3</span>
           </div>
         </div>
       </div>
@@ -184,17 +184,19 @@
      ========================================================= -->
 <div class="ticker">
   <div class="container">
+    <!-- Werte werden von main.js aus /data/stats.json aktualisiert.
+         Die hier stehenden Werte sind nur der Fallback, falls das fehlschlägt. -->
     <div class="ticker-item">
-      <div class="label">Saisons</div>
-      <div class="value">3 gespielt</div>
+      <div class="label">Aktuell</div>
+      <div class="value" id="tkComp">Entry 2026</div>
     </div>
     <div class="ticker-item">
-      <div class="label">Roster</div>
-      <div class="value">3 Aktiv</div>
+      <div class="label">Main</div>
+      <div class="value" id="tkMain">2. · 2W/1L</div>
     </div>
     <div class="ticker-item">
-      <div class="label">Liga</div>
-      <div class="value">SPK 4</div>
+      <div class="label">Nxt</div>
+      <div class="value" id="tkNxt">1. · 2W/0L</div>
     </div>
     <div class="ticker-item">
       <div class="label">Region</div>
@@ -281,15 +283,15 @@
       </div>
 
       <div class="about-orbs">
-        <a href="/roster/#donuts" class="team-orb" aria-label="Donuts Main Roster">
+        <a href="/roster/main/" class="team-orb" aria-label="Donuts Main Roster">
           <img src="/assets/logo.png" alt="Donuts Main">
           <span class="team-orb-label">Main</span>
         </a>
-        <a href="/roster/#nxt" class="team-orb team-orb--nxt" aria-label="Donuts Nxt Roster">
+        <a href="/roster/nxt/" class="team-orb team-orb--nxt" aria-label="Donuts Nxt Roster">
           <img src="/assets/Logo_NXT.png" alt="Donuts Nxt">
           <span class="team-orb-label">Nxt</span>
         </a>
-        <a href="/roster/#team3" class="team-orb" aria-label="Donuts DNS Roster">
+        <a href="/roster/dns/" class="team-orb" aria-label="Donuts DNS Roster">
           <img src="/assets/Logo_DNS.png" alt="Donuts DNS">
           <span class="team-orb-label">DNS</span>
         </a>
@@ -308,7 +310,9 @@
       <div class="eyebrow">02 · Highlights</div>
       <h2 class="section-title">Was wir erreicht haben.</h2>
     </div>
-    <div class="achievements-list reveal">
+    <!-- Inhalt kommt aus /data/history.json — DORT pflegen, nicht hier.
+         Die statischen Zeilen unten sind nur der Fallback, falls das Laden fehlschlägt. -->
+    <div class="achievements-list reveal" id="achList">
 
       <!-- DachCS S5 -->
       <div class="ach-row">
@@ -395,6 +399,21 @@
 </section>
 
 <!-- =========================================================
+     PARTNER
+     Inhalt kommt aus /data/partners.json — solange dort nichts
+     drinsteht, bleibt die Sektion komplett ausgeblendet.
+     ========================================================= -->
+<section class="partners-section" id="partners" hidden>
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="eyebrow">03 · Partner</div>
+      <h2 class="section-title">Wer mit uns geht.</h2>
+    </div>
+    <div class="partner-grid" id="partnerGrid"></div>
+  </div>
+</section>
+
+<!-- =========================================================
      JOIN / TRYOUT CTA
      ========================================================= -->
 <section class="join-section">
@@ -430,10 +449,10 @@
 <section class="contact" id="contact">
   <div class="container">
     <div class="reveal">
-      <div class="eyebrow" style="justify-content:center;">03 — Kontakt</div>
+      <div class="eyebrow" style="justify-content:center;">04 · Kontakt</div>
       <h2 class="section-title">Let's talk.</h2>
       <p class="section-lead">
-        Sponsorship, Match-Anfrage, Tryout oder einfach nur ein Hi —
+        Sponsorship, Match-Anfrage, Tryout oder einfach nur ein Hi:
         schreibt uns auf einer unserer Plattformen.
       </p>
       <div class="contact-actions">
@@ -556,98 +575,8 @@
   </div>
 </footer>
 
-<script>
-// Direkt stats.json laden — kein Import nötig, funktioniert überall
-(async function initIndex() {
-  try {
-    const res = await fetch('/data/stats.json');
-    if (!res.ok) throw new Error('stats.json not found');
-    const json = await res.json();
-
-    // 1. Spieleranzahl aktualisieren
-    const count = json?.allPlayers?.length || 0;
-    if (count > 0) {
-      const el = document.querySelector('[data-count="12"]');
-      if (el) {
-        el.dataset.count = count;
-        // Kurz warten bis main.js seinen Counter fertig hat, dann überschreiben
-        setTimeout(() => {
-          const from = parseInt(el.textContent) || 0;
-          const dur = 800;
-          const start = performance.now();
-          function step(now) {
-            const p = Math.min((now - start) / dur, 1);
-            el.textContent = Math.round(from + (count - from) * (1 - Math.pow(1 - p, 3)));
-            if (p < 1) requestAnimationFrame(step);
-          }
-          requestAnimationFrame(step);
-        }, 1400);
-      }
-    }
-
-    // 2. DACHCS Matches anzeigen — alle 3 Roster zusammenführen
-    const teamSlugMap = { main: 'Donuts', nxt: 'Nxt', dns: 'DNS' };
-    const allUpcoming = [];
-    for (const [slug, label] of Object.entries(teamSlugMap)) {
-      const matches = json?.teams?.[slug]?.dachcsUpcoming || [];
-      matches.forEach(m => allUpcoming.push({ ...m, _rosterLabel: label }));
-    }
-    allUpcoming.sort((a, b) => {
-      if (!a.date) return 1;
-      if (!b.date) return -1;
-      return a.date.localeCompare(b.date);
-    });
-    renderMatches(allUpcoming);
-
-  } catch(e) {
-    console.warn('initIndex failed:', e);
-    renderMatches([]);
-  }
-})();
-
-function renderMatches(upcoming) {
-  const el = document.getElementById('nmCards');
-  if (!el) return;
-  if (!upcoming || upcoming.length === 0) {
-    el.innerHTML = `<div class="nm-no-match">
-      <span class="nm-no-match-title">Ein Spiel mit uns?</span>
-      <span class="nm-no-match-sub">Gerne, meld dich auf <a href="https://discord.gg/GEPrazXBrJ" target="_blank" rel="noopener">Discord</a>.</span>
-    </div>`;
-    return;
-  }
-  el.innerHTML = upcoming.slice(0, 4).map(m => {
-    const dateStr = m.date ? new Date(m.date + 'T12:00:00').toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—';
-    const us   = m.isHome !== false ? (m.team1 || 'DIEDONUTS') : (m.team2 || 'DIEDONUTS');
-    const them = m.isHome !== false ? (m.team2 || '?') : (m.team1 || '?');
-    const league = [m.division, m.group, m.format || 'BO1'].filter(Boolean).join(' · ');
-    const rosterBadge = m._rosterLabel || 'Donuts';
-    const vsHtml = m.isLive
-      ? `<div class="nm-vs nm-vs--live"><span class="live-dot"></span>LIVE</div>`
-      : `<div class="nm-vs">VS</div>`;
-    return `<div class="nm-card${m.isLive ? ' nm-card--live' : ''}">
-      <div class="nm-card-top">
-        <span class="nm-roster-badge">${rosterBadge}</span>
-        <span class="nm-league">${league}</span>
-      </div>
-      <div class="nm-matchup">
-        <div class="nm-team nm-team--us">
-          <span class="nm-team-name">${us}</span>
-          <span class="nm-team-label">WIR</span>
-        </div>
-        ${vsHtml}
-        <div class="nm-team nm-team--opp">
-          <span class="nm-team-name">${them}</span>
-          <span class="nm-team-label">GEGNER</span>
-        </div>
-      </div>
-      <div class="nm-card-bottom">
-        <div class="nm-datetime"><strong>${dateStr}</strong>${m.time ? ' · ' + m.time + ' Uhr' : ''}</div>
-        <a href="${m.dachcsUrl || 'https://dachcs.de/coverage/group/260'}" target="_blank" rel="noopener" class="nm-dachcs-link">DACHCS <span class="nm-arrow">→</span></a>
-      </div>
-    </div>`;
-  }).join('');
-}
-</script>
+<!-- Der frühere Inline-Loader ist nach js/main.js gewandert.
+     Er hat sich mit dem Renderer dort gegenseitig überschrieben. -->
 <!-- =========================================================
      COOKIE BANNER
      ========================================================= -->

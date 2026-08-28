@@ -1,0 +1,61 @@
+{
+  "_comment": "Highlights-Timeline der Startseite. Neueste Einträge zuerst. tag: dachcs | esea | milestone | founding | win. Der aktuelle Saisonstand wird zusätzlich automatisch aus stats.json davorgesetzt. Hier nur abgeschlossene Sachen eintragen.",
+  "entries": [
+    {
+      "badge": "S5",
+      "title": "DachCS Saison 5 · Spielklasse 4",
+      "text": "Höchste Division der Org-Geschichte · Letzter Platz, aber Erfahrung auf dem bisher höchsten Level",
+      "tag": "milestone",
+      "tagLabel": "Meilenstein"
+    },
+    {
+      "badge": "BC&nbsp;II",
+      "title": "Bootcamp II · April 2026",
+      "text": "Zweites gemeinsames Bootcamp · Training, Teambuilding und jede Menge Footage",
+      "tag": "milestone",
+      "tagLabel": "Meilenstein"
+    },
+    {
+      "badge": "S56",
+      "title": "ESEA Saison 56 · Playoffs B",
+      "text": "Open10 · Regular Season 8W / 6L (Platz 181 bis 183) · Playoffs B 2W / 2L (Platz 97 bis 128)",
+      "tag": "esea",
+      "tagLabel": "ESEA"
+    },
+    {
+      "badge": "S4",
+      "title": "DachCS Saison 4 · Playoffs",
+      "text": "HIGH A · 3. Platz in der Gruppe (6W / 2L) · Playoffs-Teilnahme, 1. Runde ausgeschieden",
+      "tag": "dachcs",
+      "tagLabel": "DachCS"
+    },
+    {
+      "badge": "S51",
+      "title": "ESEA Saison 51 · Playoffs",
+      "text": "Open · Regular Season 7W / 7L (Platz 199 bis 201) · Playoffs 1W / 1L (Platz 129 bis 256)",
+      "tag": "esea",
+      "tagLabel": "ESEA"
+    },
+    {
+      "badge": "BC&nbsp;I",
+      "title": "Bootcamp I · April 2025",
+      "text": "Erstes Bootcamp in der Org-Geschichte · gemeinsames Trainings-Wochenende",
+      "tag": "milestone",
+      "tagLabel": "Meilenstein"
+    },
+    {
+      "badge": "S3",
+      "title": "DachCS Saison 3 · Liga-Debüt",
+      "text": "Spielklasse 5, Gruppe L · 6. Platz (2W / 6L) · erster Auftritt in einer organisierten Liga",
+      "tag": "dachcs",
+      "tagLabel": "DachCS"
+    },
+    {
+      "badge": "2024",
+      "title": "Gründung DieDonuts Esports",
+      "text": "September 2024, von Spielern für Spieler. Made in Germany.",
+      "tag": "founding",
+      "tagLabel": "Founding"
+    }
+  ]
+}

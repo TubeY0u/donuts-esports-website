@@ -339,7 +339,7 @@ export async function fetchDACHCSMatches(groupUrl, teamName) {
 
 // ── Load from pre-built stats.json (same-origin, no CORS) ────
 let _jsonCache = null;
-async function loadStatsJson() {
+export async function loadStatsJson() {
   if (_jsonCache) return _jsonCache;
   try {
     const r = await fetch('/data/stats.json', { signal: AbortSignal.timeout(3000) });
