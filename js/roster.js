@@ -265,10 +265,13 @@ async function renderTeamCards() {
 
     const elos = shown.map(x => x.data && x.data.elo).filter(v => v > 0);
     const top  = elos.length ? Math.max(...elos) : 0;
+    const avg  = elos.length ? Math.round(elos.reduce((a, b) => a + b, 0) / elos.length) : 0;
     const set = (sel, v) => { const e = card.querySelector(sel); if (e && v != null) e.textContent = v; };
 
-    set('[data-slot="count"]', shown.length || '—');
-    set('[data-slot="top"]',   top ? top.toLocaleString('de-DE') : '—');
+    // Spielerzahl waere auf jeder Karte 5 und damit nutzlos — stattdessen der
+    // Schnitt ueber die Startaufstellung, wie auf den Team-Seiten.
+    set('[data-slot="avg"]', avg ? avg.toLocaleString('de-DE') : '—');
+    set('[data-slot="top"]', top ? top.toLocaleString('de-DE') : '—');
 
     const row = ownStanding(t);
     const recent0 = (t.dachcsRecent || [])[0] || {};
