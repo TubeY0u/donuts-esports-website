@@ -56,6 +56,8 @@ const TEAMS = {
     faceitId:    '5d25c833-2677-4c52-93e7-ce5699378a9a',
     dachcsTeam:  'DIEDONUTS NXT',
     extra:       [],
+    // Nicknames that stay out of the site even if still on the FACEIT team
+    exclude:     ['just9th'],
   },
   dns: {
     slug:        'dns',
@@ -640,6 +642,7 @@ function parseDACHCSStandings(html) {
 async function fetchTeamPlayers(cfg) {
   const players = [];
   const seen    = new Set();
+  const blocked = new Set((cfg.exclude || []).map(n => n.toLowerCase()));
 
   console.log('  Fetching FACEIT team members…');
   const members = await getTeamMembers(cfg.faceitId);
@@ -647,6 +650,10 @@ async function fetchTeamPlayers(cfg) {
 
   for (const member of members) {
     if (seen.has(member.faceitId)) continue;
+    if (blocked.has((member.nickname || '').toLowerCase())) {
+      console.log(`  → ${member.nickname} … skip (excluded)`);
+      continue;
+    }
     seen.add(member.faceitId);
     process.stdout.write(`  → ${member.nickname} … `);
 
@@ -663,6 +670,7 @@ async function fetchTeamPlayers(cfg) {
   if (cfg.extra?.length) {
     console.log(`  Fetching ${cfg.extra.length} extra player(s)…`);
     for (const nick of cfg.extra) {
+      if (blocked.has(nick.toLowerCase())) continue;
       process.stdout.write(`  → ${nick} (extra) … `);
       const profile = await getPlayerByNickname(nick);
       await sleep(300);
