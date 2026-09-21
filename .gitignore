@@ -13,3 +13,9 @@ Thumbs.db
 
 # Lokale Sicherungskopien
 _backup-*/
+
+# Access tokens and private keys must never be published
+data/twitch-token.json
+.env.*
+*.pem
+*.key

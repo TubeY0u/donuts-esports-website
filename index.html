@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://api.faceit.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/js/security.js"></script>
   <title>DieDonuts Esports · Counter-Strike 2 Organisation aus Deutschland</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -157,23 +160,7 @@
           </div>
         </div>
       </div>
-<script>
-(function(){
-  var frame = document.getElementById('heroVideoFrame');
-  var ytId = frame && frame.dataset.ytId;
-  if (ytId && ytId.trim()) {
-    var ph = document.getElementById('heroVideoPlaceholder');
-    if (ph) ph.remove();
-    var iframe = document.createElement('iframe');
-    iframe.src = 'https://www.youtube-nocookie.com/embed/' + ytId.trim() + '?rel=0&modestbranding=1&autoplay=1&mute=1';
-    iframe.setAttribute('frameborder', '0');
-    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-    iframe.setAttribute('allowfullscreen', '');
-    iframe.className = 'hvf-iframe';
-    frame.insertBefore(iframe, frame.querySelector('.hpf-label'));
-  }
-})();
-</script>
+<script src="/js/pages/page-18d923e83b.js"></script>
 
     </div>
   </div>
@@ -498,50 +485,7 @@
     </div>
   </div>
 </section>
-<script>
-(async function loadLatestYouTubeVideo() {
-  // ── Trage hier deine YouTube-Kanal-ID ein (UC...) ──────────────────────────
-  // Kanal-ID findest du unter: youtube.com/@DieDonuts_eSports → Über → Teilen → Kanal-ID kopieren
-  const CHANNEL_ID = 'UCTbXxRQ2Fx0pjLD4Mj-2fCg';
-  // ───────────────────────────────────────────────────────────────────────────
-  if (!CHANNEL_ID) return;
-  try {
-    const rss = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-    const proxies = [
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(rss)}`,
-      `https://corsproxy.io/?${encodeURIComponent(rss)}`,
-      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rss)}`,
-    ];
-    let xml = null;
-    for (const proxy of proxies) {
-      try {
-        const res = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
-        if (res.ok) { xml = await res.text(); if (xml && xml.includes('<entry>')) break; }
-      } catch { continue; }
-    }
-    if (!xml) return;
-    const doc   = new DOMParser().parseFromString(xml, 'text/xml');
-    const entry = doc.querySelector('entry');
-    if (!entry) return;
-    const ns      = 'http://www.youtube.com/xml/schemas/2015';
-    const videoId = entry.getElementsByTagNameNS(ns, 'videoId')[0]?.textContent
-                 || entry.querySelector('id')?.textContent?.split(':').pop();
-    const title   = entry.querySelector('title')?.textContent || '';
-    const pubRaw  = entry.querySelector('published')?.textContent;
-    const pubDate = pubRaw ? new Date(pubRaw).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }) : '';
-    if (!videoId) return;
-    const frame = document.getElementById('ytFrame');
-    frame.src = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
-    frame.style.display = 'block';
-    document.getElementById('ytPlaceholder').style.display = 'none';
-    document.getElementById('ytTitle').textContent = title;
-    document.getElementById('ytDate').textContent  = pubDate;
-    document.getElementById('ytMeta').style.display = 'flex';
-  } catch (e) {
-    console.warn('[DieDonuts] YouTube feed:', e);
-  }
-})();
-</script>
+<script src="/js/pages/youtube-caa44130e5.js"></script>
 
 </main>
 
@@ -593,43 +537,8 @@
   </div>
 </div>
 
-<script>
-(function() {
-  var consent = localStorage.getItem('cookie-consent');
-  var banner  = document.getElementById('cookieBanner');
-
-  function loadFonts() {
-    var link = document.createElement('link');
-    link.rel  = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap';
-    document.head.appendChild(link);
-  }
-
-  if (consent === 'accepted') {
-    loadFonts();
-    if (banner) banner.style.display = 'none';
-  } else if (consent === 'declined') {
-    if (banner) banner.style.display = 'none';
-  } else {
-    // Show banner
-    if (banner) {
-      banner.classList.add('is-visible');
-      document.getElementById('cookieAccept').addEventListener('click', function() {
-        localStorage.setItem('cookie-consent', 'accepted');
-        banner.classList.remove('is-visible');
-        setTimeout(function() { banner.style.display = 'none'; }, 400);
-        loadFonts();
-      });
-      document.getElementById('cookieDecline').addEventListener('click', function() {
-        localStorage.setItem('cookie-consent', 'declined');
-        banner.classList.remove('is-visible');
-        setTimeout(function() { banner.style.display = 'none'; }, 400);
-      });
-    }
-  }
-})();
-</script>
+<script src="/js/pages/consent-c96617e225.js"></script>
 <script src="/js/main.js" defer></script>
-<script>(function(){var p=window.location.pathname.replace(/\/$/,'').replace(/^\/$/,'/')||'/';document.querySelectorAll('.nav-links a').forEach(function(a){var h=(a.getAttribute('href')||'').replace(/\/$/,'').replace(/^\/$/,'/')||'/';if(h===p)a.classList.add('active');});})();</script>
+<script src="/js/pages/navigation-c66d390090.js"></script>
 </body>
 </html>

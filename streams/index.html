@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://api.faceit.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/js/security.js"></script>
   <title>Streams & Social · DieDonuts Esports</title>
   <meta name="description" content="Live auf Twitch, Content auf YouTube und Instagram, folge DieDonuts Esports.">
   <meta property="og:title" content="Streams · DieDonuts Esports">
@@ -55,46 +58,47 @@
     <div class="section-header reveal">
       <div class="eyebrow">Live Streams</div>
       <h1 class="section-title">Live auf Twitch</h1>
+<p class="section-sub">Stream-Status wird etwa alle 15 Minuten aktualisiert; die Anzeige kann verzögert sein.</p>
       <p class="section-lead">Grüner Punkt = gerade live. Klick auf eine Karte öffnet den Stream direkt.</p>
     </div>
     <div class="streams-grid">
        <a class="stream-card reveal reveal-d3" href="https://www.twitch.tv/diedonuts_esports" target="_blank" rel="noopener" data-twitch="diedonuts_esports">
-        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">OFFLINE</span></div>
+        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">STATUS WIRD GELADEN</span></div>
         <div class="stream-player">DieDonuts Esports</div>
         <div class="stream-handle">twitch.tv/diedonuts_esports · Org</div>
         <div class="stream-viewer-count" aria-live="polite"></div>
         <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l10-10M7 7h10v10"/></svg>
       </a>
       <a class="stream-card reveal" href="https://www.twitch.tv/halfy_cs" target="_blank" rel="noopener" data-twitch="halfy_cs">
-        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">OFFLINE</span></div>
+        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">STATUS WIRD GELADEN</span></div>
         <div class="stream-player">hALFY</div>
         <div class="stream-handle">twitch.tv/halfy_cs · IGL</div>
         <div class="stream-viewer-count" aria-live="polite"></div>
         <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l10-10M7 7h10v10"/></svg>
       </a>
       <a class="stream-card reveal" href="https://www.twitch.tv/tube_y0u" target="_blank" rel="noopener" data-twitch="tube_y0u">
-        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">OFFLINE</span></div>
+        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">STATUS WIRD GELADEN</span></div>
         <div class="stream-player">TubeYou</div>
         <div class="stream-handle">twitch.tv/tube_y0u</div>
         <div class="stream-viewer-count" aria-live="polite"></div>
         <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l10-10M7 7h10v10"/></svg>
       </a>
       <a class="stream-card reveal reveal-d1" href="https://www.twitch.tv/its_kriistiin" target="_blank" rel="noopener" data-twitch="its_kriistiin">
-        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">OFFLINE</span></div>
+        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">STATUS WIRD GELADEN</span></div>
         <div class="stream-player">Kristin</div>
         <div class="stream-handle">twitch.tv/its_kriistiin</div>
         <div class="stream-viewer-count" aria-live="polite"></div>
         <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l10-10M7 7h10v10"/></svg>
       </a>
       <a class="stream-card reveal reveal-d2" href="https://www.twitch.tv/derohnedaumen" target="_blank" rel="noopener" data-twitch="derohnedaumen">
-        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">OFFLINE</span></div>
+        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">STATUS WIRD GELADEN</span></div>
         <div class="stream-player">-_-Calli</div>
         <div class="stream-handle">twitch.tv/derohnedaumen</div>
         <div class="stream-viewer-count" aria-live="polite"></div>
         <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l10-10M7 7h10v10"/></svg>
       </a>
       <a class="stream-card reveal reveal-d2" href="https://www.twitch.tv/sirokkoko" target="_blank" rel="noopener" data-twitch="sirokkoko">
-        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">OFFLINE</span></div>
+        <div class="stream-status offline"><span class="status-dot"></span><span class="status-text">STATUS WIRD GELADEN</span></div>
         <div class="stream-player">sirokkoko</div>
         <div class="stream-handle">twitch.tv/sirokkoko · Caster</div>
         <div class="stream-viewer-count" aria-live="polite"></div>
@@ -171,35 +175,8 @@
     </div>
   </div>
 </div>
-<script>
-(function() {
-  var consent = localStorage.getItem('cookie-consent');
-  var banner  = document.getElementById('cookieBanner');
-  function loadFonts() {
-    var link = document.createElement('link');
-    link.rel  = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap';
-    document.head.appendChild(link);
-  }
-  if (consent === 'accepted') { loadFonts(); if (banner) banner.style.display = 'none'; }
-  else if (consent === 'declined') { if (banner) banner.style.display = 'none'; }
-  else if (banner) {
-    banner.classList.add('is-visible');
-    document.getElementById('cookieAccept').addEventListener('click', function() {
-      localStorage.setItem('cookie-consent', 'accepted');
-      banner.classList.remove('is-visible');
-      setTimeout(function() { banner.style.display = 'none'; }, 400);
-      loadFonts();
-    });
-    document.getElementById('cookieDecline').addEventListener('click', function() {
-      localStorage.setItem('cookie-consent', 'declined');
-      banner.classList.remove('is-visible');
-      setTimeout(function() { banner.style.display = 'none'; }, 400);
-    });
-  }
-})();
-</script>
+<script src="/js/pages/consent-17e1d23f6a.js"></script>
 <script src="/js/main.js" defer></script>
-<script>(function(){var p=window.location.pathname.replace(/\/$/,'').replace(/^\/$/,'/')||'/';document.querySelectorAll('.nav-links a').forEach(function(a){var h=(a.getAttribute('href')||'').replace(/\/$/,'').replace(/^\/$/,'/')||'/';if(h===p)a.classList.add('active');});})();</script>
+<script src="/js/pages/navigation-c66d390090.js"></script>
 </body>
 </html>

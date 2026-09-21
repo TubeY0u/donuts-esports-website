@@ -1,0 +1,1 @@
+(function(){var p=window.location.pathname;document.querySelectorAll('.nav-links a').forEach(function(a){var h=a.getAttribute('href')||'';if(h==='/roster/'&&p.indexOf('/roster')===0)a.classList.add('active');});})();

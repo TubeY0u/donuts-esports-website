@@ -5,6 +5,8 @@
 // ============================================================
 import { loadTeamData, fetchPlayerProfile, fetchPlayerStats, loadAllPlayers, loadStatsJson } from '/js/stats.js';
 
+const { safeUrl } = window.DonutsSecurity;
+
 // ── Helpers ──────────────────────────────────────────────────
 function lvlClass(l) {
   if (l >= 10) return 'lvl-10';
@@ -38,7 +40,7 @@ function patchCard(article, p) {
   // Front — level badge
   const lvlWrap = article.querySelector('.player-level');
   if (lvlWrap && level > 0) {
-    lvlWrap.innerHTML = `<span class="lvl-dot ${lvlClass(level)}"></span>LVL ${level}`;
+    lvlWrap.innerHTML = `<span class="lvl-dot ${lvlClass(level)}"></span>LVL ${escH(level)}`;
   }
 
   // Back — stat cells
@@ -89,16 +91,16 @@ function renderMapStats(el, mapStats) {
   el.innerHTML = `
     <div class="map-stats-header">
       <span class="map-stats-title">/ Map Performance · 5v5</span>
-      <span class="map-record-badge"><strong>${totalW}W</strong> / ${totalL}L · ${totalP} Matches gesamt</span>
+      <span class="map-record-badge"><strong>${escH(totalW)}W</strong> / ${escH(totalL)}L · ${escH(totalP)} Matches gesamt</span>
     </div>
     <div class="map-bars">
       ${entries.map(([map, v]) => {
         const name = map.replace(/^de_/, '').replace(/^\w/, c => c.toUpperCase());
         const cls  = v.winRate >= 55 ? ' hot' : v.winRate <= 40 ? ' cold' : '';
         return `<div class="map-bar-row">
-          <span class="map-bar-name">${name}</span>
-          <div class="map-bar-track"><div class="map-bar-fill${cls}" data-pct="${v.winRate}"></div></div>
-          <span class="map-bar-pct">${v.winRate}%</span>
+          <span class="map-bar-name">${escH(name)}</span>
+          <div class="map-bar-track"><div class="map-bar-fill${cls}" data-pct="${escH(v.winRate)}"></div></div>
+          <span class="map-bar-pct">${escH(v.winRate)}%</span>
         </div>`;
       }).join('')}
     </div>`;
@@ -117,7 +119,7 @@ function patchTeamQuick(blockId, players) {
   if (!block) return;
   // Only count players whose card actually lives in THIS team's block
   const active = players.filter(p => {
-    const card = block.querySelector(`[data-nickname="${p.nickname}"]`);
+    const card = block.querySelector(`[data-nickname="${CSS.escape(String(p.nickname))}"]`);
     return p.elo > 0 && card && !card.classList.contains('player--standin');
   });
   if (!active.length) return;
@@ -171,11 +173,11 @@ function renderLeaderboard(allPlayers) {
   list.innerHTML = rows.map(row => {
     return `<div class="elo-lb-row${row.level >= 10 ? ' lvl10' : ''}${row.teamSlug === 'dns' ? ' dns-row' : ''}">
       <span class="elo-lb-rank">#${row.rank}</span>
-      <span class="elo-lb-name"><a href="https://www.faceit.com/de/players/${encodeURIComponent(row.nickname)}" target="_blank" rel="noopener">${row.nickname}</a></span>
-      <span class="elo-lb-team ${row.teamSlug}">${row.teamLabel}</span>
+      <span class="elo-lb-name"><a href="https://www.faceit.com/de/players/${encodeURIComponent(row.nickname)}" target="_blank" rel="noopener">${escH(row.nickname)}</a></span>
+      <span class="elo-lb-team ${escH(row.teamSlug)}">${escH(row.teamLabel)}</span>
       <div class="elo-lb-bar-wrap"><div class="elo-lb-bar" data-pct="${row.pct}"></div></div>
-      <span class="elo-lb-elo">${row.elo.toLocaleString('de-DE')}</span>
-      <span class="elo-lb-lvl${row.lbCls ? ' ' + row.lbCls : ''}">LVL ${row.level}</span>
+      <span class="elo-lb-elo">${escH(row.elo.toLocaleString('de-DE'))}</span>
+      <span class="elo-lb-lvl${row.lbCls ? ' ' + row.lbCls : ''}">LVL ${escH(row.level)}</span>
     </div>`;
   }).join('');
 
@@ -289,7 +291,7 @@ async function renderTeamCards() {
       faces.innerHTML = shown.map(x => {
         const nick = escH(x.n);
         const ini  = escH(x.i || String(x.n).slice(0, 2).toUpperCase());
-        const img  = x.p ? `<img src="${escH(x.p)}" alt="" loading="lazy" onerror="this.remove()">` : '';
+        const img  = x.p ? `<img src="${escH(safeUrl(x.p))}" alt="" loading="lazy" data-remove-on-error>` : '';
         return `<span class="tc-face" title="${nick}"><span>${ini}</span>${img}</span>`;
       }).join('');
     }
@@ -327,9 +329,9 @@ async function renderTeamPage() {
         rows.map(r => {
           const us = /DIEDONUTS/i.test(r.team || '');
           return `<tr class="${us ? 'is-us' : ''}">
-            <td>${r.pos}</td><td>${escH(r.team)}</td><td>${r.played}</td>
-            <td>${r.wins}</td><td>${r.losses}</td>
-            <td>${r.rd > 0 ? '+' : ''}${r.rd}</td><td>${r.points}</td></tr>`;
+            <td>${escH(r.pos)}</td><td>${escH(r.team)}</td><td>${escH(r.played)}</td>
+            <td>${escH(r.wins)}</td><td>${escH(r.losses)}</td>
+            <td>${r.rd > 0 ? '+' : ''}${escH(r.rd)}</td><td>${escH(r.points)}</td></tr>`;
         }).join('') + '</tbody></table>';
     }
   }
@@ -359,8 +361,8 @@ async function renderTeamPage() {
           <span class="tp-match-res">${m.result === 'win' ? 'W' : 'L'}</span>
           <span class="tp-match-opp">${escH(m.opponent || '?')}</span>
           <span class="tp-match-score">${escH(m.score || '')}</span>
-          <span class="tp-match-date">${fmtDate(m.date)}</span>
-          ${m.url ? `<a class="tp-match-link" href="${escH(m.url)}" target="_blank" rel="noopener" aria-label="Match öffnen">→</a>` : '<span></span>'}
+          <span class="tp-match-date">${escH(fmtDate(m.date))}</span>
+          ${m.url ? `<a class="tp-match-link" href="${escH(safeUrl(m.url))}" target="_blank" rel="noopener" aria-label="Match öffnen">→</a>` : '<span></span>'}
         </div>`).join('');
     }
   }
@@ -393,8 +395,8 @@ async function init() {
       const blockEl = document.getElementById(blockId);
       data.players.forEach(p => {
         const art = blockEl
-          ? blockEl.querySelector(`[data-nickname="${p.nickname}"]`)
-          : document.querySelector(`[data-nickname="${p.nickname}"]`);
+          ? blockEl.querySelector(`[data-nickname="${CSS.escape(String(p.nickname))}"]`)
+          : document.querySelector(`[data-nickname="${CSS.escape(String(p.nickname))}"]`);
         if (!art) return; // Karte gehört zu einem anderen Roster
         patchCard(art, p);
         allPlayers.push({ ...p, teamSlug });

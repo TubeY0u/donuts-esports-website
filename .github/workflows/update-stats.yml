@@ -1,46 +1,55 @@
-# ============================================================
-#  DieDonuts Esports — Auto Stats Updater
-#  Runs scraper.js twice daily → commits stats.json
-#  WICHTIG: Diese Datei muss im GitHub-Repo liegen
-#  (.github/workflows/update-stats.yml), sonst läuft nichts!
-#  Benötigtes GitHub Secret: FACEIT_API_KEY
-# ============================================================
 name: Update Stats
-
 on:
   schedule:
-    # Täglich 06:00 + 18:00 UTC (08:00/20:00 CEST)
     - cron: '0 6,18 * * *'
-  # Manueller Start über den GitHub-Actions-Tab
   workflow_dispatch:
-
 permissions:
-  contents: write
-
+  contents: read
+concurrency:
+  group: public-data-updates
+  cancel-in-progress: false
 jobs:
   update:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      pages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
-
+      - name: Security regression checks
+        run: node --test tests/security.test.mjs
       - name: Run scraper
         env:
           FACEIT_API_KEY: ${{ secrets.FACEIT_API_KEY }}
         run: node scraper.js
-
-      - name: Commit updated stats.json
+      - name: Refresh public YouTube metadata
+        continue-on-error: true
+        run: node scripts/update-youtube.mjs
+      - name: Commit public data only
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          git config user.name  "Donuts Bot"
+          set -euo pipefail
+          git config user.name "Donuts Bot"
           git config user.email "bot@diedonuts.de"
-          git add data/stats.json
-          # Only commit if the file actually changed
-          git diff --cached --quiet && echo "No changes, skipping commit." || \
-            git commit -m "chore: update stats.json [skip ci]"
-          git pull --rebase origin main || true
-          git push
+          git add -- data/stats.json data/youtube.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "chore: update public stats and video [skip ci]"
+          AUTH=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          echo "::add-mask::$AUTH"
+          git -c http.https://github.com/.extraheader="AUTHORIZATION: basic $AUTH" pull --rebase origin main
+          git -c http.https://github.com/.extraheader="AUTHORIZATION: basic $AUTH" push origin HEAD:main
+      - name: Rebuild GitHub Pages after bot commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/request-pages-build.mjs

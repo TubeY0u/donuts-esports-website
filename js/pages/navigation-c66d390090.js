@@ -1,0 +1,1 @@
+(function(){var p=window.location.pathname.replace(/\/$/,'').replace(/^\/$/,'/')||'/';document.querySelectorAll('.nav-links a').forEach(function(a){var h=(a.getAttribute('href')||'').replace(/\/$/,'').replace(/^\/$/,'/')||'/';if(h===p)a.classList.add('active');});})();

@@ -1,6 +1,6 @@
 // ============================================================
 //  DieDonuts Esports — Live Stats Module  v2
-//  Multi-proxy fallback · robust DACHCS parsing
+//  Same-origin snapshots · direct FACEIT fallback
 // ============================================================
 
 const FACEIT = 'https://api.faceit.com';
@@ -29,84 +29,18 @@ export const TEAMS = {
   },
 };
 
-// ── CORS proxy chain ─────────────────────────────────────────
-// Each entry: { wrap(url) → proxied URL, extract(response) → text/object }
-const PROXY_CHAIN = [
-  {
-    // corsproxy.io — returns raw response directly
-    wrap: url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    json: async r => { const t = await r.text(); return JSON.parse(t); },
-    text: async r => r.text(),
-  },
-  {
-    // allorigins — wraps response in {contents:"..."}
-    wrap: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-    json: async r => { const j = await r.json(); return JSON.parse(j.contents || 'null'); },
-    text: async r => { const j = await r.json(); return j.contents || ''; },
-  },
-  {
-    // codetabs — returns raw
-    wrap: url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-    json: async r => { const t = await r.text(); return JSON.parse(t); },
-    text: async r => r.text(),
-  },
-];
-
-// ── Fetch JSON (FACEIT API) ───────────────────────────────────
-const FACEIT_HEADERS = {
-  'Accept':          'application/json, text/plain, */*',
-  'Accept-Language': 'de-DE,de;q=0.9,en;q=0.8',
-};
-
+// Only contact FACEIT directly. Public relay operators must not supply page data.
 async function apiFetch(url) {
-  // Try direct first (works fine on GitHub Pages / most hosts)
   try {
-    const r = await fetch(url, {
-      headers: FACEIT_HEADERS,
-      signal:  AbortSignal.timeout(6000),
-    });
-    if (r.ok) {
-      const data = await r.json();
-      console.debug('[stats] direct ok:', url);
-      return data;
-    }
-  } catch { /* fall through to proxies */ }
-
-  // Try each proxy in sequence (2 attempts per proxy for robustness)
-  for (const proxy of PROXY_CHAIN) {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        const r = await fetch(proxy.wrap(url), { signal: AbortSignal.timeout(12000) });
-        if (!r.ok) break;
-        const data = await proxy.json(r);
-        if (data) {
-          console.debug('[stats] proxy ok:', proxy.wrap(url).split('?')[0]);
-          return data;
-        }
-      } catch { break; }
-    }
-  }
-
-  console.warn('[stats] all fetches failed for:', url);
-  return null;
+    const target = new URL(url);
+    if (target.origin !== FACEIT) return null;
+    const r = await fetch(target, { headers: { Accept: 'application/json' }, redirect: 'error', signal: AbortSignal.timeout(6000) });
+    return r.ok ? await r.json() : null;
+  } catch { return null; }
 }
 
-// ── Fetch HTML (DACHCS pages) ─────────────────────────────────
-async function htmlFetch(url) {
-  for (const proxy of PROXY_CHAIN) {
-    try {
-      const r = await fetch(proxy.wrap(url), { signal: AbortSignal.timeout(12000) });
-      if (!r.ok) continue;
-      const html = await proxy.text(r);
-      if (html && html.length > 500) {
-        console.debug('[stats] htmlFetch ok, length:', html.length);
-        return html;
-      }
-    } catch { continue; }
-  }
-  console.warn('[stats] htmlFetch failed for:', url);
-  return '';
-}
+// DACHCS is collected by the scheduled server-side scraper.
+async function htmlFetch() { return ''; }
 
 // ── HTML helpers ─────────────────────────────────────────────
 function decodeHtml(html) {
@@ -378,20 +312,6 @@ export async function loadTeamData(teamKey) {
   const fromJson = jsonToTeamData(teamKey, cfg, json);
   if (fromJson) {
     console.debug('[stats] using stats.json for', teamKey);
-    // Fire live DACHCS fetch in background to get fresh upcoming matches.
-    // Gruppe kommt bevorzugt aus stats.json (vom Scraper automatisch ermittelt).
-    const groupUrl = fromJson.dachcsUrl || cfg.dachcsGroup;
-    if (groupUrl && groupUrl.includes('/group/') && cfg.dachcsName) {
-      fetchDACHCSMatches(groupUrl, cfg.dachcsName)
-        .then(dachcs => {
-          // Nur übernehmen, wenn wirklich Daten geparst wurden —
-          // sonst würden gültige Scraper-Daten überschrieben.
-          if (dachcs && (dachcs.upcoming.length || dachcs.recent.length || dachcs.standings.length)) {
-            fromJson.dachcs = dachcs;
-          }
-        })
-        .catch(() => {});
-    }
     return fromJson;
   }
 

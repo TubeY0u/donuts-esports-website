@@ -77,6 +77,8 @@ async function fetchFACEIT(endpoint) {
   if (!FACEIT_API_KEY) return null;
   try {
     const res = await fetch(`${OPEN_API}${endpoint}`, {
+      redirect: 'error',
+      signal: AbortSignal.timeout(15000),
       headers: {
         'Authorization': `Bearer ${FACEIT_API_KEY}`,
         'Accept':        'application/json',
@@ -95,9 +97,11 @@ async function fetchFACEIT(endpoint) {
 }
 
 async function fetchHTML(url) {
+  if (new URL(url).origin !== DACHCS_BASE) return '';
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
       const res = await fetch(url, {
+        redirect: 'error',
         headers: { 'User-Agent': 'Mozilla/5.0 DonutsBot/3.0' },
         signal:  AbortSignal.timeout(15000),
       });
@@ -112,8 +116,10 @@ async function fetchHTML(url) {
 }
 
 async function postForm(url, params) {
+  if (new URL(url).origin !== DACHCS_BASE) return null;
   try {
     const res = await fetch(url, {
+      redirect: 'error',
       method:  'POST',
       headers: {
         'User-Agent':   'Mozilla/5.0 DonutsBot/3.0',

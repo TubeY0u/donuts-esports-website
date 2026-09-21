@@ -12,6 +12,7 @@
 
 (() => {
   'use strict';
+  const { safeUrl } = window.DonutsSecurity;
 
   // Schutz vor doppeltem Einbinden: sonst haengen alle Klick-Handler zweimal
   // und heben sich gegenseitig auf (Spielerkarten drehen sich dann nicht mehr).
@@ -396,8 +397,8 @@
           </div>
         </div>
         <div class="nm-card-bottom">
-          <div class="nm-datetime"><strong>${dateStr}</strong> · ${won ? 'Sieg' : 'Niederlage'}</div>
-          ${m.url ? `<a href="${esc(m.url)}" target="_blank" rel="noopener" class="nm-dachcs-link">DACHCS <span class="nm-arrow">→</span></a>` : ''}
+          <div class="nm-datetime"><strong>${esc(dateStr)}</strong> · ${won ? 'Sieg' : 'Niederlage'}</div>
+          ${m.url ? `<a href="${esc(safeUrl(m.url))}" target="_blank" rel="noopener" class="nm-dachcs-link">DACHCS <span class="nm-arrow">→</span></a>` : ''}
         </div>
       </div>`;
     }).join('');
@@ -438,10 +439,10 @@
           </div>
         </div>
         <div class="nm-card-bottom">
-          <div class="nm-datetime"><strong>${dateStr}</strong> um ${timeStr} Uhr</div>
+          <div class="nm-datetime"><strong>${esc(dateStr)}</strong> um ${timeStr} Uhr</div>
           <div class="nm-card-links">
-            ${m.faceitUrl ? `<a href="${esc(m.faceitUrl)}" target="_blank" rel="noopener" class="nm-dachcs-link">Match-Room <span class="nm-arrow">→</span></a>` : ''}
-            ${m.castUrl  ? `<a href="${esc(m.castUrl)}" target="_blank" rel="noopener" class="nm-dachcs-link" style="color:#9146ff;">Cast <span class="nm-arrow">→</span></a>` : ''}
+            ${m.faceitUrl ? `<a href="${esc(safeUrl(m.faceitUrl))}" target="_blank" rel="noopener" class="nm-dachcs-link">Match-Room <span class="nm-arrow">→</span></a>` : ''}
+            ${m.castUrl  ? `<a href="${esc(safeUrl(m.castUrl))}" target="_blank" rel="noopener" class="nm-dachcs-link" style="color:#9146ff;">Cast <span class="nm-arrow">→</span></a>` : ''}
           </div>
         </div>
       </div>`;
@@ -488,14 +489,14 @@
 
     grid.innerHTML = entries.map(p => {
       const inner = `
-        ${p.logo ? `<img class="partner-logo" src="${esc(p.logo)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">` : ''}
+        ${p.logo ? `<img class="partner-logo" src="${esc(safeUrl(p.logo))}" alt="${esc(p.name)}" loading="lazy" data-remove-on-error>` : ''}
         <div class="partner-body">
           ${p.tag ? `<span class="partner-tag">${esc(p.tag)}</span>` : ''}
           <h3 class="partner-name">${esc(p.name || '')}</h3>
           ${p.text ? `<p class="partner-text">${esc(p.text)}</p>` : ''}
         </div>`;
       return p.url
-        ? `<a class="partner-card" href="${esc(p.url)}" target="_blank" rel="noopener sponsored">${inner}</a>`
+        ? `<a class="partner-card" href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener sponsored">${inner}</a>`
         : `<div class="partner-card">${inner}</div>`;
     }).join('');
 
@@ -620,8 +621,8 @@
       const div  = recent.division || '';
       rows.push({
         badge:    BADGE_LABELS[slug] || slug.toUpperCase(),
-        title:    `${esc(t.label)} · ${esc(comp)}`,
-        text:     `${div ? esc(div) + ' · ' : ''}Platz ${row.pos} von ${(t.standings || []).length} · ${row.wins}W / ${row.losses}L · Runden ${row.rd > 0 ? '+' : ''}${row.rd}`,
+        title:    `${t.label} · ${comp}`,
+        text:     `${div ? div + ' · ' : ''}Platz ${row.pos} von ${(t.standings || []).length} · ${row.wins}W / ${row.losses}L · Runden ${row.rd > 0 ? '+' : ''}${row.rd}`,
         tag:      'live',
         tagLabel: 'Läuft',
       });
@@ -631,12 +632,12 @@
 
     list.innerHTML = rows.map(e => `
       <div class="ach-row">
-        <div class="ach-year">${e.badge || ''}</div>
+        <div class="ach-year">${esc(e.badge || '')}</div>
         <div>
-          <h4>${e.title || ''}</h4>
-          <p>${e.text || ''}</p>
+          <h4>${esc(e.title || '')}</h4>
+          <p>${esc(e.text || '')}</p>
         </div>
-        <span class="ach-tag ${e.tag || ''}">${e.tagLabel || ''}</span>
+        <span class="ach-tag ${esc(e.tag || '')}">${esc(e.tagLabel || '')}</span>
       </div>`).join('');
   }
 
@@ -650,19 +651,7 @@
   // Alle 5 Minuten frische Daten holen
   setInterval(() => { getStats(true); loadNextMatches(); initTicker(); }, 5 * 60 * 1000);
 
-  // ---- Twitch Live Status ------------------------------------------------
-  //
-  // Um echten Live-Status zu zeigen, brauchst du:
-  // 1. Eine Twitch Developer App unter https://dev.twitch.tv/console
-  // 2. Einen Client-ID und einen App Access Token
-  // 3. Trage Client-ID und Token unten ein
-  //
-  // Twitch-Handles der Spieler bitte in TWITCH_CHANNELS anpassen!
-  //
-  // Credentials werden aus /data/twitch-token.json geladen (generiert via GitHub Actions)
-  let TWITCH_CLIENT_ID = '';
-  let TWITCH_TOKEN     = '';
-
+  // Public status only; credentials stay inside the scheduled workflow.
   async function checkTwitchLive() {
     const streamCards = document.querySelectorAll('.stream-card[data-twitch]');
     // Homepage: Banner-Kanäle immer prüfen auch wenn keine stream-cards da sind
@@ -670,35 +659,26 @@
     const bannerNames   = { diedonuts_esports:'DieDonuts Esports', tube_y0u:'TubeYou', its_kriistiin:'Kristin', derohnedaumen:'-_-Calli', sirokkoko:'sirokkoko' };
     if (!streamCards.length && !document.getElementById('liveBanner')) return;
 
-    // Ohne API-Key: nichts tun (Cards bleiben OFFLINE)
-    if (!TWITCH_CLIENT_ID || !TWITCH_TOKEN) {
-      console.info('[Donuts Streams] Kein Twitch API-Key konfiguriert. Live-Status nicht verfügbar.');
-      return;
-    }
-
-    // Alle bekannten Handles kombinieren (stream-cards + banner-handles)
-    const cardHandles  = [...streamCards].map(c => c.dataset.twitch);
-    const allHandles   = [...new Set([...cardHandles, ...bannerHandles])];
-    const handles      = allHandles.map(h => `user_login=${encodeURIComponent(h)}`).join('&');
-
     try {
-      const res = await fetch(`https://api.twitch.tv/helix/streams?${handles}`, {
-        headers: {
-          'Client-ID': TWITCH_CLIENT_ID,
-          'Authorization': `Bearer ${TWITCH_TOKEN}`
-        }
-      });
+      const res = await fetch('/data/twitch-status.json', { cache: 'no-cache', signal: AbortSignal.timeout(8000) });
 
       if (!res.ok) {
-        console.warn('[Donuts Streams] Twitch API Fehler:', res.status);
-        return;
+        throw new Error('Live-Status nicht verfügbar');
       }
 
       const data = await res.json();
+      const age = Date.now() - Date.parse(data.updatedAt);
+      if (!Number.isFinite(age) || age < -60000 || age > 45 * 60 * 1000 || !Array.isArray(data.data)) {
+        throw new Error('Live-Status nicht aktuell');
+      }
+      const allowedHandles = new Set([...bannerHandles, ...[...streamCards].map(c => c.dataset.twitch)]);
       const liveMap = new Map();
       if (data.data) {
         data.data.forEach(stream => {
-          liveMap.set(stream.user_login.toLowerCase(), stream.viewer_count);
+          const handle = String(stream.user_login || '').toLowerCase();
+          if (allowedHandles.has(handle) && /^[a-z0-9_]{1,25}$/.test(handle) && Number.isSafeInteger(stream.viewer_count) && stream.viewer_count >= 0) {
+            liveMap.set(handle, stream.viewer_count);
+          }
         });
       }
 
@@ -731,7 +711,7 @@
           const url  = `https://www.twitch.tv/${handle}`;
           return `<a class="live-banner-item" href="${url}" target="_blank" rel="noopener">
             <span class="live-dot-purple"></span>
-            <strong>${name}</strong>
+            <strong>${esc(name)}</strong>
             <span style="color:var(--fg-3);font-size:11px;">${viewers.toLocaleString('de-DE')} Zuschauer</span>
           </a>`;
         }).join('');
@@ -744,26 +724,23 @@
       }
 
     } catch (err) {
-      console.warn('[Donuts Streams] Twitch-Check fehlgeschlagen:', err);
+      streamCards.forEach(card => {
+        card.classList.remove('is-live');
+        const status = card.querySelector('.stream-status');
+        if (status) status.className = 'stream-status offline';
+        const label = card.querySelector('.status-text');
+        if (label) label.textContent = 'STATUS UNBEKANNT';
+        const viewers = card.querySelector('.stream-viewer-count');
+        if (viewers) viewers.textContent = '';
+      });
+      const banner = document.getElementById('liveBanner');
+      if (banner) { banner.classList.remove('is-visible'); banner.style.display = 'none'; }
+      console.info('[Donuts Streams] Live-Status vorübergehend nicht verfügbar.');
     }
   }
 
-  // Token laden, dann sofort prüfen und alle 5 Minuten wiederholen
-  async function initTwitch() {
-    try {
-      const cfg = await fetch('/data/twitch-token.json').then(r => r.ok ? r.json() : null);
-      if (cfg) {
-        TWITCH_CLIENT_ID = cfg.client_id || '';
-        TWITCH_TOKEN     = cfg.access_token || '';
-      }
-    } catch (e) {
-      console.info('[Donuts Streams] twitch-token.json nicht verfügbar.');
-    }
-    checkTwitchLive();
-    setInterval(checkTwitchLive, 5 * 60 * 1000);
-  }
-
-  initTwitch();
+  checkTwitchLive();
+  setInterval(checkTwitchLive, 5 * 60 * 1000);
 
 })();
 

@@ -1,6 +1,6 @@
 # Deployen — wie es jetzt läuft
 
-Stand: 28.08.2026
+Stand: 21.09.2026
 
 ## Kurzfassung
 
@@ -18,28 +18,23 @@ git push
 Beim ersten `git push` fragt Windows nach deinem GitHub-Login. Danach merkt es sich das.
 GitHub Pages baut die Seite anschließend automatisch neu (dauert ein bis zwei Minuten).
 
-## Wichtig: zwei Dateien hatten lokal gefehlt
+## Sicherheitsänderung vom 21.09.2026
 
-Im Repo lagen `CNAME` und `data/twitch-token.json`, in deinem Ordner nicht.
-Beide sind jetzt wiederhergestellt.
-
-- **`CNAME`** enthält `donuts-esports.de`. Ohne die Datei verliert GitHub Pages
-  die eigene Domain. Niemals löschen.
-- **`data/twitch-token.json`** wird täglich vom Workflow neu geschrieben und treibt
-  den Live-Banner. Nicht von Hand bearbeiten.
-
-Beide werden von den GitHub Actions automatisch gepflegt. Wenn `git status` sie als
-geändert anzeigt: einfach mit `git checkout -- <datei>` verwerfen, nicht committen.
+- `CNAME` muss weiterhin `donuts-esports.de` enthalten.
+- `data/twitch-token.json` ist absichtlich leer und vom Pages-Build ausgeschlossen. Hier niemals Zugangsdaten eintragen oder alte Inhalte wiederherstellen.
+- Twitch-Secrets bleiben ausschließlich in GitHub Actions. Der Workflow veröffentlicht nur `data/twitch-status.json`; den verwendeten Token widerruft er anschließend.
+- Bereits veröffentlichte Tokens müssen gesondert widerrufen werden; siehe `SECURITY.md`.
 
 ## Was automatisch läuft
 
 | Workflow | Wann | Was |
 |---|---|---|
-| `update-stats.yml` | täglich 08:00 + 20:00 | `scraper.js` → `data/stats.json` |
-| `update-twitch-token.yml` | täglich 07:30 | frischer Twitch-App-Token |
+| `update-stats.yml` | täglich 06:00 + 18:00 UTC | Statistiken und YouTube-Metadaten |
+| `update-twitch-token.yml` (historischer Dateiname) | ungefähr alle 15 Minuten | öffentlicher Twitch-Status, keine Tokens |
 
-Beide committen selbst ins Repo. Deshalb: **vor dem Arbeiten `git pull`**,
-sonst kollidiert dein Commit mit dem des Bots.
+Beide committen ausschließlich öffentliche Daten und fordern anschließend einen Pages-Build an. Twitch-Status kann wegen Scheduling und Cache verzögert erscheinen; veraltete Daten werden als unbekannt angezeigt.
+
+Vor Änderungen den aktuellen Repository-Stand abgleichen. Sicherheitsprüfung: `node --test tests/security.test.mjs`.
 
 ## Was du wo pflegst
 

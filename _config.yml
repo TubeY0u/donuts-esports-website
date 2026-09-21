@@ -1,0 +1,10 @@
+# Exclude maintenance code and private credential files from GitHub Pages.
+exclude:
+  - scraper.js
+  - scripts
+  - tests
+  - DEPLOY-ANLEITUNG.md
+  - SECURITY.md
+  - data/twitch-token.json
+  - .env
+  - node_modules

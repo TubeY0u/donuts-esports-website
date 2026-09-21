@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://api.faceit.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/js/security.js"></script>
   <title>Team · DieDonuts Esports</title>
   <meta name="description" content="Die drei Roster von DieDonuts Esports im Überblick — Main, Nxt und DNS, mit Live-Tabellenstand und ELO-Ranking aller Spieler.">
   <meta property="og:title" content="Team · DieDonuts Esports">
@@ -65,7 +68,7 @@
     <div class="team-cards" id="teamCards">
       <a class="tc-card reveal" data-team="main" data-lineup="[{&quot;n&quot;: &quot;hALFY&quot;, &quot;p&quot;: &quot;/assets/players/halfy.png&quot;, &quot;i&quot;: &quot;HA&quot;}, {&quot;n&quot;: &quot;chrizzW&quot;, &quot;p&quot;: &quot;/assets/players/chrizzw.png&quot;, &quot;i&quot;: &quot;CH&quot;}, {&quot;n&quot;: &quot;TubeYou&quot;, &quot;p&quot;: &quot;/assets/players/tubeyou.png&quot;, &quot;i&quot;: &quot;TU&quot;}, {&quot;n&quot;: &quot;svN--&quot;, &quot;p&quot;: &quot;/assets/players/svn.png&quot;, &quot;i&quot;: &quot;SV&quot;}, {&quot;n&quot;: &quot;rdX&quot;, &quot;p&quot;: &quot;/assets/players/rdx.png&quot;, &quot;i&quot;: &quot;RD&quot;}]" href="/roster/main/">
         <div class="tc-top">
-          <img class="tc-logo" src="/assets/logo_trans.png" alt="" onerror="this.remove()">
+          <img class="tc-logo" src="/assets/logo_trans.png" alt="" data-remove-on-error>
           <div>
             <div class="tc-tag">Main Roster</div>
             <h3 class="tc-name">Donuts</h3>
@@ -82,7 +85,7 @@
       </a>
       <a class="tc-card reveal" data-team="nxt" data-lineup="[{&quot;n&quot;: &quot;CaIli&quot;, &quot;p&quot;: &quot;/assets/players/calli.png&quot;, &quot;i&quot;: &quot;CA&quot;}, {&quot;n&quot;: &quot;def4ult&quot;, &quot;p&quot;: &quot;/assets/players/def4ult.png&quot;, &quot;i&quot;: &quot;DE&quot;}, {&quot;n&quot;: &quot;Kristin&quot;, &quot;p&quot;: &quot;/assets/players/kristin.png&quot;, &quot;i&quot;: &quot;KR&quot;}, {&quot;n&quot;: &quot;-Shinoda-&quot;, &quot;p&quot;: &quot;/assets/players/shinoda.png&quot;, &quot;i&quot;: &quot;SH&quot;}, {&quot;n&quot;: &quot;illiw29&quot;, &quot;p&quot;: &quot;/assets/players/illiw29.png&quot;, &quot;i&quot;: &quot;IL&quot;}]" href="/roster/nxt/">
         <div class="tc-top">
-          <img class="tc-logo" src="/assets/Logo_NXT.png" alt="" onerror="this.remove()">
+          <img class="tc-logo" src="/assets/Logo_NXT.png" alt="" data-remove-on-error>
           <div>
             <div class="tc-tag">Academy Roster</div>
             <h3 class="tc-name">Donuts Nxt</h3>
@@ -99,7 +102,7 @@
       </a>
       <a class="tc-card reveal" data-team="dns" data-lineup="[{&quot;n&quot;: &quot;DNS-Olof&quot;, &quot;p&quot;: &quot;/assets/players/Olof.png&quot;, &quot;i&quot;: &quot;OL&quot;}, {&quot;n&quot;: &quot;LilliFee1987&quot;, &quot;p&quot;: &quot;/assets/players/lillifee.png&quot;, &quot;i&quot;: &quot;LI&quot;}, {&quot;n&quot;: &quot;Insidious_X&quot;, &quot;p&quot;: &quot;/assets/players/insidious.png&quot;, &quot;i&quot;: &quot;IN&quot;}, {&quot;n&quot;: &quot;Achmatov&quot;, &quot;p&quot;: &quot;/assets/players/quira.png&quot;, &quot;i&quot;: &quot;QU&quot;}, {&quot;n&quot;: &quot;sonezu&quot;, &quot;p&quot;: &quot;/assets/players/sonezu.png&quot;, &quot;i&quot;: &quot;SO&quot;}]" href="/roster/dns/">
         <div class="tc-top">
-          <img class="tc-logo" src="/assets/Logo_DNS.png" alt="" onerror="this.remove()">
+          <img class="tc-logo" src="/assets/Logo_DNS.png" alt="" data-remove-on-error>
           <div>
             <div class="tc-tag">Newcomer Roster</div>
             <h3 class="tc-name">Donuts DNS</h3>
@@ -205,43 +208,7 @@
 </div>
 <script src="/js/main.js" defer></script>
 <script type="module" src="/js/roster.js"></script>
-<script>
-  (function(){var p=window.location.pathname.replace(/\/$/,'').replace(/^\/$/,'/')||'/';document.querySelectorAll('.nav-links a').forEach(function(a){var h=(a.getAttribute('href')||'').replace(/\/$/,'').replace(/^\/$/,'/')||'/';if(h===p)a.classList.add('active');});})();
-</script>
-<script>
-(function() {
-  var consent = localStorage.getItem('cookie-consent');
-  var banner  = document.getElementById('cookieBanner');
-
-  function loadFonts() {
-    var link = document.createElement('link');
-    link.rel  = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap';
-    document.head.appendChild(link);
-  }
-
-  if (consent === 'accepted') {
-    loadFonts();
-    if (banner) banner.style.display = 'none';
-  } else if (consent === 'declined') {
-    if (banner) banner.style.display = 'none';
-  } else {
-    if (banner) {
-      banner.classList.add('is-visible');
-      document.getElementById('cookieAccept').addEventListener('click', function() {
-        localStorage.setItem('cookie-consent', 'accepted');
-        banner.classList.remove('is-visible');
-        setTimeout(function() { banner.style.display = 'none'; }, 400);
-        loadFonts();
-      });
-      document.getElementById('cookieDecline').addEventListener('click', function() {
-        localStorage.setItem('cookie-consent', 'declined');
-        banner.classList.remove('is-visible');
-        setTimeout(function() { banner.style.display = 'none'; }, 400);
-      });
-    }
-  }
-})();
-</script>
+<script src="/js/pages/navigation-947ac97bde.js"></script>
+<script src="/js/pages/consent-847c6513ec.js"></script>
 </body>
 </html>

@@ -1,46 +1,51 @@
-# ============================================================
-#  DieDonuts Esports — Twitch Token Refresher
-#  Runs daily → fetches a fresh App Access Token → commits to data/twitch-token.json
-#  Required GitHub Secrets: TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
-# ============================================================
-name: Refresh Twitch Token
-
+name: Update public Twitch status
 on:
   schedule:
-    # Every day at 05:30 UTC (30 min before stats update)
-    - cron: '30 5 * * *'
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
-
 permissions:
-  contents: write
-
+  contents: read
+concurrency:
+  group: public-data-updates
+  cancel-in-progress: false
 jobs:
-  refresh:
+  update:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Fetch Twitch App Access Token
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+      - name: Collect public stream status
         env:
           TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
           TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+        run: node scripts/update-twitch.mjs
+      - name: Commit public data only
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          RESPONSE=$(curl -s -X POST "https://id.twitch.tv/oauth2/token" \
-            -d "client_id=${TWITCH_CLIENT_ID}" \
-            -d "client_secret=${TWITCH_CLIENT_SECRET}" \
-            -d "grant_type=client_credentials")
-
-          ACCESS_TOKEN=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
-
-          mkdir -p data
-          echo "{\"client_id\":\"${TWITCH_CLIENT_ID}\",\"access_token\":\"${ACCESS_TOKEN}\"}" > data/twitch-token.json
-
-      - name: Commit twitch-token.json
-        run: |
-          git config user.name  "Donuts Bot"
+          set -euo pipefail
+          git config user.name "Donuts Bot"
           git config user.email "bot@diedonuts.de"
-          git add data/twitch-token.json
-          git diff --cached --quiet && echo "No changes." || \
-            git commit -m "chore: refresh twitch token [skip ci]"
-          git push
+          git add -- data/twitch-status.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "chore: update public Twitch status [skip ci]"
+          AUTH=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          echo "::add-mask::$AUTH"
+          git -c http.https://github.com/.extraheader="AUTHORIZATION: basic $AUTH" pull --rebase origin main
+          git -c http.https://github.com/.extraheader="AUTHORIZATION: basic $AUTH" push origin HEAD:main
+      - name: Rebuild GitHub Pages after bot commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/request-pages-build.mjs
