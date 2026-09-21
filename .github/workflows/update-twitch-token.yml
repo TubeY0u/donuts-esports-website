@@ -1,5 +1,11 @@
 name: Update public Twitch status
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-twitch-token.yml'
+      - 'scripts/update-twitch.mjs'
+      - 'scripts/request-pages-build.mjs'
   schedule:
     - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
@@ -26,6 +32,8 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
+      - name: Security regression checks
+        run: node --test tests/security.test.mjs
       - name: Collect public stream status
         env:
           TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
