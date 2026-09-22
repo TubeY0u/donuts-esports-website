@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-22T10:56:51.274Z",
+  "lastUpdated": "2026-09-22T20:53:20.726Z",
   "teams": {
     "main": {
       "slug": "main",
@@ -8,40 +8,21 @@
       "dachcsUrl": "https://dachcs.de/coverage/group/296",
       "players": [
         {
-          "faceitId": "d3926009-9971-4936-8a9e-9ffed426aefd",
-          "nickname": "rdX",
-          "avatar": "https://distribution.faceit-cdn.net/images/e3093f0b-bb39-4712-ad5b-942e928a8d6f.jpg",
+          "faceitId": "b3a1abf4-7214-4d34-ac48-7a56518a032b",
+          "nickname": "Ibrakadabra",
+          "avatar": "https://distribution.faceit-cdn.net/images/0411c2f3-a2ad-47ec-894f-5ca21c079572.jpg",
           "country": "de",
-          "elo": 2360,
+          "elo": 2179,
           "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/rdX",
+          "faceitUrl": "https://www.faceit.com/de/players/Ibrakadabra",
           "stats": {
-            "matches": 2162,
-            "wins": 1101,
-            "winRate": 51,
-            "kd": 1.12,
+            "matches": 2652,
+            "wins": 1339,
+            "winRate": 50,
+            "kd": 1.13,
             "kr": null,
             "adr": null,
-            "hs": 35,
-            "avgKills": 0
-          }
-        },
-        {
-          "faceitId": "e0f0313c-c2aa-4e8a-9874-8eb2be3d628d",
-          "nickname": "chrizzW",
-          "avatar": "https://distribution.faceit-cdn.net/images/df3a7fd1-210f-4503-bac5-aff0ab58cc1c.jpg",
-          "country": "de",
-          "elo": 2065,
-          "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/chrizzW",
-          "stats": {
-            "matches": 4609,
-            "wins": 2276,
-            "winRate": 49,
-            "kd": 1.16,
-            "kr": null,
-            "adr": null,
-            "hs": 46,
+            "hs": 43,
             "avgKills": 0
           }
         },
@@ -65,25 +46,6 @@
           }
         },
         {
-          "faceitId": "024be859-e215-42dd-a7ed-18f7bbf91b3c",
-          "nickname": "hALFY",
-          "avatar": "https://distribution.faceit-cdn.net/images/4139c07a-1d91-4fd9-936e-01da29b43d11.jpg",
-          "country": "de",
-          "elo": 2744,
-          "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/hALFY",
-          "stats": {
-            "matches": 3903,
-            "wins": 1990,
-            "winRate": 51,
-            "kd": 1.4,
-            "kr": null,
-            "adr": null,
-            "hs": 42,
-            "avgKills": 0
-          }
-        },
-        {
           "faceitId": "22e784a6-c9b3-4d6f-bef3-c429b5be8887",
           "nickname": "PureZebra30",
           "avatar": "https://distribution.faceit-cdn.net/images/e95d33eb-59f6-42ae-83a8-af09d37c30ff.jpeg",
@@ -103,21 +65,21 @@
           }
         },
         {
-          "faceitId": "824221b9-8639-4e24-a87b-f5b17f66fdcb",
-          "nickname": "svN--",
-          "avatar": "https://distribution.faceit-cdn.net/images/3259f102-7346-40fb-8223-1a6a3f9dc4d8.jpg",
+          "faceitId": "e0f0313c-c2aa-4e8a-9874-8eb2be3d628d",
+          "nickname": "chrizzW",
+          "avatar": "https://distribution.faceit-cdn.net/images/df3a7fd1-210f-4503-bac5-aff0ab58cc1c.jpg",
           "country": "de",
-          "elo": 2124,
+          "elo": 2108,
           "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/svN--",
+          "faceitUrl": "https://www.faceit.com/de/players/chrizzW",
           "stats": {
-            "matches": 1282,
-            "wins": 650,
-            "winRate": 51,
-            "kd": 1.12,
+            "matches": 4612,
+            "wins": 2279,
+            "winRate": 49,
+            "kd": 1.16,
             "kr": null,
             "adr": null,
-            "hs": 51,
+            "hs": 46,
             "avgKills": 0
           }
         },
@@ -141,21 +103,21 @@
           }
         },
         {
-          "faceitId": "b3a1abf4-7214-4d34-ac48-7a56518a032b",
-          "nickname": "Ibrakadabra",
-          "avatar": "https://distribution.faceit-cdn.net/images/0411c2f3-a2ad-47ec-894f-5ca21c079572.jpg",
+          "faceitId": "d3926009-9971-4936-8a9e-9ffed426aefd",
+          "nickname": "rdX",
+          "avatar": "https://distribution.faceit-cdn.net/images/e3093f0b-bb39-4712-ad5b-942e928a8d6f.jpg",
           "country": "de",
-          "elo": 2179,
+          "elo": 2380,
           "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/Ibrakadabra",
+          "faceitUrl": "https://www.faceit.com/de/players/rdX",
           "stats": {
-            "matches": 2652,
-            "wins": 1339,
-            "winRate": 50,
-            "kd": 1.13,
+            "matches": 2163,
+            "wins": 1102,
+            "winRate": 51,
+            "kd": 1.12,
             "kr": null,
             "adr": null,
-            "hs": 43,
+            "hs": 35,
             "avgKills": 0
           }
         },
@@ -164,12 +126,12 @@
           "nickname": "TubeYou",
           "avatar": "https://distribution.faceit-cdn.net/images/523feae3-9ecf-4d10-879d-8fd2d53a045d.jpg",
           "country": "de",
-          "elo": 2243,
+          "elo": 2266,
           "level": 10,
           "faceitUrl": "https://www.faceit.com/de/players/TubeYou",
           "stats": {
-            "matches": 1162,
-            "wins": 580,
+            "matches": 1164,
+            "wins": 582,
             "winRate": 50,
             "kd": 1.1,
             "kr": null,
@@ -177,15 +139,47 @@
             "hs": 54,
             "avgKills": 0
           }
+        },
+        {
+          "faceitId": "824221b9-8639-4e24-a87b-f5b17f66fdcb",
+          "nickname": "svN--",
+          "avatar": "https://distribution.faceit-cdn.net/images/3259f102-7346-40fb-8223-1a6a3f9dc4d8.jpg",
+          "country": "de",
+          "elo": 2144,
+          "level": 10,
+          "faceitUrl": "https://www.faceit.com/de/players/svN--",
+          "stats": {
+            "matches": 1283,
+            "wins": 651,
+            "winRate": 51,
+            "kd": 1.12,
+            "kr": null,
+            "adr": null,
+            "hs": 51,
+            "avgKills": 0
+          }
+        },
+        {
+          "faceitId": "024be859-e215-42dd-a7ed-18f7bbf91b3c",
+          "nickname": "hALFY",
+          "avatar": "https://distribution.faceit-cdn.net/images/4139c07a-1d91-4fd9-936e-01da29b43d11.jpg",
+          "country": "de",
+          "elo": 2787,
+          "level": 10,
+          "faceitUrl": "https://www.faceit.com/de/players/hALFY",
+          "stats": {
+            "matches": 3906,
+            "wins": 1993,
+            "winRate": 51,
+            "kd": 1.4,
+            "kr": null,
+            "adr": null,
+            "hs": 42,
+            "avgKills": 0
+          }
         }
       ],
       "mapStats": {
-        "anubis": {
-          "label": "Anubis",
-          "played": 47,
-          "wins": 16,
-          "winRate": 34
-        },
         "inferno": {
           "label": "Inferno",
           "played": 1,
@@ -198,35 +192,11 @@
           "wins": 32,
           "winRate": 37
         },
-        "cache": {
-          "label": "Cache",
-          "played": 5,
-          "wins": 3,
-          "winRate": 60
-        },
-        "overpass": {
-          "label": "Overpass",
-          "played": 2,
-          "wins": 0,
-          "winRate": 0
-        },
         "nuke": {
           "label": "Nuke",
           "played": 33,
           "wins": 18,
           "winRate": 55
-        },
-        "mirage": {
-          "label": "Mirage",
-          "played": 8,
-          "wins": 3,
-          "winRate": 38
-        },
-        "aztec": {
-          "label": "Aztec",
-          "played": 1,
-          "wins": 0,
-          "winRate": 0
         },
         "mills": {
           "label": "Mills",
@@ -239,6 +209,36 @@
           "played": 9,
           "wins": 2,
           "winRate": 22
+        },
+        "overpass": {
+          "label": "Overpass",
+          "played": 2,
+          "wins": 0,
+          "winRate": 0
+        },
+        "anubis": {
+          "label": "Anubis",
+          "played": 47,
+          "wins": 16,
+          "winRate": 34
+        },
+        "mirage": {
+          "label": "Mirage",
+          "played": 8,
+          "wins": 3,
+          "winRate": 38
+        },
+        "cache": {
+          "label": "Cache",
+          "played": 5,
+          "wins": 3,
+          "winRate": 60
+        },
+        "aztec": {
+          "label": "Aztec",
+          "played": 1,
+          "wins": 0,
+          "winRate": 0
         },
         "awp_case": {
           "label": "AWP Case",
@@ -254,6 +254,42 @@
         }
       },
       "faceitMatches": [
+        {
+          "matchId": "1-4a490f00-7eff-4d04-a40b-9336bde8bde4",
+          "date": "2026-09-22",
+          "time": "20:55",
+          "opponent": "team__kvadro",
+          "teamName": "team_hALFY",
+          "competition": "Europe 5v5 Queue",
+          "result": "win",
+          "score": "13:9",
+          "status": "FINISHED",
+          "faceitUrl": "https://www.faceit.com/de/cs2/room/1-4a490f00-7eff-4d04-a40b-9336bde8bde4"
+        },
+        {
+          "matchId": "1-f8a782fd-b87f-4f37-a456-4979b846c5da",
+          "date": "2026-09-22",
+          "time": "20:05",
+          "opponent": "team_DZ1ADEM0N666",
+          "teamName": "team_hALFY",
+          "competition": "Europe 5v5 Queue",
+          "result": "win",
+          "score": "13:9",
+          "status": "FINISHED",
+          "faceitUrl": "https://www.faceit.com/de/cs2/room/1-f8a782fd-b87f-4f37-a456-4979b846c5da"
+        },
+        {
+          "matchId": "1-0dda0815-4248-4648-b503-ecf2aa279e6d",
+          "date": "2026-09-22",
+          "time": "12:45",
+          "opponent": "team_yxngplaku",
+          "teamName": "team_hALFY",
+          "competition": "Europe 5v5 Queue",
+          "result": "win",
+          "score": "13:5",
+          "status": "FINISHED",
+          "faceitUrl": "https://www.faceit.com/de/cs2/room/1-0dda0815-4248-4648-b503-ecf2aa279e6d"
+        },
         {
           "matchId": "1-0c7faca6-1d38-4c06-9dd8-da8857cb700e",
           "date": "2026-09-21",
@@ -337,47 +373,6 @@
           "score": "7:13",
           "status": "FINISHED",
           "faceitUrl": "https://www.faceit.com/de/cs2/room/1-a69d9ff4-6921-44c7-8bc9-d595b071f39e"
-        },
-        {
-          "matchId": "1-4d963e59-2b1e-4641-9e84-e99c669d5675",
-          "date": "2026-09-14",
-          "time": "19:24",
-          "opponent": "team_KaiiiKo",
-          "teamName": "team_hALFY",
-          "competition": "Europe 5v5 Queue",
-          "result": "win",
-          "score": "13:4",
-          "status": "FINISHED",
-          "faceitUrl": "https://www.faceit.com/de/cs2/room/1-4d963e59-2b1e-4641-9e84-e99c669d5675"
-        },
-        {
-          "matchId": "1-cecc5a75-87b8-42ca-9936-6a6353bf1bcd",
-          "date": "2026-09-14",
-          "time": "19:16",
-          "opponent": "PlusW",
-          "teamName": "DIEDONUTS",
-          "competition": "Spielklasse 4 | DACH CS Masters Saison 6",
-          "result": "win",
-          "score": "2:0",
-          "status": "FINISHED",
-          "faceitUrl": "https://www.faceit.com/de/cs2/room/1-cecc5a75-87b8-42ca-9936-6a6353bf1bcd",
-          "format": "BO3",
-          "mapScores": [
-            "1:0",
-            "1:0"
-          ]
-        },
-        {
-          "matchId": "1-9870c499-9f4c-424a-9028-bc993cfc4de1",
-          "date": "2026-09-14",
-          "time": "18:16",
-          "opponent": "team_KaiiiKo",
-          "teamName": "team_hALFY",
-          "competition": "Europe 5v5 Queue",
-          "result": "loss",
-          "score": "10:13",
-          "status": "FINISHED",
-          "faceitUrl": "https://www.faceit.com/de/cs2/room/1-9870c499-9f4c-424a-9028-bc993cfc4de1"
         }
       ],
       "faceitUpcoming": [
@@ -424,6 +419,17 @@
           "score": null,
           "status": "SCHEDULED",
           "faceitUrl": "https://www.faceit.com/de/cs2/room/1-a13b2b5a-5b17-4939-9dff-86d3078f053d"
+        },
+        {
+          "matchId": "1-2f76e61d-c01e-40a5-9eb4-fd91b34f1cea",
+          "date": "2026-09-27",
+          "time": "20:00",
+          "opponent": "BASILEA BALLERS",
+          "competition": "Spielklasse 4 | DACH CS Masters Saison 6",
+          "result": "upcoming",
+          "score": null,
+          "status": "SCHEDULED",
+          "faceitUrl": "https://www.faceit.com/de/cs2/room/1-2f76e61d-c01e-40a5-9eb4-fd91b34f1cea"
         }
       ],
       "dachcsUpcoming": [],
@@ -481,6 +487,15 @@
         },
         {
           "pos": 4,
+          "team": "Feysla",
+          "played": 4,
+          "wins": 1,
+          "losses": 3,
+          "rd": -4,
+          "points": 5
+        },
+        {
+          "pos": 5,
           "team": "KNEIPENBOXER",
           "played": 3,
           "wins": 1,
@@ -489,7 +504,7 @@
           "points": 4
         },
         {
-          "pos": 5,
+          "pos": 6,
           "team": "ZeroOneClan.PHT",
           "played": 2,
           "wins": 1,
@@ -498,7 +513,7 @@
           "points": 3
         },
         {
-          "pos": 6,
+          "pos": 7,
           "team": "CHRONgg Oblivion",
           "played": 3,
           "wins": 1,
@@ -507,7 +522,7 @@
           "points": 3
         },
         {
-          "pos": 7,
+          "pos": 8,
           "team": "BASILEA BALLERS Main",
           "played": 2,
           "wins": 1,
@@ -516,21 +531,12 @@
           "points": 3
         },
         {
-          "pos": 8,
-          "team": "Feysla",
+          "pos": 9,
+          "team": "PlusW",
           "played": 3,
           "wins": 0,
           "losses": 3,
-          "rd": -30,
-          "points": 2
-        },
-        {
-          "pos": 9,
-          "team": "PlusW",
-          "played": 2,
-          "wins": 0,
-          "losses": 2,
-          "rd": -40,
+          "rd": -66,
           "points": 0
         }
       ]
@@ -546,17 +552,17 @@
           "nickname": "Kristin",
           "avatar": "https://distribution.faceit-cdn.net/images/095e9c68-07b5-443e-be68-178b924f328e.jpg",
           "country": "de",
-          "elo": 1348,
-          "level": 6,
+          "elo": 1399,
+          "level": 7,
           "faceitUrl": "https://www.faceit.com/de/players/Kristin",
           "stats": {
-            "matches": 594,
-            "wins": 325,
+            "matches": 596,
+            "wins": 327,
             "winRate": 55,
             "kd": 0.79,
             "kr": null,
             "adr": null,
-            "hs": 45,
+            "hs": 46,
             "avgKills": 0
           }
         },
@@ -580,6 +586,25 @@
           }
         },
         {
+          "faceitId": "f64ca487-74a0-414e-a0a8-7b8ff526589f",
+          "nickname": "FingerGicht1",
+          "avatar": "https://distribution.faceit-cdn.net/images/af9bd123-e921-4a23-961d-58f3f51326b9.jpeg",
+          "country": "de",
+          "elo": 1493,
+          "level": 7,
+          "faceitUrl": "https://www.faceit.com/de/players/FingerGicht1",
+          "stats": {
+            "matches": 1079,
+            "wins": 548,
+            "winRate": 51,
+            "kd": 1.02,
+            "kr": null,
+            "adr": null,
+            "hs": 42,
+            "avgKills": 0
+          }
+        },
+        {
           "faceitId": "6deb3f89-9e88-4039-8845-4df07114c0ed",
           "nickname": "illiw29",
           "avatar": "https://distribution.faceit-cdn.net/images/d3722638-8666-4c6e-b742-ce01e045d3a2.jpg",
@@ -595,25 +620,6 @@
             "kr": null,
             "adr": null,
             "hs": 40,
-            "avgKills": 0
-          }
-        },
-        {
-          "faceitId": "f64ca487-74a0-414e-a0a8-7b8ff526589f",
-          "nickname": "FingerGicht1",
-          "avatar": "https://distribution.faceit-cdn.net/images/af9bd123-e921-4a23-961d-58f3f51326b9.jpeg",
-          "country": "de",
-          "elo": 1443,
-          "level": 7,
-          "faceitUrl": "https://www.faceit.com/de/players/FingerGicht1",
-          "stats": {
-            "matches": 1077,
-            "wins": 546,
-            "winRate": 51,
-            "kd": 1.01,
-            "kr": null,
-            "adr": null,
-            "hs": 42,
             "avgKills": 0
           }
         },
@@ -641,12 +647,12 @@
           "nickname": "CaIli",
           "avatar": "https://distribution.faceit-cdn.net/images/dba79abb-0a22-4be0-9879-7e05d841174e.jpg",
           "country": "jp",
-          "elo": 972,
+          "elo": 976,
           "level": 4,
           "faceitUrl": "https://www.faceit.com/de/players/CaIli",
           "stats": {
-            "matches": 1930,
-            "wins": 946,
+            "matches": 1931,
+            "wins": 947,
             "winRate": 49,
             "kd": 0.85,
             "kr": null,
@@ -924,59 +930,21 @@
       "dachcsUrl": "https://dachcs.de/coverage/group/325",
       "players": [
         {
-          "faceitId": "61a58e09-8935-4cf7-b3c5-8657e70899b0",
-          "nickname": "Insidious_X",
-          "avatar": "https://distribution.faceit-cdn.net/images/8a53d3e9-7783-42fc-84cd-ea13f08b1d00.jpg",
-          "country": "de",
-          "elo": 2037,
-          "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/Insidious_X",
-          "stats": {
-            "matches": 1783,
-            "wins": 886,
-            "winRate": 50,
-            "kd": 1.16,
-            "kr": null,
-            "adr": null,
-            "hs": 47,
-            "avgKills": 0
-          }
-        },
-        {
           "faceitId": "0c4ae316-2685-46f4-bd1e-07e8be55573b",
           "nickname": "DNS-Olof",
           "avatar": "https://distribution.faceit-cdn.net/images/50103e7f-4996-41c5-880e-46513b769806.jpeg",
           "country": "de",
-          "elo": 1261,
+          "elo": 1255,
           "level": 6,
           "faceitUrl": "https://www.faceit.com/de/players/DNS-Olof",
           "stats": {
-            "matches": 1580,
-            "wins": 779,
+            "matches": 1582,
+            "wins": 780,
             "winRate": 49,
             "kd": 0.89,
             "kr": null,
             "adr": null,
             "hs": 35,
-            "avgKills": 0
-          }
-        },
-        {
-          "faceitId": "60845dfa-4981-4088-bf42-23bdebe395ca",
-          "nickname": "LilliFee1987",
-          "avatar": "",
-          "country": "de",
-          "elo": 1750,
-          "level": 8,
-          "faceitUrl": "https://www.faceit.com/de/players/LilliFee1987",
-          "stats": {
-            "matches": 208,
-            "wins": 112,
-            "winRate": 54,
-            "kd": 1.28,
-            "kr": null,
-            "adr": null,
-            "hs": 51,
             "avgKills": 0
           }
         },
@@ -1004,11 +972,11 @@
           "nickname": "sonezu",
           "avatar": "https://assets.faceit-cdn.net/avatars/79ce798b-924e-477a-9667-3dcbd28ad5f8_1550572552761.png",
           "country": "de",
-          "elo": 1309,
+          "elo": 1285,
           "level": 6,
           "faceitUrl": "https://www.faceit.com/de/players/sonezu",
           "stats": {
-            "matches": 1004,
+            "matches": 1005,
             "wins": 484,
             "winRate": 48,
             "kd": 1.15,
@@ -1017,15 +985,66 @@
             "hs": 26,
             "avgKills": 0
           }
+        },
+        {
+          "faceitId": "61a58e09-8935-4cf7-b3c5-8657e70899b0",
+          "nickname": "Insidious_X",
+          "avatar": "https://distribution.faceit-cdn.net/images/8a53d3e9-7783-42fc-84cd-ea13f08b1d00.jpg",
+          "country": "de",
+          "elo": 2075,
+          "level": 10,
+          "faceitUrl": "https://www.faceit.com/de/players/Insidious_X",
+          "stats": {
+            "matches": 1786,
+            "wins": 888,
+            "winRate": 50,
+            "kd": 1.16,
+            "kr": null,
+            "adr": null,
+            "hs": 47,
+            "avgKills": 0
+          }
+        },
+        {
+          "faceitId": "23f1a39a-9fe4-455e-9afd-f9bd64d34369",
+          "nickname": "mitzy666",
+          "avatar": "https://distribution.faceit-cdn.net/images/4c0495be-d352-4650-8704-4788d15b69e9.jpg",
+          "country": "de",
+          "elo": 1676,
+          "level": 8,
+          "faceitUrl": "https://www.faceit.com/de/players/mitzy666",
+          "stats": {
+            "matches": 416,
+            "wins": 221,
+            "winRate": 53,
+            "kd": 1.3,
+            "kr": null,
+            "adr": null,
+            "hs": 41,
+            "avgKills": 0
+          }
+        },
+        {
+          "faceitId": "60845dfa-4981-4088-bf42-23bdebe395ca",
+          "nickname": "LilliFee1987",
+          "avatar": "",
+          "country": "de",
+          "elo": 1765,
+          "level": 9,
+          "faceitUrl": "https://www.faceit.com/de/players/LilliFee1987",
+          "stats": {
+            "matches": 209,
+            "wins": 113,
+            "winRate": 54,
+            "kd": 1.28,
+            "kr": null,
+            "adr": null,
+            "hs": 51,
+            "avgKills": 0
+          }
         }
       ],
       "mapStats": {
-        "nuke": {
-          "label": "Nuke",
-          "played": 1,
-          "wins": 1,
-          "winRate": 100
-        },
         "cache": {
           "label": "Cache",
           "played": 3,
@@ -1043,9 +1062,27 @@
           "played": 1,
           "wins": 0,
           "winRate": 0
+        },
+        "nuke": {
+          "label": "Nuke",
+          "played": 1,
+          "wins": 1,
+          "winRate": 100
         }
       },
       "faceitMatches": [
+        {
+          "matchId": "1-ba7f50a0-3de1-4280-b02e-0f5e4af06f6c",
+          "date": "2026-09-22",
+          "time": "20:47",
+          "opponent": "team_Trazor1337",
+          "teamName": "team_DNS-Olof",
+          "competition": "Europe 5v5 Queue",
+          "result": "loss",
+          "score": "6:13",
+          "status": "FINISHED",
+          "faceitUrl": "https://www.faceit.com/de/cs2/room/1-ba7f50a0-3de1-4280-b02e-0f5e4af06f6c"
+        },
         {
           "matchId": "1-337ea393-3549-49a6-b3aa-e36d3bcecca3",
           "date": "2026-09-22",
@@ -1153,18 +1190,6 @@
           "score": "4:13",
           "status": "FINISHED",
           "faceitUrl": "https://www.faceit.com/de/cs2/room/1-a1b0da91-6275-4839-8490-9bbc5f2e03dd"
-        },
-        {
-          "matchId": "1-44e14a89-dee7-4ea6-a60d-f3a83138bb02",
-          "date": "2026-09-17",
-          "time": "20:17",
-          "opponent": "team_krifftyman",
-          "teamName": "team_DNS-Olof",
-          "competition": "Europe 5v5 Queue",
-          "result": "win",
-          "score": "13:10",
-          "status": "FINISHED",
-          "faceitUrl": "https://www.faceit.com/de/cs2/room/1-44e14a89-dee7-4ea6-a60d-f3a83138bb02"
         }
       ],
       "faceitUpcoming": [
@@ -1257,12 +1282,12 @@
       "nickname": "hALFY",
       "avatar": "https://distribution.faceit-cdn.net/images/4139c07a-1d91-4fd9-936e-01da29b43d11.jpg",
       "country": "de",
-      "elo": 2744,
+      "elo": 2787,
       "level": 10,
       "faceitUrl": "https://www.faceit.com/de/players/hALFY",
       "stats": {
-        "matches": 3903,
-        "wins": 1990,
+        "matches": 3906,
+        "wins": 1993,
         "winRate": 51,
         "kd": 1.4,
         "kr": null,
@@ -1278,12 +1303,12 @@
       "nickname": "rdX",
       "avatar": "https://distribution.faceit-cdn.net/images/e3093f0b-bb39-4712-ad5b-942e928a8d6f.jpg",
       "country": "de",
-      "elo": 2360,
+      "elo": 2380,
       "level": 10,
       "faceitUrl": "https://www.faceit.com/de/players/rdX",
       "stats": {
-        "matches": 2162,
-        "wins": 1101,
+        "matches": 2163,
+        "wins": 1102,
         "winRate": 51,
         "kd": 1.12,
         "kr": null,
@@ -1299,12 +1324,12 @@
       "nickname": "TubeYou",
       "avatar": "https://distribution.faceit-cdn.net/images/523feae3-9ecf-4d10-879d-8fd2d53a045d.jpg",
       "country": "de",
-      "elo": 2243,
+      "elo": 2266,
       "level": 10,
       "faceitUrl": "https://www.faceit.com/de/players/TubeYou",
       "stats": {
-        "matches": 1162,
-        "wins": 580,
+        "matches": 1164,
+        "wins": 582,
         "winRate": 50,
         "kd": 1.1,
         "kr": null,
@@ -1337,6 +1362,27 @@
       "teamSlug": "main"
     },
     {
+      "faceitId": "824221b9-8639-4e24-a87b-f5b17f66fdcb",
+      "nickname": "svN--",
+      "avatar": "https://distribution.faceit-cdn.net/images/3259f102-7346-40fb-8223-1a6a3f9dc4d8.jpg",
+      "country": "de",
+      "elo": 2144,
+      "level": 10,
+      "faceitUrl": "https://www.faceit.com/de/players/svN--",
+      "stats": {
+        "matches": 1283,
+        "wins": 651,
+        "winRate": 51,
+        "kd": 1.12,
+        "kr": null,
+        "adr": null,
+        "hs": 51,
+        "avgKills": 0
+      },
+      "team": "Donuts",
+      "teamSlug": "main"
+    },
+    {
       "faceitId": "22e784a6-c9b3-4d6f-bef3-c429b5be8887",
       "nickname": "PureZebra30",
       "avatar": "https://distribution.faceit-cdn.net/images/e95d33eb-59f6-42ae-83a8-af09d37c30ff.jpeg",
@@ -1358,21 +1404,21 @@
       "teamSlug": "main"
     },
     {
-      "faceitId": "824221b9-8639-4e24-a87b-f5b17f66fdcb",
-      "nickname": "svN--",
-      "avatar": "https://distribution.faceit-cdn.net/images/3259f102-7346-40fb-8223-1a6a3f9dc4d8.jpg",
+      "faceitId": "e0f0313c-c2aa-4e8a-9874-8eb2be3d628d",
+      "nickname": "chrizzW",
+      "avatar": "https://distribution.faceit-cdn.net/images/df3a7fd1-210f-4503-bac5-aff0ab58cc1c.jpg",
       "country": "de",
-      "elo": 2124,
+      "elo": 2108,
       "level": 10,
-      "faceitUrl": "https://www.faceit.com/de/players/svN--",
+      "faceitUrl": "https://www.faceit.com/de/players/chrizzW",
       "stats": {
-        "matches": 1282,
-        "wins": 650,
-        "winRate": 51,
-        "kd": 1.12,
+        "matches": 4612,
+        "wins": 2279,
+        "winRate": 49,
+        "kd": 1.16,
         "kr": null,
         "adr": null,
-        "hs": 51,
+        "hs": 46,
         "avgKills": 0
       },
       "team": "Donuts",
@@ -1400,37 +1446,16 @@
       "teamSlug": "main"
     },
     {
-      "faceitId": "e0f0313c-c2aa-4e8a-9874-8eb2be3d628d",
-      "nickname": "chrizzW",
-      "avatar": "https://distribution.faceit-cdn.net/images/df3a7fd1-210f-4503-bac5-aff0ab58cc1c.jpg",
-      "country": "de",
-      "elo": 2065,
-      "level": 10,
-      "faceitUrl": "https://www.faceit.com/de/players/chrizzW",
-      "stats": {
-        "matches": 4609,
-        "wins": 2276,
-        "winRate": 49,
-        "kd": 1.16,
-        "kr": null,
-        "adr": null,
-        "hs": 46,
-        "avgKills": 0
-      },
-      "team": "Donuts",
-      "teamSlug": "main"
-    },
-    {
       "faceitId": "61a58e09-8935-4cf7-b3c5-8657e70899b0",
       "nickname": "Insidious_X",
       "avatar": "https://distribution.faceit-cdn.net/images/8a53d3e9-7783-42fc-84cd-ea13f08b1d00.jpg",
       "country": "de",
-      "elo": 2037,
+      "elo": 2075,
       "level": 10,
       "faceitUrl": "https://www.faceit.com/de/players/Insidious_X",
       "stats": {
-        "matches": 1783,
-        "wins": 886,
+        "matches": 1786,
+        "wins": 888,
         "winRate": 50,
         "kd": 1.16,
         "kr": null,
@@ -1467,17 +1492,38 @@
       "nickname": "LilliFee1987",
       "avatar": "",
       "country": "de",
-      "elo": 1750,
-      "level": 8,
+      "elo": 1765,
+      "level": 9,
       "faceitUrl": "https://www.faceit.com/de/players/LilliFee1987",
       "stats": {
-        "matches": 208,
-        "wins": 112,
+        "matches": 209,
+        "wins": 113,
         "winRate": 54,
         "kd": 1.28,
         "kr": null,
         "adr": null,
         "hs": 51,
+        "avgKills": 0
+      },
+      "team": "Donuts DNS",
+      "teamSlug": "dns"
+    },
+    {
+      "faceitId": "23f1a39a-9fe4-455e-9afd-f9bd64d34369",
+      "nickname": "mitzy666",
+      "avatar": "https://distribution.faceit-cdn.net/images/4c0495be-d352-4650-8704-4788d15b69e9.jpg",
+      "country": "de",
+      "elo": 1676,
+      "level": 8,
+      "faceitUrl": "https://www.faceit.com/de/players/mitzy666",
+      "stats": {
+        "matches": 416,
+        "wins": 221,
+        "winRate": 53,
+        "kd": 1.3,
+        "kr": null,
+        "adr": null,
+        "hs": 41,
         "avgKills": 0
       },
       "team": "Donuts DNS",
@@ -1496,6 +1542,27 @@
         "wins": 844,
         "winRate": 49,
         "kd": 1.04,
+        "kr": null,
+        "adr": null,
+        "hs": 42,
+        "avgKills": 0
+      },
+      "team": "Donuts Nxt",
+      "teamSlug": "nxt"
+    },
+    {
+      "faceitId": "f64ca487-74a0-414e-a0a8-7b8ff526589f",
+      "nickname": "FingerGicht1",
+      "avatar": "https://distribution.faceit-cdn.net/images/af9bd123-e921-4a23-961d-58f3f51326b9.jpeg",
+      "country": "de",
+      "elo": 1493,
+      "level": 7,
+      "faceitUrl": "https://www.faceit.com/de/players/FingerGicht1",
+      "stats": {
+        "matches": 1079,
+        "wins": 548,
+        "winRate": 51,
+        "kd": 1.02,
         "kr": null,
         "adr": null,
         "hs": 42,
@@ -1526,67 +1593,25 @@
       "teamSlug": "nxt"
     },
     {
-      "faceitId": "f64ca487-74a0-414e-a0a8-7b8ff526589f",
-      "nickname": "FingerGicht1",
-      "avatar": "https://distribution.faceit-cdn.net/images/af9bd123-e921-4a23-961d-58f3f51326b9.jpeg",
-      "country": "de",
-      "elo": 1443,
-      "level": 7,
-      "faceitUrl": "https://www.faceit.com/de/players/FingerGicht1",
-      "stats": {
-        "matches": 1077,
-        "wins": 546,
-        "winRate": 51,
-        "kd": 1.01,
-        "kr": null,
-        "adr": null,
-        "hs": 42,
-        "avgKills": 0
-      },
-      "team": "Donuts Nxt",
-      "teamSlug": "nxt"
-    },
-    {
       "faceitId": "bff9b5ea-0b7f-468f-a225-f989f9a104c9",
       "nickname": "Kristin",
       "avatar": "https://distribution.faceit-cdn.net/images/095e9c68-07b5-443e-be68-178b924f328e.jpg",
       "country": "de",
-      "elo": 1348,
-      "level": 6,
+      "elo": 1399,
+      "level": 7,
       "faceitUrl": "https://www.faceit.com/de/players/Kristin",
       "stats": {
-        "matches": 594,
-        "wins": 325,
+        "matches": 596,
+        "wins": 327,
         "winRate": 55,
         "kd": 0.79,
         "kr": null,
         "adr": null,
-        "hs": 45,
+        "hs": 46,
         "avgKills": 0
       },
       "team": "Donuts Nxt",
       "teamSlug": "nxt"
-    },
-    {
-      "faceitId": "79ce798b-924e-477a-9667-3dcbd28ad5f8",
-      "nickname": "sonezu",
-      "avatar": "https://assets.faceit-cdn.net/avatars/79ce798b-924e-477a-9667-3dcbd28ad5f8_1550572552761.png",
-      "country": "de",
-      "elo": 1309,
-      "level": 6,
-      "faceitUrl": "https://www.faceit.com/de/players/sonezu",
-      "stats": {
-        "matches": 1004,
-        "wins": 484,
-        "winRate": 48,
-        "kd": 1.15,
-        "kr": null,
-        "adr": null,
-        "hs": 26,
-        "avgKills": 0
-      },
-      "team": "Donuts DNS",
-      "teamSlug": "dns"
     },
     {
       "faceitId": "c61a1160-d950-445b-a08c-63a7c79187b6",
@@ -1610,16 +1635,37 @@
       "teamSlug": "dns"
     },
     {
+      "faceitId": "79ce798b-924e-477a-9667-3dcbd28ad5f8",
+      "nickname": "sonezu",
+      "avatar": "https://assets.faceit-cdn.net/avatars/79ce798b-924e-477a-9667-3dcbd28ad5f8_1550572552761.png",
+      "country": "de",
+      "elo": 1285,
+      "level": 6,
+      "faceitUrl": "https://www.faceit.com/de/players/sonezu",
+      "stats": {
+        "matches": 1005,
+        "wins": 484,
+        "winRate": 48,
+        "kd": 1.15,
+        "kr": null,
+        "adr": null,
+        "hs": 26,
+        "avgKills": 0
+      },
+      "team": "Donuts DNS",
+      "teamSlug": "dns"
+    },
+    {
       "faceitId": "0c4ae316-2685-46f4-bd1e-07e8be55573b",
       "nickname": "DNS-Olof",
       "avatar": "https://distribution.faceit-cdn.net/images/50103e7f-4996-41c5-880e-46513b769806.jpeg",
       "country": "de",
-      "elo": 1261,
+      "elo": 1255,
       "level": 6,
       "faceitUrl": "https://www.faceit.com/de/players/DNS-Olof",
       "stats": {
-        "matches": 1580,
-        "wins": 779,
+        "matches": 1582,
+        "wins": 780,
         "winRate": 49,
         "kd": 0.89,
         "kr": null,
@@ -1656,12 +1702,12 @@
       "nickname": "CaIli",
       "avatar": "https://distribution.faceit-cdn.net/images/dba79abb-0a22-4be0-9879-7e05d841174e.jpg",
       "country": "jp",
-      "elo": 972,
+      "elo": 976,
       "level": 4,
       "faceitUrl": "https://www.faceit.com/de/players/CaIli",
       "stats": {
-        "matches": 1930,
-        "wins": 946,
+        "matches": 1931,
+        "wins": 947,
         "winRate": 49,
         "kd": 0.85,
         "kr": null,
