@@ -401,6 +401,35 @@
 </section>
 
 <!-- =========================================================
+     MINIGAME: CLUTCH-CHECK
+     ========================================================= -->
+<section class="clutch-section" id="warmup">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="eyebrow">Warmup</div>
+      <h2 class="section-title">Clutch-Check</h2>
+      <p class="section-lead">Stopp das Fadenkreuz in der roten Zone. Jeder Treffer macht es schneller und die Zone kleiner. Wie weit kommst du?</p>
+    </div>
+    <div class="clutch-game reveal" id="clutchGame">
+      <div class="cg-bar">
+        <div class="cg-zone"></div>
+        <div class="cg-cross"></div>
+      </div>
+      <p class="cg-msg" aria-live="polite">Bereit? Start drücken.</p>
+      <div class="cg-row">
+        <button type="button" class="btn btn-primary cg-btn">START</button>
+        <dl class="cg-stats">
+          <div><dt>Level</dt><dd data-cg="level">1</dd></div>
+          <div><dt>Versuche</dt><dd data-cg="tries">0</dd></div>
+          <div><dt>Rekord</dt><dd data-cg="best">1</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="/js/minigame.js" defer></script>
+
+<!-- =========================================================
      JOIN / TRYOUT CTA
      ========================================================= -->
 <section class="join-section">
