@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://api.faceit.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://api.faceit.com https://donuts-clutch.lukasstaudinger.workers.dev; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <script src="/js/security.js"></script>
   <title>DieDonuts Esports · Counter-Strike 2 Organisation aus Deutschland</title>
@@ -410,7 +410,7 @@
       <h2 class="section-title">Clutch-Check</h2>
       <p class="section-lead">Stopp das Fadenkreuz in der roten Zone. Jeder Treffer macht es schneller und die Zone kleiner. Wie weit kommst du?</p>
     </div>
-    <div class="clutch-game reveal" id="clutchGame">
+    <div class="clutch-game reveal" id="clutchGame" data-api="https://donuts-clutch.lukasstaudinger.workers.dev">
       <div class="cg-modes" role="radiogroup" aria-label="Spielmodus">
         <label><input type="radio" name="cg-mode" value="classic" checked><span>Klassisch</span></label>
         <label><input type="radio" name="cg-mode" value="smoke"><span>Smoke</span></label>
@@ -432,6 +432,17 @@
           <div><dt>Versuche</dt><dd data-cg="tries">0</dd></div>
           <div><dt>Rekord</dt><dd data-cg="best">1</dd></div>
         </dl>
+      </div>
+      <form class="cg-submit" hidden>
+        <label for="cgName">Ab in die Rangliste:</label>
+        <div class="cg-submit-row">
+          <input id="cgName" name="name" type="text" minlength="2" maxlength="16" required autocomplete="nickname" placeholder="Dein Name">
+          <button type="submit" class="btn btn-ghost">Eintragen</button>
+        </div>
+      </form>
+      <div class="cg-board-wrap" hidden>
+        <h3 class="cg-board-title">Top 10 <span data-cg="mode-name">Klassisch</span></h3>
+        <ol class="cg-board"></ol>
       </div>
     </div>
   </div>

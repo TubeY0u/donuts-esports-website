@@ -6,6 +6,9 @@
   const $ = s => root.querySelector(s);
   const bar = $('.cg-bar'), zone = $('.cg-zone'), cross = $('.cg-cross'), smoke = $('.cg-smoke'), flash = $('.cg-flash'), btn = $('.cg-btn');
   const levelEl = $('[data-cg="level"]'), bestEl = $('[data-cg="best"]'), triesEl = $('[data-cg="tries"]'), msg = $('.cg-msg');
+  const form = $('.cg-submit'), nameInput = form.elements.name, submitBtn = form.querySelector('button');
+  const boardWrap = $('.cg-board-wrap'), board = $('.cg-board'), modeName = $('[data-cg="mode-name"]');
+  const API = root.dataset.api; // leer = Rangliste aus
 
   const MODES = {
     classic: { hint: 'Stopp das Fadenkreuz in der roten Zone.' },
@@ -19,6 +22,47 @@
   const load = m => { try { return Number(localStorage.getItem(storeKey(m))) || 1; } catch { return 1; } };
 
   let mode = 'classic', best = load(mode), tries = 0, level = 1, pos = 0, dir = 1, running = false, last = 0, nextFlash = 0;
+  let runStart = 0, runMs = 0, runLevel = 0, runMode = mode;
+  try { nameInput.value = localStorage.getItem('donuts-clutch-name') || ''; } catch {}
+
+  function showBoard(list) {
+    board.replaceChildren(...list.map(e => {
+      const li = document.createElement('li');
+      const n = document.createElement('span'), l = document.createElement('b');
+      n.textContent = e.name; l.textContent = 'Lvl ' + e.level;
+      li.append(n, l);
+      return li;
+    }));
+    if (!list.length) { const li = document.createElement('li'); li.className = 'cg-empty'; li.textContent = 'Noch leer. Hol dir Platz 1!'; board.append(li); }
+    boardWrap.hidden = false;
+  }
+  async function loadBoard() {
+    if (!API) return;
+    const m = mode;
+    try {
+      const res = await fetch(API + '/scores?mode=' + m);
+      if (res.ok && m === mode) showBoard(await res.json());
+    } catch {}
+  }
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    try { localStorage.setItem('donuts-clutch-name', name); } catch {}
+    submitBtn.disabled = true;
+    try {
+      const res = await fetch(API + '/scores', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ mode: runMode, name, level: runLevel, ms: runMs }),
+      });
+      const data = await res.json();
+      if (!res.ok) { msg.textContent = data.error || 'Eintragen hat nicht geklappt.'; return; }
+      form.hidden = true;
+      msg.textContent = 'Eingetragen! Mal sehen, wer dich schlägt.';
+      if (runMode === mode) showBoard(data);
+    } catch {
+      msg.textContent = 'Server nicht erreichbar, versuch es gleich nochmal.';
+    } finally { submitBtn.disabled = false; }
+  });
   const z = { base: 0, from: 0, to: 0 };
 
   const speed = () => (0.45 + level * 0.12) * (MODES[mode].speed || 1); // bar widths per second
@@ -54,12 +98,12 @@
     requestAnimationFrame(frame);
   }
   function start() {
-    level = 1; tries++; pos = 0; dir = 1; running = true;
+    level = 1; tries++; pos = 0; dir = 1; running = true; form.hidden = true;
     placeZone(); render();
     root.classList.remove('is-hit', 'is-miss');
     msg.textContent = MODES[mode].hint + ' Stoppen mit Klick, Tippen oder Leertaste.';
     btn.textContent = 'STOP';
-    last = performance.now(); nextFlash = last + 1500;
+    last = runStart = performance.now(); nextFlash = last + 1500;
     requestAnimationFrame(frame);
   }
   function stop(text, label) {
@@ -80,12 +124,16 @@
       placeZone();
     } else {
       stop('Daneben. Bis Level ' + level + ' geschafft. Nochmal?', 'NOCHMAL');
+      runMs = Math.round(performance.now() - runStart); runLevel = level; runMode = mode;
+      if (API && level >= 2) form.hidden = false;
     }
     render();
   }
 
   root.querySelectorAll('input[name="cg-mode"]').forEach(input => input.addEventListener('change', () => {
-    mode = input.value; best = load(mode); level = 1;
+    mode = input.value; best = load(mode); level = 1; form.hidden = true;
+    modeName.textContent = input.nextElementSibling.textContent;
+    loadBoard();
     root.dataset.mode = mode;
     root.classList.remove('is-hit', 'is-miss');
     placeZone(); render();
@@ -101,4 +149,5 @@
   });
   root.dataset.mode = mode;
   render();
+  loadBoard();
 })();

@@ -3,6 +3,7 @@ exclude:
   - scraper.js
   - scripts
   - tests
+  - worker
   - DEPLOY-ANLEITUNG.md
   - SECURITY.md
   - data/twitch-token.json
