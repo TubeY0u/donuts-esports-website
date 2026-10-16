@@ -411,9 +411,18 @@
       <p class="section-lead">Stopp das Fadenkreuz in der roten Zone. Jeder Treffer macht es schneller und die Zone kleiner. Wie weit kommst du?</p>
     </div>
     <div class="clutch-game reveal" id="clutchGame">
+      <div class="cg-modes" role="radiogroup" aria-label="Spielmodus">
+        <label><input type="radio" name="cg-mode" value="classic" checked><span>Klassisch</span></label>
+        <label><input type="radio" name="cg-mode" value="smoke"><span>Smoke</span></label>
+        <label><input type="radio" name="cg-mode" value="flash"><span>Flashbang</span></label>
+        <label><input type="radio" name="cg-mode" value="wobble"><span>Wackelzone</span></label>
+        <label><input type="radio" name="cg-mode" value="donut"><span>Donut 🍩</span></label>
+      </div>
       <div class="cg-bar">
         <div class="cg-zone"></div>
+        <div class="cg-smoke"></div>
         <div class="cg-cross"></div>
+        <div class="cg-flash"></div>
       </div>
       <p class="cg-msg" aria-live="polite">Bereit? Start drücken.</p>
       <div class="cg-row">

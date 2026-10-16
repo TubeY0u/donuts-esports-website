@@ -4,21 +4,39 @@
   const root = document.getElementById('clutchGame');
   if (!root) return;
   const $ = s => root.querySelector(s);
-  const bar = $('.cg-bar'), zone = $('.cg-zone'), cross = $('.cg-cross'), btn = $('.cg-btn');
+  const bar = $('.cg-bar'), zone = $('.cg-zone'), cross = $('.cg-cross'), smoke = $('.cg-smoke'), flash = $('.cg-flash'), btn = $('.cg-btn');
   const levelEl = $('[data-cg="level"]'), bestEl = $('[data-cg="best"]'), triesEl = $('[data-cg="tries"]'), msg = $('.cg-msg');
-  const KEY = 'donuts-clutch-best';
-  let best = 1, tries = 0, level = 1, pos = 0, dir = 1, running = false, last = 0, z = { from: 0, to: 0 };
-  try { best = Number(localStorage.getItem(KEY)) || 1; } catch {}
 
-  const speed = () => 0.45 + level * 0.12;                 // bar widths per second
-  const width = () => Math.max(0.04, 0.22 - level * 0.015); // zone size, floor at 4 %
+  const MODES = {
+    classic: { hint: 'Stopp das Fadenkreuz in der roten Zone.' },
+    smoke:   { hint: 'Smoke liegt auf der Zone. Du siehst das Fadenkreuz nicht mehr, also Timing nach Gefühl.' },
+    flash:   { hint: 'Achtung, Flashbangs! Nicht wegdrehen, einfach treffen.' },
+    wobble:  { hint: 'Die Zone wackelt hin und her. Viel Glück.' },
+    donut:   { hint: 'Donut-Modus: schneller, und das Fadenkreuz ist ein Donut. Fragt nicht.', speed: 1.3 },
+  };
   const lines = ['Clean.', 'Ace!', 'Wie ein Pro.', 'Donut-Reflexe.', 'Clutch Minister.'];
+  const storeKey = m => m === 'classic' ? 'donuts-clutch-best' : 'donuts-clutch-best-' + m; // classic keeps the old key
+  const load = m => { try { return Number(localStorage.getItem(storeKey(m))) || 1; } catch { return 1; } };
 
+  let mode = 'classic', best = load(mode), tries = 0, level = 1, pos = 0, dir = 1, running = false, last = 0, nextFlash = 0;
+  const z = { base: 0, from: 0, to: 0 };
+
+  const speed = () => (0.45 + level * 0.12) * (MODES[mode].speed || 1); // bar widths per second
+  const width = () => Math.max(0.04, 0.22 - level * 0.015);             // zone size, floor at 4 %
+  const pct = (el, from, w) => { el.style.left = from * 100 + '%'; el.style.width = w * 100 + '%'; };
+
+  function setZone(from) {
+    const w = width();
+    z.from = Math.min(Math.max(from, 0), 1 - w); z.to = z.from + w;
+    pct(zone, z.from, w);
+  }
   function placeZone() {
-    const w = width(), from = Math.random() * (1 - w);
-    z = { from, to: from + w };
-    zone.style.left = from * 100 + '%';
-    zone.style.width = w * 100 + '%';
+    z.base = Math.random() * (1 - width());
+    setZone(z.base);
+    if (mode === 'smoke') { // cover the zone plus a margin, so the crosshair vanishes right where it counts
+      const from = Math.max(0, z.from - 0.1), to = Math.min(1, z.to + 0.1);
+      pct(smoke, from, to - from);
+    }
   }
   function render() {
     levelEl.textContent = level; bestEl.textContent = best; triesEl.textContent = tries;
@@ -28,33 +46,51 @@
     pos += dir * speed() * (t - last) / 1000; last = t;
     if (pos > 1) { pos = 1; dir = -1; } else if (pos < 0) { pos = 0; dir = 1; }
     cross.style.left = pos * 100 + '%';
+    if (mode === 'wobble') setZone(z.base + Math.sin(t / 450) * (0.08 + level * 0.01));
+    if (mode === 'flash' && t > nextFlash) {
+      flash.animate([{ opacity: 0.95 }, { opacity: 0 }], { duration: 900, easing: 'ease-out' });
+      nextFlash = t + 1200 + Math.random() * 2000;
+    }
     requestAnimationFrame(frame);
   }
   function start() {
     level = 1; tries++; pos = 0; dir = 1; running = true;
     placeZone(); render();
     root.classList.remove('is-hit', 'is-miss');
-    msg.textContent = 'Stoppen mit Klick, Tippen oder Leertaste.';
+    msg.textContent = MODES[mode].hint + ' Stoppen mit Klick, Tippen oder Leertaste.';
     btn.textContent = 'STOP';
-    last = performance.now(); requestAnimationFrame(frame);
+    last = performance.now(); nextFlash = last + 1500;
+    requestAnimationFrame(frame);
+  }
+  function stop(text, label) {
+    running = false;
+    msg.textContent = text;
+    btn.textContent = label;
   }
   function shoot() {
     if (!running) return start();
     const hit = pos >= z.from && pos <= z.to;
-    root.classList.toggle('is-hit', hit); root.classList.toggle('is-miss', !hit);
+    root.classList.remove('is-hit', 'is-miss');
+    void root.offsetWidth; // restart the hit/miss flash even on back-to-back hits
+    root.classList.add(hit ? 'is-hit' : 'is-miss');
     if (hit) {
       level++;
-      if (level > best) { best = level; try { localStorage.setItem(KEY, best); } catch {} }
+      if (level > best) { best = level; try { localStorage.setItem(storeKey(mode), best); } catch {} }
       msg.textContent = lines[Math.floor(Math.random() * lines.length)] + ' Weiter mit Level ' + level + '.';
-      placeZone(); render();
+      placeZone();
     } else {
-      running = false;
-      msg.textContent = 'Daneben. Bis Level ' + level + ' geschafft. Nochmal?';
-      btn.textContent = 'NOCHMAL';
-      render();
+      stop('Daneben. Bis Level ' + level + ' geschafft. Nochmal?', 'NOCHMAL');
     }
+    render();
   }
 
+  root.querySelectorAll('input[name="cg-mode"]').forEach(input => input.addEventListener('change', () => {
+    mode = input.value; best = load(mode); level = 1;
+    root.dataset.mode = mode;
+    root.classList.remove('is-hit', 'is-miss');
+    placeZone(); render();
+    stop(MODES[mode].hint + ' Start drücken.', 'START');
+  }));
   btn.addEventListener('click', shoot);
   bar.addEventListener('pointerdown', shoot);
   document.addEventListener('keydown', e => {
@@ -63,5 +99,6 @@
     if (r.bottom < 0 || r.top > innerHeight) return; // only while the game is on screen
     e.preventDefault(); shoot();
   });
+  root.dataset.mode = mode;
   render();
 })();
