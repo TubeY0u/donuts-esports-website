@@ -777,7 +777,7 @@ async function main() {
     // Duplikate: Liga-Matches stehen bei DACHCS UND als FACEIT-Championship-Match.
     // DACHCS-Eintrag gewinnt (Cast-Info etc.), FACEIT-Zwilling fliegt raus.
     if (faceitUpcoming.length && dachcsUpcoming.length) {
-      const normName = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const normName = s => (s || '').normalize('NFD').toLowerCase().replace(/[^a-z0-9]/g, ''); // EWÖ E-Sports == EWO Esports
       const nearDate = (a, b) => Math.abs(new Date(a) - new Date(b)) <= 2 * 86400000;
       const before = faceitUpcoming.length;
       faceitUpcoming = faceitUpcoming.filter(fm => !dachcsUpcoming.some(dm => {
