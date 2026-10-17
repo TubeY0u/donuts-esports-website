@@ -748,7 +748,7 @@ async function main() {
     }
 
     // DACHCS — Gruppe(n) automatisch finden
-    let dachcsUpcoming = [], dachcsRecent = [], standings = [], dachcsUrl = null;
+    let dachcsUpcoming = [], dachcsRecent = [], standings = [], dachcsUrl = null, league = null;
     if (cfg.dachcsTeam) {
       console.log('  Scraping DACHCS…');
       const allDachcsTeams = Object.values(TEAMS).map(t => t.dachcsTeam).filter(Boolean);
@@ -760,6 +760,8 @@ async function main() {
         if (!standings.length) {
           standings = parseDACHCSStandings(g.html);
           dachcsUrl = g.url;
+          // Beschriftung gehört zur Tabelle, nicht zum letzten Match (das kann aus einer alten Saison stammen)
+          league = { competition: g.saison || null, division: [g.spielklasse, g.gruppe].filter(Boolean).join(' ') || null };
         }
       }
       // Sortieren: upcoming aufsteigend, recent absteigend
@@ -794,6 +796,7 @@ async function main() {
       dachcsUpcoming,
       dachcsRecent,
       standings,
+      league,
     };
 
     for (const p of players) {

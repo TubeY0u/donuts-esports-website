@@ -515,7 +515,7 @@
 
     let competition = '';
     for (const t of Object.values(data.teams || {})) {
-      const m = (t.dachcsUpcoming || [])[0] || (t.dachcsRecent || [])[0];
+      const m = t.league || (t.dachcsUpcoming || [])[0] || (t.dachcsRecent || [])[0];
       if (m && m.competition) { competition = m.competition; break; }
     }
     if (elComp && competition) elComp.textContent = competition;
@@ -616,7 +616,7 @@
       const t = (data && data.teams) ? data.teams[slug] : null;
       const row = ownRow(t);
       if (!row) continue;
-      const recent = (t.dachcsRecent || [])[0] || {};
+      const recent = t.league || (t.dachcsRecent || [])[0] || {};
       const comp = recent.competition || 'Liga';
       const div  = recent.division || '';
       rows.push({
