@@ -572,12 +572,13 @@ function parseDACHCSMatches(html, teamName, groupMeta) {
   // Upcoming: DATE SHORTDATE TIME Team1 - (BOx|LIVE) <Division...> - Team2 Details
   const upRe = new RegExp(
     '(\\d{2}\\.\\d{2}\\.\\d{4})\\s+\\d{2}\\.\\d{2}\\.\\s+(\\d{2}:\\d{2})\\s+(.+?)\\s+-\\s+(BO\\d|LIVE)\\s+' +
-    divPat + '\\s+-\\s+(.+?)\\s+Details', 'g');
-  let m;
-  while ((m = upRe.exec(text)) !== null) {
+    divPat + '\\s+-\\s+(.+?)\\s+Details', 'y');
+  const lines = text.split(/(?=\d{2}\.\d{2}\.\d{4}\s)/); // eine Matchzeile pro Datum
+  const each = (re, fn) => { for (const line of lines) { re.lastIndex = 0; const hit = re.exec(line); if (hit) fn(hit); } };
+  each(upRe, m => {
     const [, date, time, team1, format, team2] = m;
     const t1 = team1.trim(), t2 = team2.trim();
-    if (!isSameTeam(t1, teamName) && !isSameTeam(t2, teamName)) continue;
+    if (!isSameTeam(t1, teamName) && !isSameTeam(t2, teamName)) return;
 
     // Caster: Twitch-Link aus der zugehörigen Match-Zeile
     const caster = findCaster(date, t2) || findCaster(date, t1);
@@ -596,16 +597,16 @@ function parseDACHCSMatches(html, teamName, groupMeta) {
       caster:    caster || null,
       dachcsUrl: groupUrl,
     });
-  }
+  });
 
   // Recent: DATE SHORTDATE TIME Team1 SCORE (BOx) <Division...> SCORE Team2 Details
   const reRe = new RegExp(
     '(\\d{2}\\.\\d{2}\\.\\d{4})\\s+\\d{2}\\.\\d{2}\\.\\s+[\\d:]+\\s+(.+?)\\s+(\\d+)\\s+(BO\\d)\\s+' +
-    divPat + '\\s+(\\d+)\\s+(.+?)\\s+Details', 'g');
-  while ((m = reRe.exec(text)) !== null) {
+    divPat + '\\s+(\\d+)\\s+(.+?)\\s+Details', 'y');
+  each(reRe, m => {
     const [, date, team1, score1, format, score2, team2] = m;
     const t1 = team1.trim(), t2 = team2.trim();
-    if (!isSameTeam(t1, teamName) && !isSameTeam(t2, teamName)) continue;
+    if (!isSameTeam(t1, teamName) && !isSameTeam(t2, teamName)) return;
     const isTeam1     = isSameTeam(t1, teamName);
     const donutsScore = parseInt(isTeam1 ? score1 : score2);
     const oppScore    = parseInt(isTeam1 ? score2 : score1);
@@ -620,7 +621,7 @@ function parseDACHCSMatches(html, teamName, groupMeta) {
       competition: compName,
       dachcsUrl: groupUrl,
     });
-  }
+  });
 
   console.log(`  DACHCS [${groupMeta?.saison || '?'}]: ${upcoming.length} upcoming, ${recent.length} recent`);
   return { upcoming, recent };

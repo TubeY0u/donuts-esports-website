@@ -16,3 +16,10 @@ test('DACH CS Saison-6-Zeilen mit "Spk" werden erkannt', () => {
   assert.equal(nxt.upcoming.length, 1);
   assert.equal(nxt.upcoming[0].team2, 'Pros auf Wish');
 });
+
+test('eine Zeile pro Match: lange Listen werden nicht zusammengezogen', () => {
+  const page = `18.10.2026 18.10. 20:00 Babbler Marines - LIVE Spk 8 · Phase 2 Gruppe A - Face2Face eSports Details 21.10.2026 21.10. 19:00 DIEDONUTS DNS - BO3 Spk 8 · Phase 2 Gruppe A - EWÖ E-Sports Details Letzten 5 Spiele Alle Anzeigen 13.10.2026 13.10. 21:15 Rollator-racoondogs 2 BO3 Spk 8 · Phase 2 Gruppe A 0 DIEDONUTS DNS Details`;
+  const dns = parseDACHCSMatches(page, 'DIEDONUTS DNS', { saison: 'S6', spielklasse: 'Spielklasse 8', gruppe: 'Gruppe A', url: 'u' });
+  assert.deepEqual(dns.upcoming.map(u => u.team2), ['EWÖ E-Sports']);
+  assert.deepEqual(dns.recent.map(r => [r.opponent, r.score, r.result]), [['Rollator-racoondogs', '0:2', 'loss']]);
+});
