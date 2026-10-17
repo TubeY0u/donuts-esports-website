@@ -535,9 +535,13 @@ function parseDACHCSMatches(html, teamName, groupMeta) {
   // Wichtig, weil Divisionsnamen Zahlen enthalten können und eine generische
   // Regex sonst Scores/Teamnamen falsch zuordnet.
   const escRe  = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const divPat = divLabel
-    ? escRe(divLabel).replace(/\s+/g, '\\s+')
-    : '.+?';
+  // Neue Saisons kürzen ab: Metadaten "Spielklasse 8" + "Gruppe B", Matchzeile "Spk 8 · Phase 2 Gruppe B".
+  const skNum  = (groupMeta?.spielklasse || '').match(/^Spielklasse\s+(\d+)/)?.[1];
+  const shortPat = skNum && groupMeta?.gruppe
+    ? `(?:Spielklasse|Spk)\\s+${skNum}\\b[^-]*?${escRe(groupMeta.gruppe).replace(/\s+/g, '\\s+')}`
+    : null;
+  const litPat = divLabel ? escRe(divLabel).replace(/\s+/g, '\\s+') : null;
+  const divPat = litPat ? `(?:${[litPat, shortPat].filter(Boolean).join('|')})` : '.+?';
 
   // Twitch-Caster-Links aus dem rohen HTML ziehen
   // Cast-Links zeilenweise aus dem rohen HTML: Jede Match-Zeile beginnt mit
@@ -821,7 +825,9 @@ async function main() {
   console.log(`   Updated: ${output.lastUpdated}`);
 }
 
-main().catch(err => {
+if (process.argv[1] === fileURLToPath(import.meta.url)) main().catch(err => {
   console.error('❌  Scraper crashed:', err);
   process.exit(1);
 });
+
+export { parseDACHCSMatches };
