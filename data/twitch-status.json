@@ -1,4 +1,13 @@
 {
-  "updatedAt": "2026-10-18T14:53:11.022Z",
-  "data": []
+  "updatedAt": "2026-10-18T18:02:00.302Z",
+  "data": [
+    {
+      "user_login": "sirokkoko",
+      "viewer_count": 16
+    },
+    {
+      "user_login": "its_kriistiin",
+      "viewer_count": 12
+    }
+  ]
 }
