@@ -2,6 +2,13 @@
   "_comment": "Highlights-Timeline der Startseite. Neueste Einträge zuerst. tag: dachcs | esea | milestone | founding | win. Der aktuelle Saisonstand wird zusätzlich automatisch aus stats.json davorgesetzt. Hier nur abgeschlossene Sachen eintragen.",
   "entries": [
     {
+      "badge": "DNS",
+      "title": "Newcomer-Roster DNS · Kapitel abgeschlossen",
+      "text": "Das jüngste Roster der Org hat sich im Oktober 2026 aufgelöst. Danke für jede Runde. Olof bleibt als Stand-in bei Nxt an Bord.",
+      "tag": "milestone",
+      "tagLabel": "Meilenstein"
+    },
+    {
       "badge": "S5",
       "title": "DachCS Saison 5 · Spielklasse 4",
       "text": "Höchste Division der Org-Geschichte · Letzter Platz, aber Erfahrung auf dem bisher höchsten Level",
