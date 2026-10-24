@@ -1,4 +1,4 @@
-/* Startseite: Logo-Portale und Easter Eggs. Der Konami-Code (Donut-Regen) wohnt in main.js. */
+/* Logo-Portale (nur Startseite), Hell/Dunkel-Schalter und Easter Eggs (alle Seiten). Der Konami-Code (Donut-Regen) wohnt in main.js. */
 (() => {
   'use strict';
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;

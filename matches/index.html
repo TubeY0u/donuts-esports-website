@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://api.faceit.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https: data:; connect-src 'self' https://api.faceit.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <script src="/js/security.js"></script>
   <title>Matches · DieDonuts Esports</title>
@@ -10,364 +10,35 @@
   <meta property="og:type" content="website">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#06060a">
+  <meta name="theme-color" content="#231210">
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon.png">
   <link rel="icon" type="image/png" sizes="48x48"   href="/assets/favicon.png">
   <link rel="apple-touch-icon"                       href="/assets/favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Fonts loaded conditionally via cookie-consent script below -->
-  <link rel="stylesheet" href="/css/styles.css">
-  <style>
-    /* ── Matches page styles ──────────────────────────────── */
-    .matches-hero {
-      padding: 100px 0 60px;
-      border-bottom: 1px solid var(--border-soft);
-    }
-    .matches-hero .eyebrow { margin-bottom: 12px; }
-    .matches-hero h1 { margin-bottom: 0; }
-
-    /* Team filter tabs */
-    .matches-tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 48px 0 32px;
-    }
-    .matches-tab {
-      padding: 8px 20px;
-      border: 1px solid var(--border-soft);
-      background: transparent;
-      color: var(--fg-3);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .matches-tab:hover { color: var(--fg); border-color: var(--fg-4); }
-    .matches-tab.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #000;
-      font-weight: 600;
-    }
-
-    /* Section layout */
-    .matches-section { padding: 60px 0; border-bottom: 1px solid var(--border-soft); }
-    .matches-section:last-of-type { border-bottom: none; }
-    .matches-section-header {
-      display: flex;
-      align-items: baseline;
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-    .matches-section-header h2 { margin: 0; font-size: clamp(20px, 3vw, 26px); }
-    .matches-count {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--fg-4);
-      letter-spacing: 1px;
-    }
-
-    /* Upcoming grid — reuse nm-card, extend for match page */
-    .matches-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-    }
-
-    /* Results list */
-    .results-list { display: flex; flex-direction: column; gap: 8px; }
-    .result-row {
-      display: grid;
-      grid-template-columns: 90px 1fr auto auto;
-      align-items: center;
-      gap: 16px;
-      padding: 14px 20px;
-      background: var(--surface-1);
-      border-radius: 6px;
-      border: 1px solid var(--border-soft);
-      transition: border-color 0.2s;
-    }
-    .result-row:hover { border-color: var(--border); }
-    .result-date {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--fg-4);
-      letter-spacing: 0.5px;
-    }
-    .result-match {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .result-opponent {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--fg);
-    }
-    .result-meta {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--fg-4);
-      letter-spacing: 0.5px;
-    }
-    .result-score {
-      font-family: var(--font-display);
-      font-size: 18px;
-      color: var(--fg-2);
-      letter-spacing: 1px;
-      text-align: right;
-      min-width: 48px;
-    }
-    .result-badge {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      padding: 4px 8px;
-      border-radius: 3px;
-      font-weight: 700;
-      min-width: 44px;
-      text-align: center;
-    }
-    .result-badge--win  { background: rgba(40,200,80,0.12);  color: #3dba60; border: 1px solid rgba(40,200,80,0.2); }
-    .result-badge--loss { background: rgba(220,50,50,0.10);  color: #d04040; border: 1px solid rgba(220,50,50,0.2); }
-    .result-badge--draw { background: rgba(160,160,160,0.1); color: var(--fg-3); border: 1px solid var(--border-soft); }
-    .result-badge--faceit { background: rgba(255,85,0,0.12); color: #ff5500; border: 1px solid rgba(255,85,0,0.2); font-size: 9px; }
-
-    /* Standings */
-    .standings-wrap { overflow-x: auto; }
-    .standings-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-    .standings-table th {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      color: var(--fg-4);
-      text-transform: uppercase;
-      text-align: left;
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border-soft);
-      white-space: nowrap;
-    }
-    .standings-table th:not(:first-child):not(:nth-child(2)) { text-align: right; }
-    .standings-table td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border-soft);
-      color: var(--fg-2);
-    }
-    .standings-table td:not(:first-child):not(:nth-child(2)) { text-align: right; }
-    .standings-table tr:last-child td { border-bottom: none; }
-    .standings-table tr:hover td { background: var(--surface-1); }
-    .standings-pos {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--fg-4);
-      font-weight: 600;
-    }
-    .standings-team-name { font-weight: 600; color: var(--fg); }
-    .standings-team-name.is-us { color: var(--accent); }
-    .standings-pts { font-weight: 700; color: var(--fg); }
-    .standings-rd-pos { color: #3dba60; }
-    .standings-rd-neg { color: #d04040; }
-
-    /* Team label chip (in results/standings) */
-    .team-chip {
-      display: inline-block;
-      font-family: var(--font-mono);
-      font-size: 9px;
-      letter-spacing: 1px;
-      padding: 2px 6px;
-      border-radius: 3px;
-      border: 1px solid var(--border-soft);
-      color: var(--fg-4);
-      margin-left: 6px;
-      vertical-align: middle;
-    }
-
-    /* Caster badge */
-    .nm-caster-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: 8px;
-      padding: 5px 10px;
-      background: rgba(145,70,255,0.10);
-      border: 1px solid rgba(145,70,255,0.25);
-      border-radius: 4px;
-      color: #a855f7;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 1px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .nm-caster-badge:hover {
-      background: rgba(145,70,255,0.18);
-      border-color: rgba(145,70,255,0.45);
-    }
-
-    /* Empty state */
-    .matches-empty {
-      padding: 48px 24px;
-      text-align: center;
-      color: var(--fg-4);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 1px;
-      border: 1px dashed var(--border-soft);
-      border-radius: 8px;
-    }
-    .matches-empty-icon {
-      font-size: 32px;
-      margin-bottom: 12px;
-      opacity: 0.4;
-    }
-
-    /* Loading */
-    .matches-loading {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 32px 0;
-      color: var(--fg-4);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 1px;
-    }
-
-    /* Last updated */
-    .matches-updated {
-      margin-top: 48px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border-soft);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--fg-4);
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .matches-updated a { color: var(--fg-4); text-decoration: underline; text-underline-offset: 3px; }
-    .matches-updated a:hover { color: var(--fg-2); }
-
-    @media (max-width: 640px) {
-      .result-row { grid-template-columns: 1fr auto auto; }
-      .result-date { display: none; }
-      .matches-grid { grid-template-columns: 1fr; }
-    }
-  
-    /* ── Zweite Filterzeile: Wettbewerbsart ── */
-    .matches-tabs--sub {
-      margin: -20px 0 32px;
-      align-items: center;
-    }
-    .matches-tabs-label {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--fg-4);
-      margin-right: 6px;
-    }
-    .matches-tab.is-sub { padding: 6px 14px; font-size: 10px; }
-
-    /* ── Hinweis auf ausgeblendete Pugs ── */
-    .matches-hint {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 18px 0 0;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--fg-4);
-    }
-    .matches-hint-link {
-      background: none;
-      border: none;
-      padding: 0;
-      font: inherit;
-      color: var(--fg-2);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      cursor: pointer;
-    }
-    .matches-hint-link:hover { color: var(--accent); }
-
-    /* ── Farbe pro Roster ── */
-    [data-team="main"] { --team-color: #e11d48; }
-    [data-team="nxt"]  { --team-color: #f59e0b; }
-
-    .nm-roster-badge[data-team] {
-      color: var(--team-color);
-      background: color-mix(in srgb, var(--team-color) 14%, transparent);
-    }
-    .team-chip[data-team] {
-      color: var(--team-color);
-      border-color: color-mix(in srgb, var(--team-color) 40%, transparent);
-    }
-    .result-row[data-team] {
-      border-left: 3px solid color-mix(in srgb, var(--team-color) 55%, transparent);
-    }
-    .result-row[data-team]:hover {
-      border-color: var(--border);
-      border-left-color: var(--team-color);
-    }
-    .nm-card[data-team]:hover {
-      border-color: var(--team-color);
-      box-shadow: 0 0 24px color-mix(in srgb, var(--team-color) 10%, transparent);
-    }
-    .nm-card[data-team]::before { background: var(--team-color); }
-
-    /* Fallback fuer Browser ohne color-mix */
-    @supports not (color: color-mix(in srgb, red 50%, transparent)) {
-      .nm-roster-badge[data-team] { background: var(--surface-3); }
-      .team-chip[data-team]       { border-color: var(--border); }
-      .result-row[data-team]      { border-left-color: var(--team-color); }
-    }
-</style>
+  <link rel="preload" href="/assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="/js/theme.js"></script>
+  <link rel="stylesheet" href="/css/site.css">
 </head>
-<body>
+<body data-calm>
+<a class="skip-link" href="#top">Zum Inhalt springen</a>
 <header class="nav" id="nav">
-  <div class="container">
-    <a href="/" class="brand" aria-label="DieDonuts Esports, zur Startseite">
-      <img class="brand-mark" src="/assets/logo_trans.png" alt="DieDonuts Esports"><span><span class="bn-die">Die</span><span class="bn-don">Donuts</span> Esports</span>
+  <div class="wrap nav-inner">
+    <a href="/" class="brand" id="brand" aria-label="DieDonuts Esports, Startseite">
+      <img src="/assets/logo_mark.png" alt="" width="60" height="23"><span>DieDonuts</span>
     </a>
-    <nav><ul class="nav-links" id="navLinks">
-      <li><a href="/">Home</a></li>
-      <li><a href="/roster/">Team</a></li>
-      <li><a href="/bootcamp/">Bootcamp</a></li>
-      <li><a href="/matches/">Matches</a></li>
-      <li><a href="/streams/">Streams</a></li>
-    </ul></nav>
-    <div class="nav-socials">
-      <a href="https://www.instagram.com/diedonuts_esports/" target="_blank" rel="noopener" aria-label="Instagram">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.2.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.9c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.9.1-3.2 0-3.6 0-4.8-.1-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 4 4 2.4 7.2 2.3c1.3-.1 1.6-.1 4.8-.1zm0-2.2C8.7 0 8.3 0 7 .1 2.7.3.3 2.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.3.1 1.7.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.3.1-1.7.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0zM5.8 12a6.2 6.2 0 1 1 12.3 0 6.2 6.2 0 0 1-12.3 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/></svg>
-      </a>
-      <a href="https://x.com/DieDonuts" target="_blank" rel="noopener" aria-label="X / Twitter">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 2.3h3.3l-7.2 8.3 8.5 11.2h-6.6l-5.2-6.8-5.9 6.8H1.7L9.4 13 1.3 2.3h6.8l4.7 6.2zm-1.2 17.5H19L7.1 4.1H5.1z"/></svg>
-      </a>
-      <a href="https://www.youtube.com/@DieDonuts_eSports" target="_blank" rel="noopener" aria-label="YouTube">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5a3 3 0 0 0-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4L15.8 12l-6.3 3.6z"/></svg>
-      </a>
-      <a href="https://discord.gg/GEPrazXBrJ" target="_blank" rel="noopener" aria-label="Discord">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-      </a>
-    </div>
-    <button class="menu-btn" id="menuBtn" aria-label="Menü öffnen"><span></span></button>
+    <nav aria-label="Hauptmenü">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/roster/">Team</a></li>
+        <li><a href="/matches/">Matches</a></li>
+        <li><a href="/bootcamp/">Bootcamp</a></li>
+        <li><a href="/streams/">Streams</a></li>
+      </ul>
+    </nav>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Helles Design einschalten" aria-pressed="false">
+      <svg class="moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A9 9 0 0 1 9.5 3a7 7 0 1 0 11.5 11.5z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+    <a class="btn btn-glaze" href="https://discord.gg/GEPrazXBrJ" target="_blank" rel="noopener">Discord</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menü öffnen" aria-controls="navLinks"><span></span></button>
   </div>
 </header>
 <div id="liveBanner"><div id="liveBannerInner"></div></div>
@@ -402,37 +73,26 @@
 </main>
 
 <footer class="footer">
-  <div class="container">
-    <div class="footer-text">© 2026 DieDonuts Esports · Counter-Strike 2 · Made in Germany</div>
-    <div class="footer-legal">
+  <div class="wrap footer-inner">
+    <span>© 2026 DieDonuts Esports. Frisch gebacken in Deutschland.</span>
+    <nav aria-label="Rechtliches">
       <a href="/impressum/">Impressum</a>
       <a href="/datenschutz/">Datenschutz</a>
-    </div>
-    <div class="footer-socials">
-      <a href="https://www.instagram.com/diedonuts_esports/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.2.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.9c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.9.1-3.2 0-3.6 0-4.8-.1-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 4 4 2.4 7.2 2.3c1.3-.1 1.6-.1 4.8-.1zm0-2.2C8.7 0 8.3 0 7 .1 2.7.3.3 2.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.3.1 1.7.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.3.1-1.7.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0zM5.8 12a6.2 6.2 0 1 1 12.3 0 6.2 6.2 0 0 1-12.3 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/></svg></a>
-      <a href="https://x.com/DieDonuts" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.2 2.3h3.3l-7.2 8.3 8.5 11.2h-6.6l-5.2-6.8-5.9 6.8H1.7L9.4 13 1.3 2.3h6.8l4.7 6.2zm-1.2 17.5H19L7.1 4.1H5.1z"/></svg></a>
-      <a href="https://www.youtube.com/@DieDonuts_eSports" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5a3 3 0 0 0-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4L15.8 12l-6.3 3.6z"/></svg></a>
-      <a href="https://www.twitch.tv/diedonuts_esports" target="_blank" rel="noopener" aria-label="Twitch"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg></a>
+    </nav>
+    <div class="socials">
+      <a href="https://www.instagram.com/diedonuts_esports/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.2.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.9c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.9.1-3.2 0-3.6 0-4.8-.1-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 4 4 2.4 7.2 2.3c1.3-.1 1.6-.1 4.8-.1zm0-2.2C8.7 0 8.3 0 7 .1 2.7.3.3 2.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.3.1 1.7.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.3.1-1.7.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0zM5.8 12a6.2 6.2 0 1 1 12.3 0 6.2 6.2 0 0 1-12.3 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/></svg></a>
+      <a href="https://x.com/DieDonuts" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.2 2.3h3.3l-7.2 8.3 8.5 11.2h-6.6l-5.2-6.8-5.9 6.8H1.7L9.4 13 1.3 2.3h6.8l4.7 6.2zm-1.2 17.5H19L7.1 4.1H5.1z"/></svg></a>
+      <a href="https://www.youtube.com/@DieDonuts_eSports" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5a3 3 0 0 0-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4L15.8 12l-6.3 3.6z"/></svg></a>
+      <a href="https://www.twitch.tv/diedonuts_esports" target="_blank" rel="noopener" aria-label="Twitch"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg></a>
     </div>
   </div>
 </footer>
 
-<div class="cookie-banner" id="cookieBanner" aria-live="polite">
-  <div class="cookie-inner">
-    <div class="cookie-text">
-      <strong>Diese Seite nutzt Google Fonts</strong>
-      <span>Dabei wird deine IP-Adresse kurz an Google übertragen. Mit „Akzeptieren“ stimmst du dem zu.</span>
-    </div>
-    <div class="cookie-actions">
-      <button class="cookie-btn cookie-btn--decline" id="cookieDecline">Ablehnen</button>
-      <button class="cookie-btn cookie-btn--accept" id="cookieAccept">Akzeptieren</button>
-    </div>
-  </div>
-</div>
-<script src="/js/pages/consent-17e1d23f6a.js"></script>
-<script src="/js/main.js" defer></script>
-<script src="/js/pages/navigation-a465e2ecaa.js"></script>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="/js/main.js" defer></script>
 <script src="/js/pages/matches-8d0110159b.js"></script>
+<script src="/js/pages/navigation-c66d390090.js" defer></script>
+<script src="/js/home.js" defer></script>
 </body>
 </html>
