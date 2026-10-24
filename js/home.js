@@ -64,7 +64,30 @@
     }
   });
 
-  // 3) Für alle, die in die Konsole schauen.
+  // 3) Hell/Dunkel. Hell heißt hier Flashbang.
+  const themeBtn = document.getElementById('themeBtn');
+  const root = document.documentElement;
+  const syncThemeBtn = () => {
+    const light = root.dataset.theme === 'light';
+    themeBtn?.setAttribute('aria-pressed', String(light));
+    themeBtn?.setAttribute('aria-label', light ? 'Dunkles Design einschalten' : 'Helles Design einschalten');
+  };
+  syncThemeBtn();
+  themeBtn?.addEventListener('click', () => {
+    const light = root.dataset.theme !== 'light';
+    if (light) root.dataset.theme = 'light'; else delete root.dataset.theme;
+    try { localStorage.setItem('donuts-theme', light ? 'light' : 'dark'); } catch (e) {}
+    syncThemeBtn();
+    if (light && !calm) {
+      const fx = document.createElement('div');
+      fx.className = 'flash-fx';
+      document.body.appendChild(fx);
+      fx.addEventListener('animationend', () => fx.remove());
+    }
+    toast(light ? 'Flashbang! Hättest dich wegdrehen sollen.' : 'Augen wieder auf. Willkommen zurück im Dunkeln.');
+  });
+
+  // 4) Für alle, die in die Konsole schauen.
   console.log('%c🍩 Hey, du schaust in die Konsole?', 'font: 700 16px sans-serif; color: #ff5fa8');
   console.log('Dann bist du hier richtig: https://discord.gg/GEPrazXBrJ\nPsst: Tipp mal "rushb", "eco" oder "ace" auf der Seite. Und das Logo mag es, angetippt zu werden.');
 })();
