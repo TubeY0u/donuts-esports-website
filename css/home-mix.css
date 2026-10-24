@@ -174,7 +174,9 @@ h1, h2, h3, h4, p { margin: 0; }
 .scroll-cue::after { content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 8px; border: solid currentColor; border-width: 0 2px 2px 0; transform: translateY(-3px) rotate(45deg); }
 .lineup .label, .caption p:first-child { font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: #ffd2e6; }
 .lineup ul { display: flex; align-items: flex-end; list-style: none; margin: 18px 0 20px; padding: 0; }
-.lineup li { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+.lineup li { flex: 1 1 0; min-width: 0; }
+.lineup li > a { display: flex; flex-direction: column; align-items: center; width: 100%; text-decoration: none; }
+.lineup a:hover span, .lineup a:focus-visible span { background: #fff6ef; }
 /* Die Freisteller enden hart an Hüfte und Bildrand (Schultern): unten und seitlich weich ausblenden,
    Namen sitzen im Übergang. Die beiden Verläufe werden geschnitten (intersect). */
 .lineup img {
