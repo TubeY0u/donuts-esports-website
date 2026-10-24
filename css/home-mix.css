@@ -145,6 +145,9 @@ h1, h2, h3, h4, p { margin: 0; }
 .logo-ink { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .portal-window { position: absolute; left: 23.37%; top: 29.87%; width: 54.2%; height: 40.27%; border-radius: 999px; overflow: hidden; background: var(--line); }
 .portal-window img { width: 100%; height: 100%; object-fit: cover; object-position: center 70%; }
+/* Im schmalen Fenster sollen die Gesichter bzw. Bildschirme sichtbar sein */
+.hero .portal-window img, .hero .portal-full img { object-position: center 45%; }
+.bootcamp .portal-window img, .bootcamp .portal-full img { object-position: center 42%; }
 .zoom .portal:not(.is-static) .portal-window img {
   position: absolute; left: 77.29%; top: 50.31%; max-width: none;
   width: var(--sw, 100%); height: var(--sh, 100%); margin: calc(var(--sh, 0px) / -2) 0 0 calc(var(--sw, 0px) / -2);
@@ -190,7 +193,8 @@ h1, h2, h3, h4, p { margin: 0; }
 .lineup ul { display: flex; align-items: flex-end; list-style: none; margin: 18px 0 20px; padding: 0; }
 .lineup li { flex: 1 1 0; min-width: 0; }
 .lineup li > a { display: flex; flex-direction: column; align-items: center; width: 100%; text-decoration: none; }
-.lineup a:hover span, .lineup a:focus-visible span { background: #ffffff; }
+.lineup span { transition: background .15s, box-shadow .15s; }
+.lineup a:hover span, .lineup a:focus-visible span { background: rgba(6, 6, 10, .6); box-shadow: inset 0 0 0 2px #e11d48, 0 0 18px rgba(225, 29, 72, .55); }
 /* Die Freisteller enden hart an Hüfte und Bildrand (Schultern): unten und seitlich weich ausblenden,
    Namen sitzen im Übergang. Die beiden Verläufe werden geschnitten (intersect). */
 .lineup img {
