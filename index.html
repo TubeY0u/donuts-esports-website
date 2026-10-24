@@ -81,29 +81,79 @@
 <main id="top">
 <div id="liveBanner"><div id="liveBannerInner"></div></div>
 
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <h1>Rund, süß und im Clutch erstaunlich zäh.</h1>
+<section class="hero" id="hero">
+  <div class="hero-stage">
+    <div class="hero-copy">
+      <h1 class="hero-title"><span>Rund.</span> <span>Süß.</span> <span class="pink">Im&nbsp;Clutch zäh.</span></h1>
       <p class="hero-lead">Wir sind DieDonuts, eine CS2-Org aus Deutschland. Angefangen im September 2024 mit fünf Leuten, die einfach zusammen zocken wollten. Heute spielen zwei Roster in der DACH CS, und der Rest hängt im Discord.</p>
       <div class="hero-actions">
-        <a class="btn btn-glaze" href="https://discord.gg/GEPrazXBrJ" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>Discord beitreten</a>
+        <a class="btn btn-glaze" href="https://discord.gg/GEPrazXBrJ" target="_blank" rel="noopener">Discord beitreten</a>
         <a class="btn btn-line" href="/roster/">Roster ansehen</a>
       </div>
-      <p class="season">
-        <span>Gerade läuft <b id="tkComp">Entry 2026</b></span>
-        <span>Main <b id="tkMain">2. · 2W/1L</b></span>
-        <span>Nxt <b id="tkNxt">1. · 2W/0L</b></span>
-      </p>
     </div>
-    <figure class="donut-photo" id="donutPhoto">
-      <div class="pic">
-        <img src="/assets/photos/foto4.jpg" alt="Das Team sitzt beim Bootcamp gemeinsam auf einer Couch" width="1600" height="1200" fetchpriority="high">
-        <svg class="glaze drip-in" viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 0H400V34C392 34 388 40 386 52C384 64 372 64 371 52C370 40 362 30 350 32C336 34 334 46 330 70C327 86 312 86 311 70C310 50 300 34 284 36C268 38 262 30 248 32C236 34 234 44 232 56C230 66 218 66 217 56C216 42 206 36 190 38C172 40 168 48 166 62C164 78 148 78 147 62C146 46 136 34 118 36C104 38 100 30 88 32C74 34 72 48 70 58C68 70 54 70 53 58C52 44 40 36 26 36C12 36 6 30 0 30Z"/></svg>
-        <span class="sprinkle s1"></span><span class="sprinkle s2"></span><span class="sprinkle s3"></span><span class="sprinkle s4"></span>
+    <figure class="donut" id="donutPhoto">
+      <div class="donut-hole">
+        <img src="/assets/photos/foto4.jpg" srcset="/assets/photos/foto4-960.jpg 960w, /assets/photos/foto4.jpg 1600w" sizes="100vw" alt="Das Team sitzt beim Bootcamp gemeinsam auf einer Couch" width="1600" height="1200" fetchpriority="high">
       </div>
-      <figcaption>Bootcamp II, April 2026. Alle haben auf eine Couch gepasst.</figcaption>
+      <svg class="donut-ring" viewBox="0 0 400 400" aria-hidden="true">
+        <defs><radialGradient id="dough" cx="200" cy="200" r="192" gradientUnits="userSpaceOnUse">
+          <stop offset=".36" stop-color="#3b1f17"/><stop offset=".5" stop-color="#8a5636"/><stop offset=".72" stop-color="#a66a43"/><stop offset="1" stop-color="#4a271b"/>
+        </radialGradient>
+    <path id="gl" fill-rule="evenodd" d="M370.6 200L370.4 206.7L369.5 213.3L368.1 219.9L366.4 226.4L364.9 232.8L364.3 239.4L366.3 246.9L369.9 255.2L370.4 262.9L364.8 268.3L357.1 272.4L351.1 277L346.7 282.1L342.5 287.3L337.9 292.2L333 296.6L327.9 300.8L322.7 304.8L317.7 308.8L312.9 312.9L308.4 317.2L304.1 321.9L300.1 326.9L296.9 333.3L295.5 342.9L294.6 354.4L290.2 361.1L281.4 359.8L272.3 356.8L264.9 356.6L258.3 358.1L251.9 359.8L245.5 361.4L239.1 362.8L232.7 364.3L226.3 365.9L219.9 368.2L213.6 372.2L207 378.6L200 385L192.7 386.5L185.7 381.7L179.4 374.2L173.4 368.1L167.4 363.9L161.5 360.4L155.7 357L150.1 353.7L144.4 350.7L138.7 347.9L132.9 345.6L126.7 343.8L119.9 343.1L112.1 343.4L103.9 343.9L96.6 342.3L91.7 337.4L88.4 330.7L85.4 323.9L81.9 318.1L78 312.8L73.9 307.7L69.7 302.7L65.5 297.7L61.2 292.8L56.5 288L50.9 283.5L44 279.5L36.8 275.2L31.7 269.7L30.5 262.5L32.1 254.5L34 246.8L35.1 239.6L35.8 232.7L36.6 225.9L37.3 219.3L38 212.8L38.4 206.3L38.6 200L38.6 193.7L38.5 187.3L38.4 180.9L38.5 174.4L38.9 168L39.3 161.4L38.5 154.5L36.3 146.8L35.8 139.4L40.5 133.9L47.7 129.8L53.2 125.2L56.7 119.8L59.4 113.8L61.9 107.7L64.4 101.5L67.1 95.3L70.3 89.2L73.9 83.5L78.2 78.2L83 73.4L88.4 69.4L94.3 65.9L100.3 62.8L106.1 59.5L111.5 55.5L116 50.1L120.4 43.8L125.4 38.3L131.9 35.6L139.4 35.9L147.2 37.5L154.5 38.7L161.3 38.8L167.8 38.3L174.3 37.7L180.8 37.4L187.2 37.5L193.6 37.9L200 38.3L206.3 38.6L212.7 38.7L219.1 38.4L225.8 37.4L232.9 34.6L240.8 30L248.9 26.7L255.8 28.2L261.4 33.6L266.6 39.2L272.2 43.5L277.8 47.3L283.2 51.4L288.4 55.8L293.3 60.4L298.1 65L302.8 69.6L307.6 74L312.4 78.4L317.3 82.7L322.4 86.9L327.8 90.8L334.2 94.2L341.5 97.2L348.9 100.5L354.6 105.2L357 112.1L356.1 120.5L353.7 129.2L351.9 137.1L351.8 144L353.2 150.2L355.7 156.1L358.5 161.9L361.6 167.9L364.5 173.9L367 180.2L369 186.7L370.2 193.3ZM289.6 196.5L289.1 193L288.3 189.5L287.3 186.2L286.2 182.9L284.9 179.6L283.6 176.4L282.2 173.3L280.8 170.2L279.5 167.1L278.1 164L276.8 160.9L275.4 157.7L274.1 154.6L272.6 151.5L271.1 148.3L269.5 145.2L267.7 142.2L265.7 139.3L263.5 136.5L261.1 134L258.4 131.6L255.7 129.4L252.7 127.5L249.6 125.7L246.4 124.2L243.2 122.9L239.8 121.8L236.5 120.8L233.2 119.8L229.9 119L226.6 118.1L223.3 117.2L220.1 116.3L216.8 115.4L213.5 114.5L210.2 113.7L206.9 112.8L203.5 112.1L200 111.5L196.5 111L193 110.8L189.4 110.8L185.9 111.1L182.4 111.7L179 112.6L175.7 113.7L172.4 115.1L169.3 116.7L166.2 118.5L163.3 120.4L160.4 122.3L157.6 124.3L154.9 126.4L152.2 128.4L149.4 130.4L146.7 132.4L144 134.4L141.2 136.4L138.5 138.5L135.7 140.6L133 142.8L130.4 145.1L127.9 147.6L125.6 150.3L123.4 153.1L121.5 156L119.8 159.1L118.4 162.4L117.2 165.7L116.3 169.1L115.6 172.6L115.1 176.1L114.8 179.5L114.6 183L114.4 186.4L114.3 189.9L114.2 193.2L114.1 196.6L113.9 200L113.8 203.4L113.6 206.8L113.5 210.2L113.5 213.7L113.5 217.2L113.8 220.7L114.2 224.2L114.8 227.7L115.7 231.1L116.9 234.4L118.3 237.7L120 240.8L121.9 243.7L124 246.6L126.3 249.2L128.7 251.8L131.3 254.2L133.8 256.5L136.4 258.8L139 261L141.6 263.2L144.1 265.4L146.7 267.6L149.3 269.8L151.8 272.1L154.5 274.3L157.2 276.5L159.9 278.6L162.8 280.6L165.9 282.4L169 284.1L172.2 285.5L175.6 286.6L179 287.5L182.5 288.1L186 288.4L189.5 288.4L193.1 288.3L196.5 287.9L200 287.5L203.4 286.9L206.8 286.3L210.1 285.6L213.5 285L216.8 284.4L220.1 283.7L223.4 283.1L226.8 282.5L230.2 281.8L233.6 281.1L237 280.2L240.3 279.1L243.6 277.9L246.8 276.4L249.9 274.7L252.9 272.8L255.7 270.6L258.3 268.2L260.7 265.7L262.9 262.9L265 260.1L266.9 257.1L268.6 254.1L270.3 251.1L271.9 248L273.5 245L275.1 242L276.6 239L278.2 236.1L279.8 233.1L281.5 230L283 227L284.5 223.8L285.9 220.6L287.2 217.3L288.3 214L289.1 210.5L289.6 207.1L289.9 203.5L289.9 200Z"/></defs>
+        <circle cx="200" cy="200" r="131" fill="none" stroke="url(#dough)" stroke-width="122"/>
+        <g class="glaze-g">
+          <use href="#gl" fill="#b8296b" transform="translate(4 8)"/>
+      <use href="#gl" fill="#ff5fa8"/>
+          <path d="M86 150A124 124 0 0 1 150 86" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="9" stroke-linecap="round"/>
+              <rect class="spr" x="81.7" y="139.5" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(175.7 89.7 142)"/>
+          <rect class="spr" x="334.3" y="240.4" width="16" height="5" rx="2.5" fill="#140908" transform="rotate(52.1 342.3 242.9)"/>
+          <rect class="spr" x="259.9" y="284.2" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(55.5 267.9 286.7)"/>
+          <rect class="spr" x="237.8" y="93.7" width="16" height="5" rx="2.5" fill="#ffd2e6" transform="rotate(104.7 245.8 96.2)"/>
+          <rect class="spr" x="112.7" y="103" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(98.6 120.7 105.5)"/>
+          <rect class="spr" x="290.9" y="238.7" width="16" height="5" rx="2.5" fill="#140908" transform="rotate(37.1 298.9 241.2)"/>
+          <rect class="spr" x="138.5" y="83.1" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(56.5 146.5 85.6)"/>
+          <rect class="spr" x="82.4" y="132.2" width="16" height="5" rx="2.5" fill="#ffd2e6" transform="rotate(54 90.4 134.7)"/>
+          <rect class="spr" x="230.6" y="62.6" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(43.9 238.6 65.1)"/>
+          <rect class="spr" x="74.8" y="138.3" width="16" height="5" rx="2.5" fill="#140908" transform="rotate(157.5 82.8 140.8)"/>
+          <rect class="spr" x="176.7" y="79.5" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(176.4 184.7 82)"/>
+          <rect class="spr" x="284.7" y="282.5" width="16" height="5" rx="2.5" fill="#ffd2e6" transform="rotate(136.3 292.7 285)"/>
+          <rect class="spr" x="266.8" y="303.1" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(7.1 274.8 305.6)"/>
+          <rect class="spr" x="121.3" y="72.3" width="16" height="5" rx="2.5" fill="#140908" transform="rotate(103.1 129.3 74.8)"/>
+          <rect class="spr" x="277.3" y="112.7" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(125.2 285.3 115.2)"/>
+          <rect class="spr" x="80.7" y="122.5" width="16" height="5" rx="2.5" fill="#ffd2e6" transform="rotate(82.1 88.7 125)"/>
+          <rect class="spr" x="274" y="68.2" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(85.3 282 70.7)"/>
+          <rect class="spr" x="137" y="105.6" width="16" height="5" rx="2.5" fill="#140908" transform="rotate(126.3 145 108.1)"/>
+          <rect class="spr" x="98.3" y="73.3" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(147.9 106.3 75.8)"/>
+          <rect class="spr" x="165.2" y="318.6" width="16" height="5" rx="2.5" fill="#ffd2e6" transform="rotate(120.4 173.2 321.1)"/>
+          <rect class="spr" x="318.7" y="215.6" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(30.2 326.7 218.1)"/>
+          <rect class="spr" x="271.4" y="269.4" width="16" height="5" rx="2.5" fill="#140908" transform="rotate(138.3 279.4 271.9)"/>
+          <rect class="spr" x="272.4" y="282.4" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(70.4 280.4 284.9)"/>
+          <rect class="spr" x="266.8" y="119.3" width="16" height="5" rx="2.5" fill="#ffd2e6" transform="rotate(80.9 274.8 121.8)"/>
+          <rect class="spr" x="49.2" y="151.7" width="16" height="5" rx="2.5" fill="#fff6ef" transform="rotate(147.5 57.2 154.2)"/>
+          <rect class="spr" x="269.8" y="108.1" width="16" height="5" rx="2.5" fill="#140908" transform="rotate(74.8 277.8 110.6)"/>
+        </g>
+      </svg>
     </figure>
+    <div class="hero-full" aria-hidden="true">
+      <img src="/assets/photos/foto4.jpg" srcset="/assets/photos/foto4-960.jpg 960w, /assets/photos/foto4.jpg 1600w" sizes="100vw" alt="" width="1600" height="1200">
+    </div>
+    <div class="lineup">
+      <p class="lineup-label">Main-Roster · Bootcamp II, April 2026</p>
+      <ul>
+        <li><img src="/assets/players/lineup/halfy.webp" alt="" width="488" height="480" loading="lazy" decoding="async"><span>hALFY</span></li>
+        <li><img src="/assets/players/lineup/chrizzw.webp" alt="" width="409" height="480" loading="lazy" decoding="async"><span>chrizzW</span></li>
+        <li><img src="/assets/players/lineup/tubeyou.webp" alt="" width="353" height="480" loading="lazy" decoding="async"><span>TubeYou</span></li>
+        <li><img src="/assets/players/lineup/svn.webp" alt="" width="421" height="480" loading="lazy" decoding="async"><span>svN--</span></li>
+        <li><img src="/assets/players/lineup/rdx.webp" alt="" width="345" height="480" loading="lazy" decoding="async"><span>rdX</span></li>
+      </ul>
+      <a class="more" href="/roster/">Beide Roster ansehen</a>
+    </div>
+    <p class="season">
+      <span>Gerade läuft <b id="tkComp">Entry 2026</b></span>
+      <span>Main <b id="tkMain">2. · 2W/1L</b></span>
+      <span>Nxt <b id="tkNxt">1. · 2W/0L</b></span>
+      <span class="scroll-cue" aria-hidden="true">Runter scrollen, rein in den Donut</span>
+    </p>
   </div>
 </section>
 
@@ -221,7 +271,7 @@
         <label><input type="radio" name="cg-mode" value="smoke"><span>Smoke</span></label>
         <label><input type="radio" name="cg-mode" value="flash"><span>Flashbang</span></label>
         <label><input type="radio" name="cg-mode" value="wobble"><span>Wackelzone</span></label>
-        <label><input type="radio" name="cg-mode" value="donut"><span>Donut 🍩</span></label>
+        <label><input type="radio" name="cg-mode" value="donut"><span>Donut<i class="cg-ico" aria-hidden="true"></i></span></label>
       </div>
       <div class="cg-bar">
         <div class="cg-zone"></div>

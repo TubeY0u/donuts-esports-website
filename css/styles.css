@@ -3023,6 +3023,9 @@ section + section { border-top: 1px solid var(--border-soft); }
 .konami-donut {
   position: fixed;
   font-size: 2.4rem;
+  width: 1em;
+  height: 1em;
+  background: url('/assets/donut.svg') center / contain no-repeat;
   pointer-events: none;
   z-index: 9999;
   animation: donut-fall linear forwards;

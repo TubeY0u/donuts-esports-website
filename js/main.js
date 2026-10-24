@@ -823,12 +823,12 @@
   });
 
   function donutRain() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const count = 40;
     for (let i = 0; i < count; i++) {
       setTimeout(() => {
         const d = document.createElement('span');
-        d.className = 'konami-donut';
-        d.textContent = '🍩';
+        d.className = 'konami-donut'; // Grafik kommt per CSS aus /assets/donut.svg
         d.style.left = Math.random() * 100 + 'vw';
         d.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
         d.style.fontSize = (Math.random() * 1.5 + 1.5) + 'rem';
