@@ -1,33 +1,36 @@
 /* DieDonuts Startseite. Dunkel ist Standard, hell per Schalter ("Flashbang").
    Das Logo ist das Motiv: drei Portale (Hero, Bootcamp, Join), durch die man beim Scrollen fliegt.
-   Pink nur für Aktionen, Live und das Logo. Der Rest bleibt ruhig. */
+   Rot nur für Aktionen, Live und Akzente. Der Rest bleibt ruhig. */
 
 @font-face { font-family: 'Archivo'; src: url('/assets/fonts/archivo-var.woff2') format('woff2'); font-weight: 100 900; font-stretch: 62% 125%; font-display: swap; }
 @font-face { font-family: 'JetBrains Mono'; src: url('/assets/fonts/jetbrains-500.woff2') format('woff2'); font-weight: 500; font-display: swap; }
 
 :root {
-  --bg:      #231210;
-  --bg-2:    #2d1814;
-  --line:    #46302a;
-  --ink:     #fff6ef;
-  --muted:   #cdb8ad;
-  --glaze:   #ff5fa8;
-  --on-glaze:#3b0a21;
-  --win:     #3fd0a8;
-  --on-win:  #08281f;
+  --bg: #06060a;
+  --bg-2: #111118;
+  --line: #23232e;
+  --ink: #ffffff;
+  --muted: #a8a8b2;
+  --glaze: #ff3866;
+  --on-glaze: #ffffff;
+  --glaze-bg: #e11d48;
+  --win: #2fd39f;
+  --on-win: #04241a;
   --focus:   #ffcf3a;
-  --logo:    #fff6ef;
-  --nav-bg:  rgba(35, 18, 16, .9);
+  --logo: #ffffff;
+  --nav-bg: rgba(6, 6, 10, .85);
   --logo-filter: none;
-  --join-bg: #ff5fa8;
-  --join-fg: #3b0a21;
-  --join-btn: #231210;
-  --join-btn-fg: #fff6ef;
+  --join-bg: #e11d48;
+  --join-fg: #ffffff;
+  --join-btn: #06060a;
+  --join-btn-fg: #ffffff;
   --display: 'Archivo', system-ui, sans-serif;
   --mono:    'JetBrains Mono', ui-monospace, Consolas, monospace;
   --wrap: 1160px;
   --gut: clamp(16px, 4vw, 40px);
   --side: max(var(--gut), calc((100% - var(--wrap)) / 2 + var(--gut)));
+  --accent: var(--glaze);
+  --logo-glow: rgba(225, 29, 72, .5);
   color-scheme: dark;
 }
 :root[data-theme="light"] {
@@ -36,8 +39,9 @@
   --line:    #dcd6d9;
   --ink:     #000000;
   --muted:   #5d575a;
-  --glaze:   #c42872;
-  --on-glaze:#ffffff;
+  --glaze: #d0103a;
+  --on-glaze: #ffffff;
+  --glaze-bg: #d0103a;
   --win:     #1f9e7a;
   --on-win:  #ffffff;
   --focus:   #000000;
@@ -46,8 +50,9 @@
   --logo-filter: invert(1);
   --join-bg: #000000;
   --join-fg: #ffffff;
-  --join-btn: #c42872;
+  --join-btn: #d0103a;
   --join-btn-fg: #ffffff;
+  --logo-glow: rgba(208, 16, 58, .22);
   color-scheme: light;
 }
 
@@ -63,6 +68,9 @@ h1, h2, h3, h4, p { margin: 0; }
 .skip-link { position: absolute; left: 12px; top: -60px; z-index: 300; padding: 10px 16px; border-radius: 8px; background: var(--ink); color: var(--bg); font-weight: 700; text-decoration: none; }
 .skip-link:focus { top: 12px; }
 
+/* Leicht treibende Punkte im Hintergrund (main.js), hinter allem Inhalt */
+#particleCanvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; opacity: .5; }
+
 /* Schmal, schwer, groß geschrieben: wie der Druck auf dem Trikot */
 .hero-title, .block-head h2, .team h3, .open-seat h3, .join h2, .nm-no-match-title {
   font-family: var(--display); font-weight: 900; font-stretch: 66%; text-transform: uppercase; letter-spacing: -.005em; line-height: .9;
@@ -76,7 +84,7 @@ h1, h2, h3, h4, p { margin: 0; }
 }
 .btn svg { width: 20px; height: 20px; }
 .btn:active { transform: scale(.97); }
-.btn-glaze { background: var(--glaze); color: var(--on-glaze); }
+.btn-glaze { background: var(--glaze-bg); color: var(--on-glaze); }
 .btn-glaze:hover { filter: brightness(1.08); }
 .btn-line { border-color: var(--ink); color: var(--ink); background: transparent; }
 .btn-line:hover { background: var(--ink); color: var(--bg); }
@@ -148,12 +156,12 @@ h1, h2, h3, h4, p { margin: 0; }
 .is-full .portal-logo { visibility: hidden; }
 .portal-stage::after {
   content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: var(--shade, 0);
-  background: linear-gradient(to top, rgba(20, 9, 8, .96), rgba(20, 9, 8, .82) 55%, rgba(20, 9, 8, .5));
+  background: linear-gradient(to top, rgba(6, 6, 10, .96), rgba(6, 6, 10, .82) 55%, rgba(6, 6, 10, .5));
 }
 .portal-copy { position: relative; z-index: 4; opacity: calc(1 - var(--cp, 0)); transform: translateY(calc(var(--cp, 0) * -32px)); }
 .is-zoomed .portal-copy { visibility: hidden; }
 .portal-after {
-  position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; padding: 0 var(--side) 40px; color: #fff6ef;
+  position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; padding: 0 var(--side) 40px; color: #ffffff;
   visibility: hidden; opacity: var(--lp, 0); transform: translateY(calc((1 - var(--lp, 0)) * 60px));
 }
 .is-after .portal-after { visibility: visible; }
@@ -165,6 +173,12 @@ h1, h2, h3, h4, p { margin: 0; }
 .hero-copy { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px 48px; align-items: end; }
 .hero-title { font-size: clamp(52px, 7.2vw, 104px); }
 .hero-title .pink { display: block; }
+/* Das Hero-Logo schwebt leicht und glüht rot nach. translate läuft neben dem transform aus home.js. */
+.zoom .hero .portal-logo { animation: logo-float 7s ease-in-out infinite; }
+.zoom .hero .logo-ink { animation: logo-glow 3.5s ease-in-out infinite alternate; }
+.zoom .hero.is-zoomed .portal-logo, .zoom .hero.is-zoomed .logo-ink { animation: none; }
+@keyframes logo-float { 50% { translate: 0 -10px; } }
+@keyframes logo-glow { from { filter: drop-shadow(0 0 6px transparent); } to { filter: drop-shadow(0 0 28px var(--logo-glow)); } }
 .hero-lead { color: var(--muted); max-width: 46ch; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 .season { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-wrap: wrap; gap: 6px 32px; padding: 18px var(--side) 22px; font-size: 14px; color: var(--muted); }
@@ -172,11 +186,11 @@ h1, h2, h3, h4, p { margin: 0; }
 .scroll-cue { display: none; margin-left: auto; color: var(--glaze); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; }
 .zoom .hero:not(.is-static) .scroll-cue { display: inline; }
 .scroll-cue::after { content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 8px; border: solid currentColor; border-width: 0 2px 2px 0; transform: translateY(-3px) rotate(45deg); }
-.lineup .label, .caption p:first-child { font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: #ffd2e6; }
+.lineup .label, .caption p:first-child { font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: #e6e6ea; }
 .lineup ul { display: flex; align-items: flex-end; list-style: none; margin: 18px 0 20px; padding: 0; }
 .lineup li { flex: 1 1 0; min-width: 0; }
 .lineup li > a { display: flex; flex-direction: column; align-items: center; width: 100%; text-decoration: none; }
-.lineup a:hover span, .lineup a:focus-visible span { background: #fff6ef; }
+.lineup a:hover span, .lineup a:focus-visible span { background: #ffffff; }
 /* Die Freisteller enden hart an Hüfte und Bildrand (Schultern): unten und seitlich weich ausblenden,
    Namen sitzen im Übergang. Die beiden Verläufe werden geschnitten (intersect). */
 .lineup img {
@@ -186,8 +200,8 @@ h1, h2, h3, h4, p { margin: 0; }
   mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent), linear-gradient(#000 68%, transparent 97%);
   mask-composite: intersect;
 }
-.lineup span { position: relative; margin-top: calc(-1 * clamp(18px, 3.4vw, 40px));padding: 4px 12px 5px; background: #ff5fa8; color: #3b0a21; font: 900 clamp(16px, 2vw, 24px)/1 var(--display); font-stretch: 70%; text-transform: uppercase; }
-.portal-after .more { color: #fff6ef; }
+.lineup span { position: relative; margin-top: calc(-1 * clamp(18px, 3.4vw, 40px));padding: 4px 12px 5px; background: #e11d48; color: #ffffff; font: 900 clamp(16px, 2vw, 24px)/1 var(--display); font-stretch: 70%; text-transform: uppercase; }
+.portal-after .more { color: #ffffff; }
 /* Namensschilder springen nacheinander rein, sobald die Aufstellung erscheint */
 .is-after .lineup span { animation: tag-in .5s cubic-bezier(.3, 1.6, .5, 1) backwards; }
 .is-after .lineup li:nth-child(2) span { animation-delay: .08s; }
@@ -202,10 +216,10 @@ html:not(.zoom) .lineup, .hero.is-static .lineup { display: none; }
 .bootcamp .portal-logo { width: min(100%, 860px, calc((100svh - 400px) * 2.53)); min-width: min(100%, 480px); align-self: center; }
 .bootcamp .block-head { margin: 0; }
 .caption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px; }
-.caption p:first-child { font: 500 15px/1.4 var(--mono); color: #fff6ef; text-transform: none; letter-spacing: 0; }
+.caption p:first-child { font: 500 15px/1.4 var(--mono); color: #ffffff; text-transform: none; letter-spacing: 0; }
 html:not(.zoom) .caption, .bootcamp.is-static .caption { display: none; }
 
-/* Join: ins Pink fliegen */
+/* Join: ins Rot fliegen */
 .join { --travel: 100vh; }
 .join .portal-stage { display: grid; place-items: center; color: var(--join-fg); }
 .join .portal-logo { width: min(80vw, 640px); color: var(--join-bg); transform-origin: 19.37% 50.13%; }
@@ -354,7 +368,7 @@ html:not(.zoom) .join .portal-after, .join.is-static .portal-after { position: s
 .cg-modes input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
 .cg-ico { display: inline-block; width: 1.1em; height: 1.1em; margin-left: 6px; background: url('/assets/donut.svg') center / contain no-repeat; }
 .cg-bar { position: relative; height: 72px; cursor: crosshair; border-radius: 12px; overflow: hidden; background: var(--bg-2); box-shadow: 0 0 0 1px var(--line) inset; }
-.cg-zone { position: absolute; top: 0; bottom: 0; z-index: 3; background: rgba(255, 95, 168, .14); border-left: 3px solid var(--glaze); border-right: 3px solid var(--glaze); }
+.cg-zone { position: absolute; top: 0; bottom: 0; z-index: 3; background: rgba(255, 56, 102, .14); border-left: 3px solid var(--glaze); border-right: 3px solid var(--glaze); }
 .cg-cross { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1.5px; z-index: 1; background: linear-gradient(var(--ink) 36%, transparent 36% 64%, var(--ink) 64%); }
 .clutch-game.is-hit .cg-zone { animation: cg-hit .45s ease-out; }
 .clutch-game.is-miss .cg-bar { box-shadow: 0 0 0 3px #ff6b5a inset; }

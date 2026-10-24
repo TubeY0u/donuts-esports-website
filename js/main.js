@@ -746,7 +746,7 @@
 
 // ---- Particle Background Canvas ----------------------------------------
 (function initParticles() {
-  if (window.__donutsParticles || document.body.hasAttribute('data-calm')) return;
+  if (window.__donutsParticles || document.body.hasAttribute('data-calm') || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   window.__donutsParticles = true;
   const canvas = document.createElement('canvas');
   canvas.id = 'particleCanvas';

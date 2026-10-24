@@ -6,18 +6,19 @@
 @font-face { font-family: 'JetBrains Mono'; src: url('/assets/fonts/jetbrains-500.woff2') format('woff2'); font-weight: 500; font-display: swap; }
 
 :root {
-  --bg:      #231210;
-  --bg-2:    #2d1814;
-  --line:    #46302a;
-  --ink:     #fff6ef;
-  --muted:   #cdb8ad;
-  --glaze:   #ff5fa8;
-  --on-glaze:#3b0a21;
-  --win:     #3fd0a8;
-  --on-win:  #08281f;
+  --bg: #06060a;
+  --bg-2: #111118;
+  --line: #23232e;
+  --ink: #ffffff;
+  --muted: #a8a8b2;
+  --glaze: #ff3866;
+  --on-glaze: #ffffff;
+  --glaze-bg: #e11d48;
+  --win: #2fd39f;
+  --on-win: #04241a;
   --loss:    #ff7a6b;
   --focus:   #ffcf3a;
-  --nav-bg:  rgba(35, 18, 16, .9);
+  --nav-bg: rgba(6, 6, 10, .85);
   --logo-filter: none;
   --display: 'Archivo', system-ui, sans-serif;
   --mono:    'JetBrains Mono', ui-monospace, Consolas, monospace;
@@ -34,8 +35,9 @@
   --line:    #dcd6d9;
   --ink:     #000000;
   --muted:   #5d575a;
-  --glaze:   #c42872;
-  --on-glaze:#ffffff;
+  --glaze: #d0103a;
+  --on-glaze: #ffffff;
+  --glaze-bg: #d0103a;
   --win:     #1f9e7a;
   --on-win:  #ffffff;
   --loss:    #c2412f;
@@ -56,6 +58,9 @@ button { font: inherit; }
 .wrap, .container { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gut); }
 .skip-link { position: absolute; left: 12px; top: -60px; z-index: 300; padding: 10px 16px; border-radius: 8px; background: var(--ink); color: var(--bg); font-weight: 700; text-decoration: none; }
 .skip-link:focus { top: 12px; }
+
+/* Leicht treibende Punkte im Hintergrund (main.js), hinter allem Inhalt */
+#particleCanvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; opacity: .5; }
 
 /* Schmal, schwer, groß geschrieben: wie der Druck auf dem Trikot */
 .section-title, .tp-title, .team-name, .tc-name, .tp-panel-title, .matches-section-header h2, .player-name, .player-back-name,
@@ -85,7 +90,7 @@ button { font: inherit; }
 }
 .btn svg { width: 20px; height: 20px; }
 .btn:active { transform: scale(.97); }
-.btn-glaze { background: var(--glaze); color: var(--on-glaze); }
+.btn-glaze { background: var(--glaze-bg); color: var(--on-glaze); }
 .btn-glaze:hover { filter: brightness(1.08); }
 .btn-line { border-color: var(--ink); color: var(--ink); background: transparent; }
 .btn-line:hover { background: var(--ink); color: var(--bg); }
@@ -424,14 +429,14 @@ h2.section-title { font-size: clamp(40px, 6vw, 84px); }
 .gallery-item:hover img { transform: scale(1.03); }
 .gallery-placeholder { width: 100%; height: 100%; min-height: 160px; place-items: center; color: var(--muted); }
 .gallery-placeholder svg { width: 28px; height: 28px; }
-.gallery-overlay { position: absolute; inset: auto 0 0 0; padding: 32px 14px 12px; background: linear-gradient(transparent, rgba(20, 9, 8, .8)); opacity: 0; transition: opacity .25s; }
+.gallery-overlay { position: absolute; inset: auto 0 0 0; padding: 32px 14px 12px; background: linear-gradient(transparent, rgba(6, 6, 10, .8)); opacity: 0; transition: opacity .25s; }
 .gallery-item:hover .gallery-overlay, .gallery-item:focus-visible .gallery-overlay { opacity: 1; }
-.gallery-caption { font-size: 12px; color: #fff6ef; text-transform: uppercase; letter-spacing: .06em; }
-.lightbox { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; padding: 24px; background: rgba(20, 9, 8, .94); }
+.gallery-caption { font-size: 12px; color: #ffffff; text-transform: uppercase; letter-spacing: .06em; }
+.lightbox { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; padding: 24px; background: rgba(6, 6, 10, .94); }
 .lightbox.open { display: flex; }
 .lightbox img { max-width: min(92vw, 1200px); max-height: 86vh; object-fit: contain; border-radius: 10px; }
-.lightbox-close, .lightbox-nav { position: absolute; display: grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 50%; background: rgba(255, 246, 239, .1); color: #fff6ef; cursor: pointer; }
-.lightbox-close:hover, .lightbox-nav:hover { background: #ff5fa8; color: #3b0a21; }
+.lightbox-close, .lightbox-nav { position: absolute; display: grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #ffffff; cursor: pointer; }
+.lightbox-close:hover, .lightbox-nav:hover { background: #e11d48; color: #ffffff; }
 .lightbox-close svg, .lightbox-nav svg { width: 22px; height: 22px; }
 .lightbox-close { top: 20px; right: 20px; }
 .lightbox-nav { top: 50%; transform: translateY(-50%); }

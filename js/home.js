@@ -73,7 +73,7 @@
     toastTimer = setTimeout(() => toastEl.classList.remove('is-on'), 3600);
   }
 
-  const SPRINKLES = ['#ffcf3a', '#3fd0a8', '#6d8bff', '#fff6ef', '#ff5fa8'];
+  const SPRINKLES = ['#ffcf3a', '#2fd39f', '#6d8bff', '#ffffff', '#ff3866'];
   function sprinkleRain(n = 60) {
     if (calm) return;
     for (let i = 0; i < n; i++) {
@@ -165,6 +165,6 @@
     '        \':::::::\'',
     '',
     'Hey, du schaust in die Konsole?',
-  ].join('\n'), 'font: 700 14px monospace; color: #ff5fa8');
+  ].join('\n'), 'font: 700 14px monospace; color: #ff3866');
   console.log('Dann bist du hier richtig: https://discord.gg/GEPrazXBrJ\nPsst: Tipp mal "rushb", "eco", "ace", "gg" oder "donut" auf der Seite. Und das Logo mag es, angetippt zu werden.');
 })();
