@@ -1605,7 +1605,7 @@ section + section { border-top: 1px solid var(--border-soft); }
   letter-spacing: 1px;
   color: var(--accent);
 }
-.ach-row h4 {
+.ach-row h3 {
   font-family: var(--font-display);
   font-size: 22px;
   letter-spacing: 1px;
