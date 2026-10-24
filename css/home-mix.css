@@ -277,19 +277,25 @@ html:not(.zoom) .join .portal-after, .join.is-static .portal-after { position: s
 
 /* Roster */
 .teams { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); }
-.team { display: flex; flex-direction: column; gap: 14px; padding: 32px 40px 32px 0; text-decoration: none; }
+.team { position: relative; display: flex; flex-direction: column; gap: 14px; padding: 32px 40px 32px 0; }
+/* Ganze Karte klickt aufs Roster (Link im Titel spannt sich drüber), die Gesichter liegen darüber und führen zu FACEIT */
+.team h3 a { text-decoration: none; }
+.team h3 a::after { content: ""; position: absolute; inset: 0; }
 .team + .team { padding: 32px 0 32px 40px; border-left: 1px solid var(--line); }
 .team h3 { font-size: 44px; transition: color .2s; }
 .team:hover h3 { color: var(--glaze); }
 .team-kind { font: 500 13px/1 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: -4px; }
 .team p { color: var(--muted); max-width: 46ch; }
 .faces { display: flex; flex-wrap: wrap; gap: 14px 4px; list-style: none; margin: 6px 0 0; padding: 0; }
-.faces li { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 72px; font-size: 13px; font-weight: 600; text-align: center; }
+.faces li { width: 72px; }
+.faces a { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; text-align: center; text-decoration: none; }
+.faces a:hover { color: var(--glaze); }
 .faces img, .faces .ini { width: 60px; height: 60px; border-radius: 50%; background: var(--bg-2); object-fit: cover; object-position: top; }
 .faces .ini { display: grid; place-items: center; font: 800 20px/1 var(--display); color: var(--muted); box-shadow: 0 0 0 1px var(--line) inset; }
 .faces .standin img { box-shadow: 0 0 0 1.5px var(--muted) inset; background: transparent; }
 .faces small { font-weight: 400; color: var(--muted); margin-top: -4px; }
-.team .more { margin-top: auto; padding-top: 8px; }
+.team .more { margin-top: auto; padding-top: 8px; text-decoration-line: underline; }
+.team:hover .more { color: var(--glaze); }
 .open-seat { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 40px; padding: 32px 0 0; border-top: 1px solid var(--line); }
 .open-seat h3 { font-size: 32px; }
 .open-seat p { color: var(--muted); margin-top: 8px; max-width: 60ch; }
