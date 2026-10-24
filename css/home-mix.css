@@ -60,6 +60,8 @@ h1, h2, h3, h4, p { margin: 0; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gut); }
 .pink { color: var(--glaze); }
+.skip-link { position: absolute; left: 12px; top: -60px; z-index: 300; padding: 10px 16px; border-radius: 8px; background: var(--ink); color: var(--bg); font-weight: 700; text-decoration: none; }
+.skip-link:focus { top: 12px; }
 
 /* Schmal, schwer, groß geschrieben: wie der Druck auf dem Trikot */
 .hero-title, .block-head h2, .team h3, .open-seat h3, .join h2, .nm-no-match-title {
