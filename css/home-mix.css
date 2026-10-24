@@ -188,6 +188,13 @@ h1, h2, h3, h4, p { margin: 0; }
 }
 .lineup span { position: relative; margin-top: calc(-1 * clamp(18px, 3.4vw, 40px));padding: 4px 12px 5px; background: #ff5fa8; color: #3b0a21; font: 900 clamp(16px, 2vw, 24px)/1 var(--display); font-stretch: 70%; text-transform: uppercase; }
 .portal-after .more { color: #fff6ef; }
+/* Namensschilder springen nacheinander rein, sobald die Aufstellung erscheint */
+.is-after .lineup span { animation: tag-in .5s cubic-bezier(.3, 1.6, .5, 1) backwards; }
+.is-after .lineup li:nth-child(2) span { animation-delay: .08s; }
+.is-after .lineup li:nth-child(3) span { animation-delay: .16s; }
+.is-after .lineup li:nth-child(4) span { animation-delay: .24s; }
+.is-after .lineup li:nth-child(5) span { animation-delay: .32s; }
+@keyframes tag-in { from { opacity: 0; transform: translateY(16px) scale(.8); } }
 html:not(.zoom) .lineup, .hero.is-static .lineup { display: none; }
 
 /* Bootcamp */

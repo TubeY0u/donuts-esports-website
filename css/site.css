@@ -59,13 +59,13 @@ button { font: inherit; }
 
 /* Schmal, schwer, groß geschrieben: wie der Druck auf dem Trikot */
 .section-title, .tp-title, .team-name, .tc-name, .tp-panel-title, .matches-section-header h2, .player-name, .player-back-name,
-.stream-player, .content-card h4, .err-code, .err-title, .legal-section h1, .bc-num {
+.stream-player, .content-card h4, .err-code, .err-title, .legal-section h1 {
   font-family: var(--display); font-weight: 900; font-stretch: 66%; text-transform: uppercase; letter-spacing: -.005em; word-spacing: .08em; line-height: .9;
 }
 .eyebrow, .team-tag, .standin-label, .tc-tag, .l, .tp-back, .player-role, .player-level, .player-elo, .player-back-tag, .matches-count,
 .matches-tabs-label, .result-date, .result-badge, .map-stats-title, .map-record-badge, .map-bar-pct, .elo-lb-title, .elo-lb-sub,
 .elo-lb-rank, .elo-lb-elo, .elo-lb-lvl, .elp-rank, .elp-elo, .stream-status, .stream-handle, .content-card .handle, .legal-meta,
-.gallery-caption, .tp-match-date, .tp-panel-note, .team4-perk-n, .err-konami, .matches-updated {
+.gallery-caption, .tp-match-date, .tp-panel-note, .err-konami, .matches-updated {
   font-family: var(--mono); font-weight: 500;
 }
 .eyebrow, .team-tag, .standin-label, .map-stats-title, .elo-lb-title, .legal-meta { font-size: 13px; color: var(--glaze); letter-spacing: .08em; text-transform: uppercase; }
@@ -176,8 +176,7 @@ h2.section-title { font-size: clamp(40px, 6vw, 84px); }
 .team-name span { color: var(--glaze); }
 .team4-text { color: var(--muted); grid-column: 2; grid-row: 2 / span 3; }
 .team4-perks { grid-column: 1; display: grid; border-top: 1px solid var(--line); }
-.team4-perk { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); font-weight: 600; }
-.team4-perk-n { color: var(--glaze); font-size: 13px; padding-top: 3px; }
+.team4-perk { padding: 12px 0; border-bottom: 1px solid var(--line); font-weight: 600; }
 .team-block--recruit .btn { grid-column: 1; justify-self: start; }
 
 /* ELO-Ranking (Markup aus roster.js) */
@@ -278,6 +277,10 @@ h2.section-title { font-size: clamp(40px, 6vw, 84px); }
 .player { position: relative; aspect-ratio: 3 / 4.6; perspective: 1500px; cursor: pointer; }
 .player-inner { position: relative; width: 100%; height: 100%; transition: transform .6s cubic-bezier(.4, 0, .2, 1); transform-style: preserve-3d; }
 .player.flipped .player-inner { transform: rotateY(180deg); }
+/* Leichtes Kippen beim Drüberfahren: Hinweis, dass die Karte eine Rückseite hat */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .player:not(.flipped):hover .player-inner { transform: rotateY(-9deg); transition-duration: .35s; }
+}
 .player-face { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
 .player-front { display: flex; flex-direction: column; }
 .player-photo { position: relative; flex: 1; min-height: 0; border-radius: 12px; overflow: hidden; background: var(--bg-2); }
@@ -410,9 +413,6 @@ h2.section-title { font-size: clamp(40px, 6vw, 84px); }
 /* ---- Bootcamp ----------------------------------------------------------- */
 .gallery-section { padding: 0 0 clamp(56px, 8vw, 96px); }
 .bc-header { padding-top: 32px; border-top: 1px solid var(--line); margin-bottom: 28px; }
-.bc-meta { display: grid; grid-template-columns: auto 1fr; gap: 8px 32px; align-items: start; }
-.bc-num { font-size: clamp(72px, 10vw, 140px); color: var(--glaze); line-height: .8; }
-.bc-num--muted { color: var(--line); }
 .bc-meta .eyebrow { margin-bottom: 10px; }
 .bc-meta h2 { margin-bottom: 14px; }
 .bc-meta p { color: var(--muted); max-width: 56ch; }
@@ -438,8 +438,6 @@ h2.section-title { font-size: clamp(40px, 6vw, 84px); }
 .lightbox-prev { left: 16px; } .lightbox-next { right: 16px; }
 @media (max-width: 700px) {
   .gallery-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .bc-meta { grid-template-columns: 1fr; }
-  .bc-num { font-size: 64px; }
   .lightbox-nav { top: auto; bottom: 20px; transform: none; }
 }
 
