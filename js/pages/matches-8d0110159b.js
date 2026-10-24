@@ -4,7 +4,6 @@ const { safeUrl } = window.DonutsSecurity;
 const TEAM_META = {
   main: { label: 'Main', dachcsUrl: 'https://dachcs.de/coverage/' },
   nxt:  { label: 'Nxt',  dachcsUrl: null },
-  dns:  { label: 'DNS',  dachcsUrl: null },
 };
 
 const DONUTS_NAMES = ['DIEDONUTS', 'Die Donuts', 'DieDonuts', 'DONUTS'];
@@ -159,7 +158,7 @@ function renderAll() {
   }
 
   // Collect all upcoming across selected teams
-  const teamKeys = filter === 'all' ? ['main','nxt','dns'] : [filter];
+  const teamKeys = filter === 'all' ? ['main','nxt'] : [filter];
   let allUpcoming = [];
   let allRecent   = [];
   let standingsSections = '';

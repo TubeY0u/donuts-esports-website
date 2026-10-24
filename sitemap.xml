@@ -21,11 +21,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://donuts-esports.de/roster/dns/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://donuts-esports.de/bootcamp/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

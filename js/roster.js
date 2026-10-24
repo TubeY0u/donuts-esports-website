@@ -143,9 +143,9 @@ function renderLeaderboard(allPlayers) {
     sub.textContent = `FACEIT · Live · ${d.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' })}`;
   }
 
-  const TEAM_LABELS = { main: 'Donuts', nxt: 'Nxt', dns: 'DNS' };
+  const TEAM_LABELS = { main: 'Donuts', nxt: 'Nxt' };
 
-  // Deduplicate: each player once (highest ELO / first team = main > nxt > dns)
+  // Deduplicate: each player once (highest ELO / first team = main > nxt)
   const seen = new Set();
   const unique = allPlayers
     .filter(p => p.nickname.toLowerCase() !== 'xelfer')
@@ -171,7 +171,7 @@ function renderLeaderboard(allPlayers) {
   }
 
   list.innerHTML = rows.map(row => {
-    return `<div class="elo-lb-row${row.level >= 10 ? ' lvl10' : ''}${row.teamSlug === 'dns' ? ' dns-row' : ''}">
+    return `<div class="elo-lb-row${row.level >= 10 ? ' lvl10' : ''}">
       <span class="elo-lb-rank">#${row.rank}</span>
       <span class="elo-lb-name"><a href="https://www.faceit.com/de/players/${encodeURIComponent(row.nickname)}" target="_blank" rel="noopener">${escH(row.nickname)}</a></span>
       <span class="elo-lb-team ${escH(row.teamSlug)}">${escH(row.teamLabel)}</span>
@@ -231,7 +231,6 @@ const ownStanding = (t) => (t && t.standings || []).find(r => /DIEDONUTS/i.test(
 const TEAM_META = {
   main: { label: 'Donuts',     href: '/roster/main/', logo: '/assets/logo_trans.png' },
   nxt:  { label: 'Donuts Nxt', href: '/roster/nxt/',  logo: '/assets/Logo_NXT.png'  },
-  dns:  { label: 'Donuts DNS', href: '/roster/dns/',  logo: '/assets/Logo_DNS.png'  },
 };
 
 const cleanOpp = (v) => String(v || '?').replace(/^team[_-]/i, '');
@@ -372,7 +371,6 @@ async function renderTeamPage() {
 const ALL_TEAM_BLOCKS = [
   { teamSlug: 'main', blockId: 'donuts', mapId: 'map-stats-main' },
   { teamSlug: 'nxt',  blockId: 'nxt',    mapId: 'map-stats-nxt'  },
-  { teamSlug: 'dns',  blockId: 'team3',  mapId: 'map-stats-dns'  },
 ];
 // Nur die Blöcke laden, die auf DIESER Seite auch existieren.
 const TEAM_BLOCKS = ALL_TEAM_BLOCKS.filter(b => document.getElementById(b.blockId));

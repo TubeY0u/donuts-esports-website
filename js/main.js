@@ -278,9 +278,9 @@
     return _statsPromise;
   }
 
-  const ROSTER_LABELS = { main: 'Main Roster', nxt: 'Nxt Roster', dns: 'DNS Roster' };
-  const SHORT_LABELS  = { main: 'Donuts',      nxt: 'Nxt',        dns: 'DNS' };
-  const BADGE_LABELS  = { main: 'MAIN',        nxt: 'NXT',        dns: 'DNS' };
+  const ROSTER_LABELS = { main: 'Main Roster', nxt: 'Nxt Roster' };
+  const SHORT_LABELS  = { main: 'Donuts',      nxt: 'Nxt' };
+  const BADGE_LABELS  = { main: 'MAIN',        nxt: 'NXT' };
 
   // HTML-Escaping für alles, was aus dem Scraper kommt (fremde Teamnamen).
   const esc = (v) => String(v == null ? '' : v)
@@ -612,7 +612,7 @@
 
     // Laufende Saison automatisch davorsetzen
     const data = await getStats();
-    for (const slug of ['main', 'nxt', 'dns']) {
+    for (const slug of ['main', 'nxt']) {
       const t = (data && data.teams) ? data.teams[slug] : null;
       const row = ownRow(t);
       if (!row) continue;

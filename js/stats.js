@@ -21,12 +21,6 @@ export const TEAMS = {
     dachcsGroup: null,
     dachcsName:  'DIEDONUTS NXT',
   },
-  dns: {
-    faceitId:    '7de419f6-da07-46d0-819d-687874ffef17',
-    label:       'Donuts DNS',
-    dachcsGroup: null,
-    dachcsName:  null,
-  },
 };
 
 // Only contact FACEIT directly. Public relay operators must not supply page data.

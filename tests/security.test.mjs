@@ -54,7 +54,7 @@ test('leaderboard and map renderers escape names and attribute values', () => {
 });
 test('every page enforces external scripts only and has no inline event handlers', () => {
   const pages=walk(root).filter(f=>f.endsWith('.html'));
-  assert.equal(pages.length,11);
+  assert.equal(pages.length,10);
   for(const file of pages){
     const html=fs.readFileSync(file,'utf8');
     assert(html.includes("script-src 'self'"),file);
