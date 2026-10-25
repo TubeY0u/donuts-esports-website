@@ -264,7 +264,7 @@ function renderAll() {
 document.getElementById('matchesTabs').addEventListener('click', function(e) {
   const btn = e.target.closest('.matches-tab');
   if (!btn) return;
-  document.querySelectorAll('.matches-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#matchesTabs .matches-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   _activeTeam = btn.dataset.team;
   renderAll();

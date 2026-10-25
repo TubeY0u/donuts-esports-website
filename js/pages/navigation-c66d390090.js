@@ -1,1 +1,2 @@
-(function(){var p=window.location.pathname.replace(/\/$/,'').replace(/^\/$/,'/')||'/';document.querySelectorAll('.nav-links a').forEach(function(a){var h=(a.getAttribute('href')||'').replace(/\/$/,'').replace(/^\/$/,'/')||'/';if(h===p)a.classList.add('active');});})();
+// Aktiven Menüpunkt markieren, /roster/main/ zählt zu /roster/
+(function(){var p=location.pathname;document.querySelectorAll('.nav-links a').forEach(function(a){var h=a.getAttribute('href')||'';if(h!=='/'&&p.indexOf(h)===0)a.classList.add('active');});})();

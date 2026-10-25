@@ -90,7 +90,7 @@ function renderMapStats(el, mapStats) {
 
   el.innerHTML = `
     <div class="map-stats-header">
-      <span class="map-stats-title">/ Map Performance · 5v5</span>
+      <span class="map-stats-title">Map-Performance · 5v5</span>
       <span class="map-record-badge"><strong>${escH(totalW)}W</strong> / ${escH(totalL)}L · ${escH(totalP)} Matches gesamt</span>
     </div>
     <div class="map-bars">
@@ -224,6 +224,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── Helpers für die neuen Seiten ─────────────────────────────
 const setText = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
+// Zahlen kurz hochzählen lassen (Platz, Bilanz, Runden). Jede Ziffernfolge im Text zählt von 0 hoch.
+const countText = (id, v) => {
+  const el = document.getElementById(id);
+  if (!el || v == null) return;
+  if (!/\d/.test(v) ||matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = v; return; }
+  const t0 = performance.now();
+  const step = (now) => {
+    const p = Math.min(1, (now - t0) / 800), e = 1 - (1 - p) ** 3;
+    el.textContent = p < 1 ? v.replace(/\d+/g, n => Math.round(n * e)) : v;
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+  setTimeout(() => { el.textContent = v; }, 900); // rAF pausiert in Hintergrund-Tabs, Endwert trotzdem setzen
+};
 const escH = (v) => String(v == null ? '' : v)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -311,9 +325,9 @@ async function renderTeamPage() {
 
   setText('tpComp',   recent0.competition || 'Keine Liga-Runde');
   setText('tpDiv',    recent0.division || '—');
-  setText('tpPos',    row ? `${row.pos}.` : '—');
-  setText('tpRecord', row ? `${row.wins}W / ${row.losses}L` : '—');
-  setText('tpRd',     row ? `${row.rd > 0 ? '+' : ''}${row.rd}` : '—');
+  countText('tpPos',    row ? `${row.pos}.` : '—');
+  countText('tpRecord', row ? `${row.wins}W / ${row.losses}L` : '—');
+  countText('tpRd',     row ? `${row.rd > 0 ? '+' : ''}${row.rd}` : '—');
 
   // Tabelle
   const tbl = document.getElementById('tpStandings');
