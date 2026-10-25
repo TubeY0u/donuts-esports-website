@@ -46,7 +46,7 @@ export function insert(list, entry) {
 }
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return json(null, 204);
     if (url.pathname !== '/scores') return json({ error: 'Nicht gefunden.' }, 404);
@@ -54,23 +54,34 @@ export default {
 
     if (req.method === 'GET') {
       if (!MODES.includes(mode)) return json({ error: 'Unbekannter Modus.' }, 400);
-      return json((await load(env, mode)).map(({ name, level }) => ({ name, level })));
+      // 30 s im Edge-Cache: eine Abruf-Flut kostet dann kaum KV-Lesungen (Gratis-Tarif: 100k/Tag)
+      const cache = globalThis.caches?.default;
+      const hit = cache && await cache.match(req);
+      if (hit) return hit;
+      const res = json((await load(env, mode)).map(({ name, level }) => ({ name, level })));
+      res.headers.set('cache-control', 'public, max-age=30');
+      if (cache) ctx?.waitUntil(cache.put(req, res.clone()));
+      return res;
     }
 
     if (req.method === 'POST') {
       if (req.headers.get('origin') !== ORIGIN) return json({ error: 'Nicht erlaubt.' }, 403);
+      // Erst prüfen, dann zählen: Müll-Anfragen kosten so keine KV-Schreibvorgänge (Gratis-Tarif: 1000/Tag)
+      let body;
+      try { body = JSON.parse(await req.text()); } catch { body = null; }
+      const v = validate(body);
+      if (typeof v === 'string') return json({ error: v }, 400);
+
       const ip = req.headers.get('cf-connecting-ip') || 'x';
       const rlKey = 'rl:' + ip;
       const count = Number(await env.SCORES.get(rlKey)) || 0;
       if (count >= RATE) return json({ error: 'Kurz durchatmen, gleich nochmal.' }, 429);
       await env.SCORES.put(rlKey, String(count + 1), { expirationTtl: 60 });
 
-      let body;
-      try { body = JSON.parse(await req.text()); } catch { body = null; }
-      const v = validate(body);
-      if (typeof v === 'string') return json({ error: v }, 400);
-      const list = insert(await load(env, v.mode), v);
-      await save(env, v.mode, list);
+      const before = await load(env, v.mode);
+      const list = insert([...before], v);
+      // Nur schreiben, wenn sich die Top 10 wirklich ändern
+      if (JSON.stringify(list) !== JSON.stringify(before)) await save(env, v.mode, list);
       return json(list.map(({ name, level }) => ({ name, level })));
     }
 

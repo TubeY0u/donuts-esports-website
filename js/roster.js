@@ -228,14 +228,15 @@ const setText = (id, v) => { const el = document.getElementById(id); if (el && v
 const countText = (id, v) => {
   const el = document.getElementById(id);
   if (!el || v == null) return;
-  if (!/d/.test(v) || matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = v; return; }
+  if (!/\d/.test(v) ||matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = v; return; }
   const t0 = performance.now();
   const step = (now) => {
     const p = Math.min(1, (now - t0) / 800), e = 1 - (1 - p) ** 3;
-    el.textContent = p < 1 ? v.replace(/d+/g, n => Math.round(n * e)) : v;
+    el.textContent = p < 1 ? v.replace(/\d+/g, n => Math.round(n * e)) : v;
     if (p < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
+  setTimeout(() => { el.textContent = v; }, 900); // rAF pausiert in Hintergrund-Tabs, Endwert trotzdem setzen
 };
 const escH = (v) => String(v == null ? '' : v)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')

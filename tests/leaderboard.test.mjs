@@ -47,6 +47,17 @@ test('rate limit, foreign origin and admin delete', async () => {
   assert.ok(!(await (await del('secret')).json()).some(x => x.name === 'Spam0'));
 });
 
+test('junk and non-top-10 entries cost no KV writes', async () => {
+  const e = env(); let writes = 0;
+  const put = e.SCORES.put; e.SCORES.put = async (k, v, o) => { writes++; return put(k, v, o); };
+  for (let i = 0; i < 20; i++) assert.equal((await post(e, { mode: 'classic', name: 'x', level: 2, ms: 1 }, 'junk')).status, 400);
+  assert.equal(writes, 0);
+  for (let i = 0; i < 10; i++) await post(e, { mode: 'classic', name: 'Top' + i + 'x', level: 50, ms: 99999 }, 't' + i);
+  writes = 0;
+  await post(e, { mode: 'classic', name: 'Neuling', level: 3, ms: 99999 }, 'new');
+  assert.equal(writes, 1); // nur der Rate-Limit-Zähler, die Rangliste bleibt unangetastet
+});
+
 test('CORS preflight answers 204 without body', async () => {
   const res = await worker.fetch(new Request('https://w/scores', { method: 'OPTIONS' }), env());
   assert.equal(res.status, 204);
