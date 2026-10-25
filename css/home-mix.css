@@ -416,6 +416,8 @@ html:not(.zoom) .join .portal-after, .join.is-static .portal-after { position: s
 .yt-frame-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .yt-placeholder { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; color: var(--muted); }
 .yt-placeholder svg { width: 56px; height: 56px; color: var(--glaze); }
+.yt-placeholder [hidden] { display: none; }
+.yt-note { max-width: 46ch; padding: 0 16px; text-align: center; font-size: 13px; line-height: 1.5; }
 .yt-meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 4px 16px; justify-content: space-between; }
 .yt-meta-title { font-weight: 800; }
 .yt-meta-date { color: var(--muted); font-size: 14px; }
