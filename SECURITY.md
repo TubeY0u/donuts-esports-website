@@ -18,7 +18,9 @@ Alle elf HTML-Seiten besitzen eine Content Security Policy. Ausführbares Inline
 
 Bei der externen Prüfung funktionierten HTTPS, HSTS und die HTTP-zu-HTTPS-Weiterleitung. `.env` und `.git/config` antworteten mit 404. Zusätzliche Header wie `X-Content-Type-Options: nosniff`, `Permissions-Policy` und `Content-Security-Policy: frame-ancestors 'none'` müssen auf Hosting-/Proxy-Ebene gesetzt werden. Eine HTML-Meta-Regel kann `frame-ancestors` nicht ersetzen. GitHub Pages bietet hierfür keine projektspezifische Header-Datei. Eine `_headers`-Datei oder `.htaccess` würde hier keinen Schutz schaffen.
 
-Der öffentlich abgefragte `main`-Branch war nicht geschützt. Branch-Regeln, 2FA, Berechtigungen von Mitwirkenden, Domain-/DNS-Zugriff und Secret-Rotation müssen im jeweiligen Konto geprüft werden. Branch-Regeln müssen die vorgesehenen Daten-Updates berücksichtigen. Kontozugriffe wurden nicht verändert.
+Seit 25.10.2026 schützt das Ruleset „main schützen“ den `main`-Branch vor Löschen und Force-Pushes. Pull Requests sind bewusst nicht Pflicht, damit die Daten-Bots weiter direkt pushen können. 2FA, Berechtigungen von Mitwirkenden, Domain-/DNS-Zugriff und Secret-Rotation müssen im jeweiligen Konto geprüft werden.
+
+Die Clutch-Rangliste (`worker/leaderboard.js`) prüft Eingaben, bevor sie das IP-Limit in KV hochzählt, schreibt nur bei geänderten Top 10 und hält Abrufe 30 s im Edge-Cache. So kann Spam das KV-Gratiskontingent nicht ausreizen. Änderungen am Worker werden im Cloudflare-Dashboard deployt, nicht über dieses Repository.
 
 Workflows verwenden festgeschriebene Action-Commits, begrenzte Laufzeiten und gemeinsame Sperren gegen konkurrierende Daten-Pushes. Schreibrechte liegen nur im jeweiligen Update-Job; Git-Zugangsdaten werden nicht im Checkout gespeichert. Ein expliziter Pages-Build stellt sicher, dass Bot-Updates veröffentlicht werden.
 
