@@ -534,3 +534,21 @@ h2.section-title { font-size: clamp(40px, 6vw, 84px); }
   .konami-donut, .fall-sprinkle, .flash-fx { display: none; }
   .toast, .brand img, .btn, .player-inner, .elo-lb-bar, .map-bar-fill, .gallery-item img { transition: none; }
 }
+
+/* ---- Live auf Twitch: kreisender Glow um die Spielerkarte (main.js setzt .is-live per data-nickname) ---- */
+@property --live-a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.player.is-live .player-photo::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; padding: 2px; pointer-events: none;
+  background: conic-gradient(from var(--live-a), transparent 0 50%, var(--glaze) 80%, #fff 92%, transparent);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: live-spin 2.4s linear infinite;
+}
+.player.is-live .player-photo::before {
+  content: "Live"; position: absolute; left: 10px; top: 10px; z-index: 3; padding: 2px 7px; border-radius: 4px;
+  background: var(--glaze); color: #fff; font: 700 10px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .08em;
+}
+@keyframes live-spin { to { --live-a: 360deg; } }
+.nav-links a.has-live::after { content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 6px; border-radius: 50%; background: var(--glaze); animation: live-pulse 1.6s ease-out infinite; vertical-align: 2px; }
+@keyframes live-pulse { from { box-shadow: 0 0 0 0 var(--glaze); } to { box-shadow: 0 0 0 7px transparent; } }
+@media (prefers-reduced-motion: reduce) { .player.is-live .player-photo::after, .nav-links a.has-live::after { animation: none; } }

@@ -1,45 +1,36 @@
-/* Logo-Portale (nur Startseite), Hell/Dunkel-Schalter und Easter Eggs (alle Seiten). Der Konami-Code (Donut-Regen) wohnt in main.js. */
+/* Join-Portal und Fenster-Effekt (nur Startseite), Hell/Dunkel-Schalter und Easter Eggs (alle Seiten). Der Konami-Code (Donut-Regen) wohnt in main.js. */
 (() => {
   'use strict';
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // 0) Portale: Beim Scrollen fliegt die Kamera ins Logo. data-portal="hole" fliegt durchs Loch im D
-  //    (dahinter ein Foto), "ink" in den Strich des C (danach ist alles Logofarbe). Die Klasse .zoom
-  //    setzt theme.js, sie fehlt bei reduzierter Bewegung. Pro Frame nur Transforms und Opacity.
+  // 0) Join-Portal: Beim Scrollen fliegt die Kamera in den Strich des C, bis alles Logofarbe ist.
+  //    data-fx/fy = Fokuspunkt, data-clear = Strichbreite (relativ zum Logo). Die Klasse .zoom setzt
+  //    theme.js, sie fehlt bei reduzierter Bewegung. Pro Frame nur Transforms und Opacity.
   const clamp = v => Math.min(1, Math.max(0, v));
   const ease = t => t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
   const bottom = el => el ? el.offsetTop + el.offsetHeight : 0;
 
   function portal(sec) {
     const stage = sec.querySelector('.portal-stage'), logo = sec.querySelector('.portal-logo');
-    const hole = sec.dataset.portal === 'hole';
-    const fx = +sec.dataset.fx, fy = +sec.dataset.fy, clear = +sec.dataset.clear, facesAt = +sec.dataset.peek || 0;
+    const fx = +sec.dataset.fx, fy = +sec.dataset.fy, clear = +sec.dataset.clear;
     // Passt der Inhalt nicht auf die klebende Bühne (200 % Zoom, sehr flaches Fenster), bleibt es statisch.
     // ponytail: nur beim Laden geprüft, nicht nach späterem Resize
-    const tallest = Math.max(...[...stage.querySelectorAll('.portal-copy:not(.season), .portal-logo')].map(bottom));
-    const afterTooTall = [...stage.querySelectorAll('.portal-after')].some(el => {
-      const first = el.firstElementChild, last = el.lastElementChild;
-      return bottom(last) - first.offsetTop > stage.clientHeight - 48;
-    });
-    if (tallest > stage.clientHeight - 48 || afterTooTall) { sec.classList.add('is-static'); return; }
+    const tooTall = [...stage.querySelectorAll('.portal-after')].some(el =>
+      bottom(el.lastElementChild) - el.firstElementChild.offsetTop > stage.clientHeight - 48);
+    if (bottom(logo) > stage.clientHeight - 48 || tooTall) { sec.classList.add('is-static'); return; }
 
-    const zoomEnd = hole ? .7 : .6, afterFrom = hole ? .72 : .62;
-    let dx = 0, dy = 0, peek = 0, sMax = 8, stickTop = 72, ticking = false, onScreen = false;
+    let dx = 0, dy = 0, sMax = 8, stickTop = 72, ticking = false, onScreen = false;
     // ponytail: misst nur bei Resize/Fonts neu; verschiebt sich das Layout anders (Live-Banner), sitzt die Mitte leicht daneben
     const set = (k, v) => stage.style.setProperty(k, v);
     const update = () => {
       ticking = false;
       const r = sec.getBoundingClientRect();
       const p = clamp((stickTop - r.top) / (r.height - stage.offsetHeight));
-      const z = ease(clamp(p / zoomEnd));
-      const s = sMax ** z;                         // exponentiell, fühlt sich wie gleichmäßiges Fliegen an
-      set('--s', s); set('--is', 1 / s);           // Foto im Loch skaliert gegen, bleibt also gleich groß
-      set('--iy', peek * (1 - z) / s + 'px');
+      const z = ease(clamp(p / .6));
+      set('--s', sMax ** z);                       // exponentiell, fühlt sich wie gleichmäßiges Fliegen an
       set('--tx', -dx * z + 'px'); set('--ty', -dy * z + 'px'); // Fokuspunkt wandert in die Bühnenmitte
-      const cp = clamp(p / .22), lp = ease(clamp((p - afterFrom) / .2));
-      set('--cp', cp); set('--lp', lp);
-      if (hole) set('--shade', clamp((p - .5) / .25));
-      sec.classList.toggle('is-zoomed', cp > .98);
+      const lp = ease(clamp((p - .62) / .2));
+      set('--lp', lp);
       sec.classList.toggle('is-full', z > .995);
       sec.classList.toggle('is-after', lp > 0);
     };
@@ -48,11 +39,7 @@
       dx = logo.offsetLeft + fx * lw - w / 2;      // offset* ignoriert Transforms
       dy = logo.offsetTop + fy * logo.offsetHeight - h / 2;
       sMax = Math.hypot(w, h) / (clear * lw) * 1.08;
-      // data-peek: diese Fotohöhe (z. B. die Köpfe) anfangs ins Loch schieben (Foto 4:3, cover, object-position y 70 %)
-      const H = Math.max(h, w * .75);
-      peek = facesAt ? h / 2 - ((h - H) * .7 + H * facesAt) : 0;
       stickTop = parseFloat(getComputedStyle(stage).top) || 0;
-      set('--sw', w + 'px'); set('--sh', h + 'px');
       update();
     };
     const onScroll = () => { if (onScreen && !ticking) { ticking = true; requestAnimationFrame(update); } };
@@ -63,6 +50,19 @@
     measure();
   }
   if (document.documentElement.classList.contains('zoom')) document.querySelectorAll('[data-portal]').forEach(portal);
+
+  // 0b) Hero: Das Foto im Logo-Loch driftet beim Wegscrollen langsamer als die Seite (Fenster-Effekt).
+  const heroWin = document.querySelector('.hero .portal-window');
+  if (heroWin && document.documentElement.classList.contains('zoom')) {
+    let busy = false;
+    const drift = () => {
+      busy = false;
+      const r = heroWin.getBoundingClientRect();
+      heroWin.style.setProperty('--py', clamp(1 - r.bottom / (innerHeight + r.height)).toFixed(3));
+    };
+    addEventListener('scroll', () => { if (!busy && scrollY < innerHeight * 1.5) { busy = true; requestAnimationFrame(drift); } }, { passive: true });
+    drift();
+  }
   const toastEl = document.getElementById('toast');
   let toastTimer;
   function toast(text) {
@@ -97,6 +97,7 @@
     clearTimeout(clickTimer);
     clickTimer = setTimeout(() => { clicks = 0; }, 1500);
     if (location.pathname === '/' || clicks > 1) e.preventDefault();
+    if (location.pathname === '/' && clicks === 1) scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' }); // ein Klick: zurück nach oben
     brand.classList.toggle('is-bitten');
     if (clicks === 5) {
       clicks = 0;

@@ -655,8 +655,17 @@
   async function checkTwitchLive() {
     const streamCards = document.querySelectorAll('.stream-card[data-twitch]');
     // Homepage: Banner-Kanäle immer prüfen auch wenn keine stream-cards da sind
-    const bannerHandles = ['diedonuts_esports','tube_y0u','its_kriistiin','derohnedaumen','sirokkoko'];
-    const bannerNames   = { diedonuts_esports:'DieDonuts Esports', tube_y0u:'TubeYou', its_kriistiin:'Kristin', derohnedaumen:'-_-Calli', sirokkoko:'sirokkoko' };
+    // Gleiche Kanäle wie scripts/update-twitch.mjs. nick = data-nickname der Spielerkarten (Live-Glow).
+    const CHANNELS = {
+      diedonuts_esports: { name: 'DieDonuts Esports' },
+      halfy_cs:          { name: 'hALFY',   nick: 'hALFY' },
+      tube_y0u:          { name: 'TubeYou', nick: 'TubeYou' },
+      its_kriistiin:     { name: 'Kristin', nick: 'Kristin' },
+      derohnedaumen:     { name: 'Calli',   nick: 'CaIli' },
+      sirokkoko:         { name: 'sirokkoko' },
+    };
+    const bannerHandles = Object.keys(CHANNELS);
+    const bannerNames   = Object.fromEntries(bannerHandles.map(h => [h, CHANNELS[h].name]));
     if (!streamCards.length && !document.getElementById('liveBanner')) return;
 
     try {
@@ -701,6 +710,11 @@
           if (viewerEl) viewerEl.textContent = '';
         }
       });
+
+      // Live-Glow an Spielerkarten/Gesichtern und Punkt am Streams-Link, auf jeder Seite
+      const liveNicks = new Set([...liveMap.keys()].map(h => CHANNELS[h]?.nick).filter(Boolean));
+      document.querySelectorAll('[data-nickname]').forEach(el => el.classList.toggle('is-live', liveNicks.has(el.dataset.nickname)));
+      document.querySelectorAll('.nav-links a[href="/streams/"]').forEach(a => a.classList.toggle('has-live', liveMap.size > 0));
 
       // Homepage Live-Banner updaten
       const banner = document.getElementById('liveBanner');
