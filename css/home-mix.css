@@ -175,7 +175,7 @@ h1, h2, h3, h4, p { margin: 0; }
 
 /* ---- Bootcamp: Foto öffnet sich wie eine Blende, sobald es ins Bild kommt ------------ */
 .bc-hero { margin: 0; }
-.bc-hero img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; object-position: center 62%; border-radius: 12px; }
+.bc-hero img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; object-position: center 70%; border-radius: 12px; }
 .bc-hero figcaption { margin-top: 12px; font: 500 14px/1.4 var(--mono); color: var(--muted); }
 .zoom .aperture img { clip-path: inset(10% 14% round 999px); transition: clip-path 1.1s cubic-bezier(.6, 0, .2, 1); }
 .zoom .aperture.in img { clip-path: inset(0 round 12px); }

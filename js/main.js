@@ -662,7 +662,7 @@
       tube_y0u:          { name: 'TubeYou', nick: 'TubeYou' },
       its_kriistiin:     { name: 'Kristin', nick: 'Kristin' },
       derohnedaumen:     { name: 'Calli',   nick: 'CaIli' },
-      sirokkoko:         { name: 'sirokkoko' },
+      sirokkoko:         { name: 'sirokkoko (Caster)' },
     };
     const bannerHandles = Object.keys(CHANNELS);
     const bannerNames   = Object.fromEntries(bannerHandles.map(h => [h, CHANNELS[h].name]));
