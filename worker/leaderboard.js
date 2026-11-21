@@ -40,6 +40,7 @@ export function validate(body) {
 
 // Twitch-Live-Status für die Website. Gleiche Kanäle wie scripts/update-twitch.mjs.
 // Secrets im Worker: TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET. Der Token wird nach jeder Abfrage widerrufen.
+// redirect: 'manual' statt 'error': Workers kennen 'error' nicht. Eine Weiterleitung ist dann nicht ok und zählt als Fehler.
 const TWITCH_CHANNELS = ['diedonuts_esports', 'halfy_cs', 'tube_y0u', 'its_kriistiin', 'derohnedaumen', 'sirokkoko'];
 export async function fetchTwitch(env, request = fetch) {
   if (!env.TWITCH_CLIENT_ID || !env.TWITCH_CLIENT_SECRET) throw new Error('Twitch-Secrets fehlen');
@@ -47,7 +48,7 @@ export async function fetchTwitch(env, request = fetch) {
   let token;
   try {
     const auth = await request('https://id.twitch.tv/oauth2/token', {
-      method: 'POST', redirect: 'error',
+      method: 'POST', redirect: 'manual',
       body: form({ client_id: env.TWITCH_CLIENT_ID, client_secret: env.TWITCH_CLIENT_SECRET, grant_type: 'client_credentials' }),
     });
     if (!auth.ok) throw new Error(`Twitch-Anmeldung abgelehnt (${auth.status})`);
@@ -55,7 +56,7 @@ export async function fetchTwitch(env, request = fetch) {
     if (typeof token !== 'string' || !token) throw new Error('Twitch-Token fehlt');
     const query = form(TWITCH_CHANNELS.map(c => ['user_login', c]));
     const res = await request(`https://api.twitch.tv/helix/streams?${query}`, {
-      headers: { 'Client-ID': env.TWITCH_CLIENT_ID, Authorization: `Bearer ${token}` }, redirect: 'error',
+      headers: { 'Client-ID': env.TWITCH_CLIENT_ID, Authorization: `Bearer ${token}` }, redirect: 'manual',
     });
     if (!res.ok) throw new Error(`Twitch-Statusabfrage abgelehnt (${res.status})`);
     const data = await res.json();
@@ -66,7 +67,7 @@ export async function fetchTwitch(env, request = fetch) {
         .map(s => ({ user_login: s.user_login, viewer_count: s.viewer_count })),
     };
   } finally {
-    if (token) await request('https://id.twitch.tv/oauth2/revoke', { method: 'POST', redirect: 'error', body: form({ client_id: env.TWITCH_CLIENT_ID, token }) });
+    if (token) await request('https://id.twitch.tv/oauth2/revoke', { method: 'POST', redirect: 'manual', body: form({ client_id: env.TWITCH_CLIENT_ID, token }) });
   }
 }
 
