@@ -2,9 +2,16 @@
   "_comment": "Highlights-Timeline der Startseite. Neueste Einträge zuerst. tag: dachcs | esea | milestone | founding | win. Der aktuelle Saisonstand wird zusätzlich automatisch aus stats.json davorgesetzt. Hier nur abgeschlossene Sachen eintragen.",
   "entries": [
     {
+      "badge": "NOV 26",
+      "title": "Donuts Community · Neustart",
+      "text": "Nxt spielt nicht mehr für uns. Danke für jede Runde! Das Main-Team bleibt und startet in der DACH CS Entry, drumherum bauen wir die Community auf.",
+      "tag": "milestone",
+      "tagLabel": "Meilenstein"
+    },
+    {
       "badge": "DNS",
       "title": "Newcomer-Roster DNS · Kapitel abgeschlossen",
-      "text": "Das jüngste Roster der Org hat sich im Oktober 2026 aufgelöst. Danke für jede Runde. Olof bleibt als Stand-in bei Nxt an Bord.",
+      "text": "Das jüngste Roster der Org hat sich im Oktober 2026 aufgelöst. Danke für jede Runde.",
       "tag": "milestone",
       "tagLabel": "Meilenstein"
     },

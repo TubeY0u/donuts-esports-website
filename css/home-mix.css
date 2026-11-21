@@ -451,3 +451,14 @@ html:not(.zoom) .join .portal-after, .join.is-static .portal-after { position: s
   .toast, .brand img, .btn, .team h3 { transition: none; }
   .portal-logo.spin, .is-live .live-glow::after, .nav-links a.has-live::after { animation: none; }
 }
+
+/* ---- Donuts Community (Startseite) ------------------------------------------ */
+.cm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0 32px; list-style: none; margin: 0; padding: 0; }
+.cm-grid li { padding: 24px 0; border-top: 1px solid var(--line); }
+.cm-grid h3 { font: 900 clamp(24px, 2.4vw, 30px)/.95 var(--display); font-stretch: 66%; text-transform: uppercase; }
+.cm-grid h3::before { content: ""; display: block; width: 28px; height: 3px; margin-bottom: 14px; background: var(--glaze); }
+.cm-grid p { margin-top: 10px; color: var(--muted); font-size: 16px; }
+.cm-grid .reveal:nth-child(2) { transition-delay: .06s; } .cm-grid .reveal:nth-child(3) { transition-delay: .12s; }
+.cm-grid .reveal:nth-child(4) { transition-delay: .18s; } .cm-grid .reveal:nth-child(5) { transition-delay: .24s; }
+.cm-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+.community .open-seat { margin-top: 56px; }
