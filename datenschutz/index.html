@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https: data:; connect-src 'self' https://api.faceit.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https: data:; connect-src 'self' https://api.faceit.com https://donuts-clutch.lukasstaudinger.workers.dev; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <script src="/js/security.js"></script>
   <title>Datenschutz · DieDonuts Esports</title>
@@ -99,10 +99,13 @@
 
   <h2>5. Live-Status von Twitch</h2>
   <p>
-    Ob unsere Spieler gerade auf Twitch live sind, fragt ein automatischer Job auf unserer
-    Seite regelmäßig bei Twitch ab und legt das Ergebnis als Datei auf dieser Website ab.
-    Ihr Browser lädt nur diese Datei von unserem Server. Beim Ansehen der Website wird
-    dafür keine Verbindung zu Twitch aufgebaut. Erst wenn Sie einen Link zu Twitch
+    Ob unsere Spieler gerade auf Twitch live sind, fragt ein Dienst der Cloudflare, Inc.,
+    101 Townsend St, San Francisco, CA 94107, USA, bei Twitch ab und speichert das Ergebnis
+    für wenige Minuten zwischen. Ihr Browser lädt beim Aufruf jeder Seite nur dieses Ergebnis
+    von Cloudflare. Dabei wird Ihre IP-Adresse an Cloudflare übermittelt, eine Verbindung zu
+    Twitch baut Ihr Browser nicht auf. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
+    (berechtigtes Interesse an einer aktuellen Live-Anzeige). Fällt der Dienst aus, lädt Ihr
+    Browser stattdessen eine Datei von unserem eigenen Server. Erst wenn Sie einen Link zu Twitch
     anklicken, gelten die Datenschutzbestimmungen von Twitch:
     <a href="https://www.twitch.tv/p/de-de/legal/privacy-notice/" target="_blank" rel="noopener">
       https://www.twitch.tv/p/de-de/legal/privacy-notice/

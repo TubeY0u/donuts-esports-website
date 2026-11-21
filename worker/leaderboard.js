@@ -1,4 +1,6 @@
-// Clutch-Check Rangliste. Cloudflare Worker, KV-Binding "SCORES", Secret "ADMIN_KEY".
+// Clutch-Check Rangliste und Twitch-Live-Status. Cloudflare Worker, KV-Binding "SCORES",
+// Secrets "ADMIN_KEY", "TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET".
+// GET    /twitch                                 -> {updatedAt, data: [{user_login, viewer_count}]}
 // GET    /scores?mode=classic                    -> Top 10 [{name, level}]
 // POST   /scores {mode, name, level, ms}         -> trägt ein (beste Runde pro Name zählt)
 // DELETE /scores?mode=classic&name=X  (Authorization: Bearer ADMIN_KEY) -> Eintrag löschen
@@ -36,6 +38,38 @@ export function validate(body) {
   return { mode, name, level };
 }
 
+// Twitch-Live-Status für die Website. Gleiche Kanäle wie scripts/update-twitch.mjs.
+// Secrets im Worker: TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET. Der Token wird nach jeder Abfrage widerrufen.
+const TWITCH_CHANNELS = ['diedonuts_esports', 'halfy_cs', 'tube_y0u', 'its_kriistiin', 'derohnedaumen', 'sirokkoko'];
+export async function fetchTwitch(env, request = fetch) {
+  if (!env.TWITCH_CLIENT_ID || !env.TWITCH_CLIENT_SECRET) throw new Error('Twitch credentials missing');
+  const form = o => new URLSearchParams(o);
+  let token;
+  try {
+    const auth = await request('https://id.twitch.tv/oauth2/token', {
+      method: 'POST', redirect: 'error',
+      body: form({ client_id: env.TWITCH_CLIENT_ID, client_secret: env.TWITCH_CLIENT_SECRET, grant_type: 'client_credentials' }),
+    });
+    if (!auth.ok) throw new Error('Twitch authentication failed');
+    token = (await auth.json()).access_token;
+    if (typeof token !== 'string' || !token) throw new Error('Twitch access token missing');
+    const query = form(TWITCH_CHANNELS.map(c => ['user_login', c]));
+    const res = await request(`https://api.twitch.tv/helix/streams?${query}`, {
+      headers: { 'Client-ID': env.TWITCH_CLIENT_ID, Authorization: `Bearer ${token}` }, redirect: 'error',
+    });
+    if (!res.ok) throw new Error('Twitch status failed');
+    const data = await res.json();
+    if (!Array.isArray(data.data)) throw new Error('Invalid Twitch status response');
+    return {
+      updatedAt: new Date().toISOString(),
+      data: data.data.filter(s => TWITCH_CHANNELS.includes(s.user_login) && Number.isSafeInteger(s.viewer_count) && s.viewer_count >= 0)
+        .map(s => ({ user_login: s.user_login, viewer_count: s.viewer_count })),
+    };
+  } finally {
+    if (token) await request('https://id.twitch.tv/oauth2/revoke', { method: 'POST', redirect: 'error', body: form({ client_id: env.TWITCH_CLIENT_ID, token }) });
+  }
+}
+
 export function insert(list, entry) {
   const i = list.findIndex(e => e.name.toLowerCase() === entry.name.toLowerCase());
   if (i >= 0 && list[i].level >= entry.level) return list; // alter Rekord ist besser
@@ -49,6 +83,25 @@ export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return json(null, 204);
+
+    // GET /twitch: Live-Status, 2 Minuten im Edge-Cache (Fehler 1 Minute), damit Twitch nicht bei jedem Besuch gefragt wird
+    if (url.pathname === '/twitch' && req.method === 'GET') {
+      const cache = globalThis.caches?.default;
+      const key = new Request('https://cache.donuts/twitch'); // Query-Strings umgehen den Cache nicht
+      const hit = cache && await cache.match(key);
+      if (hit) return hit;
+      let res;
+      try {
+        res = json(await fetchTwitch(env));
+        res.headers.set('cache-control', 'public, max-age=120');
+      } catch {
+        res = json({ error: 'Twitch gerade nicht erreichbar.' }, 503);
+        res.headers.set('cache-control', 'public, max-age=60');
+      }
+      if (cache) ctx?.waitUntil(cache.put(key, res.clone()));
+      return res;
+    }
+
     if (url.pathname !== '/scores') return json({ error: 'Nicht gefunden.' }, 404);
     const mode = url.searchParams.get('mode');
 

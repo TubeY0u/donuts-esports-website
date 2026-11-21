@@ -666,17 +666,20 @@
     if (!streamCards.length && !document.getElementById('liveBanner')) return;
 
     try {
-      const res = await fetch('/data/twitch-status.json', { cache: 'no-cache', signal: AbortSignal.timeout(8000) });
-
-      if (!res.ok) {
-        throw new Error('Live-Status nicht verfügbar');
+      // Erst der Worker (frisch, max. 2 Min. alt), dann die vom GitHub-Bot geschriebene Datei als Ersatz
+      const fresh = d => {
+        const age = Date.now() - Date.parse(d && d.updatedAt);
+        return Number.isFinite(age) && age > -60000 && age < 45 * 60 * 1000 && Array.isArray(d.data);
+      };
+      let data = null;
+      for (const src of ['https://donuts-clutch.lukasstaudinger.workers.dev/twitch', '/data/twitch-status.json']) {
+        try {
+          const res = await fetch(src, { cache: 'no-cache', signal: AbortSignal.timeout(8000) });
+          const d = res.ok ? await res.json() : null;
+          if (fresh(d)) { data = d; break; }
+        } catch (e) { /* nächste Quelle */ }
       }
-
-      const data = await res.json();
-      const age = Date.now() - Date.parse(data.updatedAt);
-      if (!Number.isFinite(age) || age < -60000 || age > 45 * 60 * 1000 || !Array.isArray(data.data)) {
-        throw new Error('Live-Status nicht aktuell');
-      }
+      if (!data) throw new Error('Live-Status nicht verfügbar');
       const allowedHandles = new Set([...bannerHandles, ...[...streamCards].map(c => c.dataset.twitch)]);
       const liveMap = new Map();
       if (data.data) {

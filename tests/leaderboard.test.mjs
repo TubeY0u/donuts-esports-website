@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { validate } from '../worker/leaderboard.js';
+import worker, { validate, fetchTwitch } from '../worker/leaderboard.js';
 
 const kv = () => { const m = new Map(); return { get: async k => m.get(k) ?? null, put: async (k, v) => { m.set(k, v); } }; };
 const env = () => ({ SCORES: kv(), ADMIN_KEY: 'secret' });
@@ -56,6 +56,34 @@ test('junk and non-top-10 entries cost no KV writes', async () => {
   writes = 0;
   await post(e, { mode: 'classic', name: 'Neuling', level: 3, ms: 99999 }, 'new');
   assert.equal(writes, 1); // nur der Rate-Limit-Zähler, die Rangliste bleibt unangetastet
+});
+
+test('twitch status exports only public fields of known channels and revokes the token', async () => {
+  const calls = [];
+  const request = async (url, opts) => {
+    calls.push(url);
+    if (url.endsWith('/token')) return { ok: true, json: async () => ({ access_token: 'tok' }) };
+    if (url.endsWith('/revoke')) return { ok: true };
+    return { ok: true, json: async () => ({ data: [
+      { user_login: 'tube_y0u', viewer_count: 12, title: 'geheim', access_token: 'nope' },
+      { user_login: 'fremder', viewer_count: 99 },
+      { user_login: 'halfy_cs', viewer_count: -1 },
+    ] }) };
+  };
+  const out = await fetchTwitch({ TWITCH_CLIENT_ID: 'id', TWITCH_CLIENT_SECRET: 's' }, request);
+  assert.deepEqual(out.data, [{ user_login: 'tube_y0u', viewer_count: 12 }]);
+  assert.ok(calls.at(-1).endsWith('/revoke'));
+  // Auch wenn Twitch ausfällt, wird der Token widerrufen
+  calls.length = 0;
+  await assert.rejects(fetchTwitch({ TWITCH_CLIENT_ID: 'id', TWITCH_CLIENT_SECRET: 's' },
+    async url => { calls.push(url); return url.endsWith('/token') ? { ok: true, json: async () => ({ access_token: 'tok' }) } : { ok: url.endsWith('/revoke') }; }));
+  assert.ok(calls.at(-1).endsWith('/revoke'));
+});
+
+test('twitch route answers 503 without secrets instead of leaking errors', async () => {
+  const res = await worker.fetch(new Request('https://w/twitch'), env());
+  assert.equal(res.status, 503);
+  assert.equal(res.headers.get('access-control-allow-origin'), 'https://donuts-esports.de');
 });
 
 test('CORS preflight answers 204 without body', async () => {
