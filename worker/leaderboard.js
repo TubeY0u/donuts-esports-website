@@ -42,7 +42,7 @@ export function validate(body) {
 // Secrets im Worker: TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET. Der Token wird nach jeder Abfrage widerrufen.
 const TWITCH_CHANNELS = ['diedonuts_esports', 'halfy_cs', 'tube_y0u', 'its_kriistiin', 'derohnedaumen', 'sirokkoko'];
 export async function fetchTwitch(env, request = fetch) {
-  if (!env.TWITCH_CLIENT_ID || !env.TWITCH_CLIENT_SECRET) throw new Error('Twitch credentials missing');
+  if (!env.TWITCH_CLIENT_ID || !env.TWITCH_CLIENT_SECRET) throw new Error('Twitch-Secrets fehlen');
   const form = o => new URLSearchParams(o);
   let token;
   try {
@@ -50,16 +50,16 @@ export async function fetchTwitch(env, request = fetch) {
       method: 'POST', redirect: 'error',
       body: form({ client_id: env.TWITCH_CLIENT_ID, client_secret: env.TWITCH_CLIENT_SECRET, grant_type: 'client_credentials' }),
     });
-    if (!auth.ok) throw new Error('Twitch authentication failed');
+    if (!auth.ok) throw new Error(`Twitch-Anmeldung abgelehnt (${auth.status})`);
     token = (await auth.json()).access_token;
-    if (typeof token !== 'string' || !token) throw new Error('Twitch access token missing');
+    if (typeof token !== 'string' || !token) throw new Error('Twitch-Token fehlt');
     const query = form(TWITCH_CHANNELS.map(c => ['user_login', c]));
     const res = await request(`https://api.twitch.tv/helix/streams?${query}`, {
       headers: { 'Client-ID': env.TWITCH_CLIENT_ID, Authorization: `Bearer ${token}` }, redirect: 'error',
     });
-    if (!res.ok) throw new Error('Twitch status failed');
+    if (!res.ok) throw new Error(`Twitch-Statusabfrage abgelehnt (${res.status})`);
     const data = await res.json();
-    if (!Array.isArray(data.data)) throw new Error('Invalid Twitch status response');
+    if (!Array.isArray(data.data)) throw new Error('Twitch-Antwort ungültig');
     return {
       updatedAt: new Date().toISOString(),
       data: data.data.filter(s => TWITCH_CHANNELS.includes(s.user_login) && Number.isSafeInteger(s.viewer_count) && s.viewer_count >= 0)
@@ -94,8 +94,10 @@ export default {
       try {
         res = json(await fetchTwitch(env));
         res.headers.set('cache-control', 'public, max-age=120');
-      } catch {
-        res = json({ error: 'Twitch gerade nicht erreichbar.' }, 503);
+      } catch (e) {
+        // Grund ohne Zugangsdaten mitschicken, damit sich Einrichtungsfehler finden lassen
+        const reason = /^Twitch-/.test(e && e.message) ? e.message : 'Verbindungsfehler';
+        res = json({ error: 'Twitch gerade nicht erreichbar.', reason }, 503);
         res.headers.set('cache-control', 'public, max-age=60');
       }
       if (cache) ctx?.waitUntil(cache.put(key, res.clone()));
