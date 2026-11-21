@@ -278,9 +278,9 @@
     return _statsPromise;
   }
 
-  const ROSTER_LABELS = { main: 'Main Roster', nxt: 'Nxt Roster' };
-  const SHORT_LABELS  = { main: 'Donuts',      nxt: 'Nxt' };
-  const BADGE_LABELS  = { main: 'MAIN',        nxt: 'NXT' };
+  const ROSTER_LABELS = { main: 'Main Roster' };
+  const SHORT_LABELS  = { main: 'Donuts' };
+  const BADGE_LABELS  = { main: 'MAIN' };
 
   // HTML-Escaping für alles, was aus dem Scraper kommt (fremde Teamnamen).
   const esc = (v) => String(v == null ? '' : v)
@@ -507,8 +507,7 @@
   async function initTicker() {
     const elComp = document.getElementById('tkComp');
     const elMain = document.getElementById('tkMain');
-    const elNxt  = document.getElementById('tkNxt');
-    if (!elComp && !elMain && !elNxt) return;
+    if (!elComp && !elMain) return;
 
     const data = await getStats();
     if (!data) return;
@@ -525,9 +524,7 @@
       return row ? `${row.pos}. · ${row.wins}W/${row.losses}L` : null;
     };
     const mainTxt = standingText(data.teams && data.teams.main);
-    const nxtTxt  = standingText(data.teams && data.teams.nxt);
     if (elMain && mainTxt) elMain.textContent = mainTxt;
-    if (elNxt  && nxtTxt)  elNxt.textContent  = nxtTxt;
   }
 
   // ---- Rotierende Zeile im Hero-Videorahmen -------------------------------
@@ -554,7 +551,7 @@
     if (last) lines.push(`${last.result === 'win' ? 'Sieg' : 'Niederlage'} ${last.score} vs ${last.opponent}`);
 
     // 3. Tabellenstände
-    for (const slug of ['main', 'nxt']) {
+    for (const slug of ['main']) {
       const t = teams[slug];
       const row = ownRow(t);
       if (!row) continue;
@@ -612,7 +609,7 @@
 
     // Laufende Saison automatisch davorsetzen
     const data = await getStats();
-    for (const slug of ['main', 'nxt']) {
+    for (const slug of ['main']) {
       const t = (data && data.teams) ? data.teams[slug] : null;
       const row = ownRow(t);
       if (!row) continue;

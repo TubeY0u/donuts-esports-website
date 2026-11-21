@@ -50,15 +50,6 @@ const TEAMS = {
     // Extra nicknames not registered on the FACEIT team (standins etc.)
     extra:       ['dolan-', 'Ibrakadabra', '_reda'],
   },
-  nxt: {
-    slug:        'nxt',
-    label:       'Donuts Nxt',
-    faceitId:    '5d25c833-2677-4c52-93e7-ce5699378a9a',
-    dachcsTeam:  'DIEDONUTS NXT',
-    extra:       ['DNS-Olof'], // Standin
-    // Nicknames that stay out of the site even if still on the FACEIT team
-    exclude:     ['just9th'],
-  },
 };
 
 // ── Helpers ──────────────────────────────────────────────────

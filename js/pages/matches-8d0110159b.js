@@ -3,7 +3,6 @@ const { safeUrl } = window.DonutsSecurity;
 // ── Matches Page Logic ─────────────────────────────────────────
 const TEAM_META = {
   main: { label: 'Main', dachcsUrl: 'https://dachcs.de/coverage/' },
-  nxt:  { label: 'Nxt',  dachcsUrl: null },
 };
 
 const DONUTS_NAMES = ['DIEDONUTS', 'Die Donuts', 'DieDonuts', 'DONUTS'];
@@ -158,7 +157,7 @@ function renderAll() {
   }
 
   // Collect all upcoming across selected teams
-  const teamKeys = filter === 'all' ? ['main','nxt'] : [filter];
+  const teamKeys = filter === 'all' ? ['main'] : [filter];
   let allUpcoming = [];
   let allRecent   = [];
   let standingsSections = '';
@@ -261,7 +260,7 @@ function renderAll() {
 }
 
 // ── Tabs ─────────────────────────────────────────────────────
-document.getElementById('matchesTabs').addEventListener('click', function(e) {
+document.getElementById('matchesTabs')?.addEventListener('click', function(e) {
   const btn = e.target.closest('.matches-tab');
   if (!btn) return;
   document.querySelectorAll('#matchesTabs .matches-tab').forEach(t => t.classList.remove('active'));

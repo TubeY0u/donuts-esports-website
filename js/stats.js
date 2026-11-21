@@ -15,12 +15,6 @@ export const TEAMS = {
     dachcsGroup: 'https://dachcs.de/coverage/',
     dachcsName:  'DIEDONUTS',
   },
-  nxt: {
-    faceitId:    '5d25c833-2677-4c52-93e7-ce5699378a9a',
-    label:       'Donuts Nxt',
-    dachcsGroup: null,
-    dachcsName:  'DIEDONUTS NXT',
-  },
 };
 
 // Only contact FACEIT directly. Public relay operators must not supply page data.

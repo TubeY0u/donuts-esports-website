@@ -143,9 +143,9 @@ function renderLeaderboard(allPlayers) {
     sub.textContent = `FACEIT · Live · ${d.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' })}`;
   }
 
-  const TEAM_LABELS = { main: 'Donuts', nxt: 'Nxt' };
+  const TEAM_LABELS = { main: 'Donuts' };
 
-  // Deduplicate: each player once (highest ELO / first team = main > nxt)
+  // Deduplicate: each player once (highest ELO)
   const seen = new Set();
   const unique = allPlayers
     .filter(p => p.nickname.toLowerCase() !== 'xelfer')
@@ -244,7 +244,6 @@ const escH = (v) => String(v == null ? '' : v)
 const ownStanding = (t) => (t && t.standings || []).find(r => /DIEDONUTS/i.test(r.team || ''));
 const TEAM_META = {
   main: { label: 'Donuts',     href: '/roster/main/', logo: '/assets/logo_trans.png' },
-  nxt:  { label: 'Donuts Nxt', href: '/roster/nxt/',  logo: '/assets/Logo_NXT.png'  },
 };
 
 const cleanOpp = (v) => String(v || '?').replace(/^team[_-]/i, '');
@@ -384,7 +383,6 @@ async function renderTeamPage() {
 // ── Boot ─────────────────────────────────────────────────────
 const ALL_TEAM_BLOCKS = [
   { teamSlug: 'main', blockId: 'donuts', mapId: 'map-stats-main' },
-  { teamSlug: 'nxt',  blockId: 'nxt',    mapId: 'map-stats-nxt'  },
 ];
 // Nur die Blöcke laden, die auf DIESER Seite auch existieren.
 const TEAM_BLOCKS = ALL_TEAM_BLOCKS.filter(b => document.getElementById(b.blockId));
