@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-26T01:32:17.394Z",
+  "lastUpdated": "2026-11-26T16:21:38.842Z",
   "teams": {
     "main": {
       "slug": "main",
@@ -8,40 +8,21 @@
       "dachcsUrl": "https://dachcs.de/coverage/group/280",
       "players": [
         {
-          "faceitId": "e0f0313c-c2aa-4e8a-9874-8eb2be3d628d",
-          "nickname": "chrizzW",
-          "avatar": "https://distribution.faceit-cdn.net/images/df3a7fd1-210f-4503-bac5-aff0ab58cc1c.jpg",
+          "faceitId": "d3926009-9971-4936-8a9e-9ffed426aefd",
+          "nickname": "rdX",
+          "avatar": "https://distribution.faceit-cdn.net/images/e3093f0b-bb39-4712-ad5b-942e928a8d6f.jpg",
           "country": "de",
-          "elo": 2071,
+          "elo": 2100,
           "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/chrizzW",
+          "faceitUrl": "https://www.faceit.com/de/players/rdX",
           "stats": {
-            "matches": 4787,
-            "wins": 2362,
-            "winRate": 49,
-            "kd": 1.15,
+            "matches": 2278,
+            "wins": 1153,
+            "winRate": 51,
+            "kd": 1.11,
             "kr": null,
             "adr": null,
-            "hs": 46,
-            "avgKills": 0
-          }
-        },
-        {
-          "faceitId": "167bcf48-5474-4f85-adbd-556759535aca",
-          "nickname": "dolan-",
-          "avatar": "https://distribution.faceit-cdn.net/images/03cfb16b-b07f-40e6-9561-b6c231bbd7e7.jpeg",
-          "country": "de",
-          "elo": 2096,
-          "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/dolan-",
-          "stats": {
-            "matches": 1298,
-            "wins": 644,
-            "winRate": 50,
-            "kd": 1.06,
-            "kr": null,
-            "adr": null,
-            "hs": 50,
+            "hs": 35,
             "avgKills": 0
           }
         },
@@ -84,25 +65,6 @@
           }
         },
         {
-          "faceitId": "b3a1abf4-7214-4d34-ac48-7a56518a032b",
-          "nickname": "Ibrakadabra",
-          "avatar": "https://distribution.faceit-cdn.net/images/ee603923-3323-41d5-84e6-048b0a1ad498.jpg",
-          "country": "de",
-          "elo": 2204,
-          "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/Ibrakadabra",
-          "stats": {
-            "matches": 2741,
-            "wins": 1384,
-            "winRate": 50,
-            "kd": 1.12,
-            "kr": null,
-            "adr": null,
-            "hs": 43,
-            "avgKills": 0
-          }
-        },
-        {
           "faceitId": "824221b9-8639-4e24-a87b-f5b17f66fdcb",
           "nickname": "svN--",
           "avatar": "https://distribution.faceit-cdn.net/images/3259f102-7346-40fb-8223-1a6a3f9dc4d8.jpg",
@@ -141,21 +103,40 @@
           }
         },
         {
-          "faceitId": "244c5587-9730-4577-9d81-fb070974eda2",
-          "nickname": "TubeYou",
-          "avatar": "https://distribution.faceit-cdn.net/images/523feae3-9ecf-4d10-879d-8fd2d53a045d.jpg",
+          "faceitId": "b3a1abf4-7214-4d34-ac48-7a56518a032b",
+          "nickname": "Ibrakadabra",
+          "avatar": "https://distribution.faceit-cdn.net/images/ee603923-3323-41d5-84e6-048b0a1ad498.jpg",
           "country": "de",
-          "elo": 2062,
+          "elo": 2204,
           "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/TubeYou",
+          "faceitUrl": "https://www.faceit.com/de/players/Ibrakadabra",
           "stats": {
-            "matches": 1307,
-            "wins": 645,
-            "winRate": 49,
-            "kd": 1.1,
+            "matches": 2741,
+            "wins": 1384,
+            "winRate": 50,
+            "kd": 1.12,
             "kr": null,
             "adr": null,
-            "hs": 54,
+            "hs": 43,
+            "avgKills": 0
+          }
+        },
+        {
+          "faceitId": "167bcf48-5474-4f85-adbd-556759535aca",
+          "nickname": "dolan-",
+          "avatar": "https://distribution.faceit-cdn.net/images/03cfb16b-b07f-40e6-9561-b6c231bbd7e7.jpeg",
+          "country": "de",
+          "elo": 2096,
+          "level": 10,
+          "faceitUrl": "https://www.faceit.com/de/players/dolan-",
+          "stats": {
+            "matches": 1298,
+            "wins": 644,
+            "winRate": 50,
+            "kd": 1.06,
+            "kr": null,
+            "adr": null,
+            "hs": 50,
             "avgKills": 0
           }
         },
@@ -179,31 +160,68 @@
           }
         },
         {
-          "faceitId": "d3926009-9971-4936-8a9e-9ffed426aefd",
-          "nickname": "rdX",
-          "avatar": "https://distribution.faceit-cdn.net/images/e3093f0b-bb39-4712-ad5b-942e928a8d6f.jpg",
+          "faceitId": "e0f0313c-c2aa-4e8a-9874-8eb2be3d628d",
+          "nickname": "chrizzW",
+          "avatar": "https://distribution.faceit-cdn.net/images/df3a7fd1-210f-4503-bac5-aff0ab58cc1c.jpg",
           "country": "de",
-          "elo": 2100,
+          "elo": 2071,
           "level": 10,
-          "faceitUrl": "https://www.faceit.com/de/players/rdX",
+          "faceitUrl": "https://www.faceit.com/de/players/chrizzW",
           "stats": {
-            "matches": 2278,
-            "wins": 1153,
-            "winRate": 51,
-            "kd": 1.11,
+            "matches": 4787,
+            "wins": 2362,
+            "winRate": 49,
+            "kd": 1.15,
             "kr": null,
             "adr": null,
-            "hs": 35,
+            "hs": 46,
+            "avgKills": 0
+          }
+        },
+        {
+          "faceitId": "244c5587-9730-4577-9d81-fb070974eda2",
+          "nickname": "TubeYou",
+          "avatar": "https://distribution.faceit-cdn.net/images/523feae3-9ecf-4d10-879d-8fd2d53a045d.jpg",
+          "country": "de",
+          "elo": 2062,
+          "level": 10,
+          "faceitUrl": "https://www.faceit.com/de/players/TubeYou",
+          "stats": {
+            "matches": 1307,
+            "wins": 645,
+            "winRate": 49,
+            "kd": 1.1,
+            "kr": null,
+            "adr": null,
+            "hs": 54,
             "avgKills": 0
           }
         }
       ],
       "mapStats": {
+        "cache": {
+          "label": "Cache",
+          "played": 5,
+          "wins": 3,
+          "winRate": 60
+        },
         "anubis": {
           "label": "Anubis",
           "played": 51,
           "wins": 17,
           "winRate": 33
+        },
+        "inferno": {
+          "label": "Inferno",
+          "played": 1,
+          "wins": 0,
+          "winRate": 0
+        },
+        "ancient": {
+          "label": "Ancient",
+          "played": 97,
+          "wins": 35,
+          "winRate": 36
         },
         "nuke": {
           "label": "Nuke",
@@ -211,11 +229,11 @@
           "wins": 18,
           "winRate": 55
         },
-        "mirage": {
-          "label": "Mirage",
-          "played": 8,
-          "wins": 3,
-          "winRate": 38
+        "aztec": {
+          "label": "Aztec",
+          "played": 1,
+          "wins": 0,
+          "winRate": 0
         },
         "mills": {
           "label": "Mills",
@@ -235,26 +253,14 @@
           "wins": 0,
           "winRate": 0
         },
-        "inferno": {
-          "label": "Inferno",
-          "played": 1,
-          "wins": 0,
-          "winRate": 0
-        },
-        "ancient": {
-          "label": "Ancient",
-          "played": 97,
-          "wins": 35,
-          "winRate": 36
-        },
-        "cache": {
-          "label": "Cache",
-          "played": 5,
+        "mirage": {
+          "label": "Mirage",
+          "played": 8,
           "wins": 3,
-          "winRate": 60
+          "winRate": 38
         },
-        "aztec": {
-          "label": "Aztec",
+        "awp_case": {
+          "label": "AWP Case",
           "played": 1,
           "wins": 0,
           "winRate": 0
@@ -264,12 +270,6 @@
           "played": 1,
           "wins": 1,
           "winRate": 100
-        },
-        "awp_case": {
-          "label": "AWP Case",
-          "played": 1,
-          "wins": 0,
-          "winRate": 0
         }
       },
       "faceitMatches": [
